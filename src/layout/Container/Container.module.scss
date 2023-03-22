@@ -1,0 +1,11 @@
+.container {
+  // mobile view
+  width: 100%;
+
+  // desktop view
+  @media only screen and (min-width: 1440px) {
+    width: 100%;
+    max-width: 1091px;
+    margin: auto;
+  }
+}

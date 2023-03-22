@@ -1,0 +1,163 @@
+@use '../../style/scss/global/colors' as colors;
+@use '../../style/scss/utils/breakpoints' as breakpoint;
+
+.footer {
+  width: 100%;
+  // padding-block-start: 5%;
+  // padding-inline: 5%;
+  // display: flex;
+  // flex-direction: column;
+  background-color: colors.$black;
+
+  // SCREENS 765px and LARGER
+  @media only screen and (min-width: 765px) {
+    padding-block-start: 5rem;
+  }
+
+  // SCREENS 1280px and LARGER
+  @media only screen and (min-width: 1280px) {
+    padding-block-start: 8rem;
+  }
+
+  // .footerMain,
+  // .footerCopyright {
+  //   // SCREENS 1400px and LARGER
+  //   @media only screen and (min-width: 1440px) {
+  //     width: 100%;
+  //     max-width: 90rem;
+  //     margin: auto;
+  //     padding-inline: 0%;
+  //   }
+  // }
+
+  .footerMain {
+    padding-block: 2.5rem;
+
+    // SCREENS 1280px and LARGER
+    @media only screen and (min-width: 1280px) {
+      padding-block-end: 0;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .footerLinks {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 10%;
+
+      // SCREENS 1280px and LARGER
+      @media only screen and (min-width: 1280px) {
+        width: 55%;
+        gap: 5%;
+      }
+
+      .footerCategory {
+        padding-block-end: 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+
+        .footerLinksTitle {
+          color: colors.$white;
+          font-size: 0.9rem;
+          font-weight: 700;
+          line-height: 180%;
+          margin-block: 0;
+          padding-block-end: 1.5rem;
+        }
+
+        .footerLink {
+          color: colors.$grey;
+          font-size: 0.9rem;
+          font-weight: 300;
+          letter-spacing: 0.005em;
+          line-height: 180%;
+          padding-block-end: 1.5rem;
+          transition: all 300ms ease-in;
+
+          &:hover {
+            color: colors.$primary;
+          }
+        }
+      }
+    }
+
+    .footerCompany {
+      width: 100%;
+      max-width: 40ch;
+      padding-block-end: 1rem;
+      display: flex;
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 1.5rem;
+
+      // SCREENS 1280px and LARGER
+      @media only screen and (min-width: 1280px) {
+        width: 30%;
+        padding-block-end: 0;
+      }
+
+      .footerCompanyText {
+        font-size: 1rem;
+        line-height: 150%;
+        color: colors.$grey;
+        opacity: 0.5;
+
+        // SCREENS 765px and LARGER
+        @media only screen and (max-width: 765px) {
+          display: none;
+        }
+      }
+    }
+  }
+
+  .footerCopyright {
+    padding-block: 2rem;
+    // border-block-start: 1px solid colors.$border;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    // // SCREENS 1280px and LARGER
+    // @media only screen and (min-width: 1280px) {
+    //   padding-block-end: 3rem;
+    // }
+
+    .footerSmall {
+      font-size: 0.7rem;
+      line-height: 100%;
+      text-align: center;
+      color: colors.$grey;
+      opacity: 0.5;
+
+      // SCREENS 1280px and LARGER
+      @media only screen and (min-width: 1280px) {
+        font-size: 0.8rem;
+      }
+    }
+
+    .footerSocialIcons {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+
+      .footerIcon {
+        // color: colors.$;
+        font-size: 0.8rem;
+        transition: all 300ms ease-in;
+
+        // SCREENS 1280px and LARGER
+        @media only screen and (min-width: 1280px) {
+          font-size: 1rem;
+        }
+
+        &:hover {
+          color: colors.$primary;
+        }
+      }
+    }
+  }
+}
