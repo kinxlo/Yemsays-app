@@ -138,7 +138,7 @@ const AdminPropertiesDetailsPage = () => {
         {/* section two  with unique layer */}
         <TwoColumnLayout>
           {/* grid one */}
-          <GridItem colSpan={{ base: 1, lg: 8 }} color={`white`}>
+          <GridItem colSpan={{ base: 2, lg: 8 }} color={`white`}>
             {/* tags */}
             <Flex gap={5}>
               <Tag
@@ -286,7 +286,7 @@ const AdminPropertiesDetailsPage = () => {
             </Box>
           </GridItem>
           {/* grid two */}
-          <GridItem colSpan={{ base: 1, lg: 4 }}>
+          <GridItem colSpan={{ base: 2, lg: 4 }}>
             <Box>
               {/* sales person card */}
               <SalesPersonCard />
