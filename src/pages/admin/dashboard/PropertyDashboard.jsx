@@ -16,10 +16,16 @@ import {
   Tabs,
   Text,
 } from '@chakra-ui/react'
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Icon } from '@iconify/react'
 import AdminPropertyCard from '../../../components/admin/propertyCard/AdminPropertyCard'
 import BreadCrumbHeader from '../../../components/breadcrumbHeader/BreadCrumbHeader'
+import { useGetAllPropertiesMutation } from './api/propertiesApiSlice'
+import { useSelector } from 'react-redux'
+import {
+  selectHouseProperties,
+  selectLandProperty,
+} from './api/propertiesSlice'
 
 const links = [
   { name: `Home`, ref: `/` },
@@ -27,31 +33,72 @@ const links = [
 ]
 
 const PropertyDashboard = () => {
-  const propertyList_L = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(
-    (listed) => {
+  const [propertyType, setPropertyType] = useState(`land`)
+  const [getAllProperties] = useGetAllPropertiesMutation()
+  const houseProperties = useSelector(selectHouseProperties)
+  const landProperties = useSelector(selectLandProperty)
+
+  let propertyList_L = null
+  let propertyList_U = null
+  let propertyList_S = null
+
+  const handlePropertyType = (event) => {
+    setPropertyType(event.target.value)
+  }
+
+  if (propertyType === `land`) {
+    propertyList_L = landProperties?.listedProperties?.map((listed) => {
       return (
-        <Box key={listed} bgColor={`dashboardBG`} p={4} borderRadius={10}>
-          <AdminPropertyCard listed />
+        <Box key={listed.id} bgColor={`dashboardBG`} p={4} borderRadius={10}>
+          <AdminPropertyCard listed propertyDescription={listed} />
         </Box>
       )
-    }
-  )
-  const propertyList_U = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(
-    (unlisted) => {
+    })
+    propertyList_U = landProperties?.unlistedProperties?.map((unlisted) => {
       return (
-        <Box key={unlisted} bgColor={`dashboardBG`} p={4} borderRadius={10}>
-          <AdminPropertyCard listed={false} />
+        <Box key={unlisted.id} bgColor={`dashboardBG`} p={4} borderRadius={10}>
+          <AdminPropertyCard listed={false} propertyDescription={unlisted} />
         </Box>
       )
-    }
-  )
-  const propertyList_S = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((sold) => {
-    return (
-      <Box key={sold} bgColor={`dashboardBG`} p={4} borderRadius={10}>
-        <AdminPropertyCard sold />
-      </Box>
-    )
-  })
+    })
+    propertyList_S = landProperties?.soldProperties?.map((sold) => {
+      return (
+        <Box key={sold.id} bgColor={`dashboardBG`} p={4} borderRadius={10}>
+          <AdminPropertyCard sold propertyDescription={sold} />
+        </Box>
+      )
+    })
+  } else {
+    propertyList_L = houseProperties?.listedProperties?.map((listed) => {
+      return (
+        <Box key={listed.id} bgColor={`dashboardBG`} p={4} borderRadius={10}>
+          <AdminPropertyCard listed propertyDescription={listed} />
+        </Box>
+      )
+    })
+    propertyList_U = houseProperties?.unlistedProperties?.map((unlisted) => {
+      return (
+        <Box key={unlisted.id} bgColor={`dashboardBG`} p={4} borderRadius={10}>
+          <AdminPropertyCard listed={false} propertyDescription={unlisted} />
+        </Box>
+      )
+    })
+    propertyList_S = houseProperties?.soldProperties?.map((sold) => {
+      return (
+        <Box key={sold.id} bgColor={`dashboardBG`} p={4} borderRadius={10}>
+          <AdminPropertyCard sold propertyDescription={sold} />
+        </Box>
+      )
+    })
+  }
+
+  const getProperties = useCallback(async () => {
+    await getAllProperties().unwrap()
+  }, [getAllProperties])
+
+  useEffect(() => {
+    getProperties()
+  }, [getProperties])
 
   return (
     <>
@@ -119,7 +166,7 @@ const PropertyDashboard = () => {
                     </Box>
                   }
                 >
-                  Lands
+                  {propertyType}
                 </MenuButton>
                 <MenuList
                   mt={1}
@@ -127,8 +174,20 @@ const PropertyDashboard = () => {
                   bgColor={`dashboardBG`}
                   color={`primary`}
                 >
-                  <MenuItem bgColor={`transparent`}>Land</MenuItem>
-                  <MenuItem bgColor={`transparent`}>House</MenuItem>
+                  <MenuItem
+                    onClick={handlePropertyType}
+                    value={`land`}
+                    bgColor={`transparent`}
+                  >
+                    Land
+                  </MenuItem>
+                  <MenuItem
+                    onClick={handlePropertyType}
+                    value={`house`}
+                    bgColor={`transparent`}
+                  >
+                    House
+                  </MenuItem>
                 </MenuList>
               </Menu>
               <Center

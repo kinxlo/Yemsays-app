@@ -26,12 +26,12 @@
   object-fit: cover;
 }
 
-// .page_alignment {
-//   padding: 0 fn.rem(16);
-//   @media screen and (min-width: 768px) {
-//     padding: 0 5rem;
-//   }
-//   @media screen and (min-width: 1440px) {
-//     padding: 2rem;
-//   }
-// }
+.page_alignment {
+  padding: 0 fn.rem(16);
+  @media screen and (min-width: 768px) {
+    padding: 0 5rem;
+  }
+  @media screen and (min-width: 1440px) {
+    padding: 2rem;
+  }
+}

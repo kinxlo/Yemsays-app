@@ -7,7 +7,8 @@ import {
   SimpleGrid,
   Text,
 } from '@chakra-ui/react'
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { Link as ReactLink } from 'react-router-dom'
 import AdminPropertyCard from '../../../components/admin/propertyCard/AdminPropertyCard'
 import CustomerCard from '../../../components/admin/recentCustomerCard/CustomerCard'
@@ -15,13 +16,31 @@ import Reviews from '../../../components/admin/reviews-card/Reviews'
 import StatCard from '../../../components/admin/stat-card/StatCard'
 import BreadCrumbHeader from '../../../components/breadcrumbHeader/BreadCrumbHeader'
 import TwoColumnLayout from '../../../layout/TwoColumnLayout'
+import { useGetDashboardDataMutation } from './api/propertiesApiSlice'
+import { selectDashboardData } from './api/propertiesSlice'
 
 const links = [
   { name: `Home`, ref: `/` },
   { name: `dashboard`, ref: `/dashboard` },
 ]
 
-const index = () => {
+const Dashboard = () => {
+  // const [isLoading, setLoading] = useState(false)
+  const [getDashboardData, { isLoading }] = useGetDashboardDataMutation()
+  const dashboardData = useSelector(selectDashboardData)
+
+  const showDashboardData = useCallback(async () => {
+    await getDashboardData().unwrap()
+    // if (res) {
+    //   setLoading(false)
+    //   setDashboardInfo(res)
+    // }
+  }, [getDashboardData])
+
+  useEffect(() => {
+    showDashboardData()
+  }, [showDashboardData])
+
   return (
     <>
       <Box>
@@ -30,9 +49,21 @@ const index = () => {
       {/* card list */}
       <Box my={10}>
         <SimpleGrid columns={{ base: 1, sm: 2, lg: 3 }} gap={`25px`}>
-          <StatCard title={`All Properties`} total={50} />
-          <StatCard title={`Listed Properties`} total={30} />
-          <StatCard title={`Unlisted Properties`} total={20} />
+          <StatCard
+            title={`All Properties`}
+            total={dashboardData?.allProperties}
+            // isLoading={isLoading}
+          />
+          <StatCard
+            title={`Listed Properties`}
+            total={dashboardData?.listed}
+            // isLoading={isLoading}
+          />
+          <StatCard
+            title={`Unlisted Properties`}
+            total={dashboardData?.unlisted}
+            // isLoading={isLoading}
+          />
         </SimpleGrid>
       </Box>
       {/* recent properties */}
@@ -54,8 +85,14 @@ const index = () => {
                 </Link>
               </Flex>
               <SimpleGrid columns={{ base: 1, lg: 2 }} gap={10}>
-                <AdminPropertyCard />
-                <AdminPropertyCard />
+                <AdminPropertyCard
+                  listed={false}
+                  propertyDescription={dashboardData?.recentlyAdded[0]}
+                />
+                <AdminPropertyCard
+                  listed={false}
+                  propertyDescription={dashboardData?.recentlyAdded[1]}
+                />
               </SimpleGrid>
             </Box>
 
@@ -108,4 +145,4 @@ const index = () => {
   )
 }
 
-export default index
+export default Dashboard

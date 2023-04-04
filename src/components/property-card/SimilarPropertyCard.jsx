@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import {
   Box,
   Button,
@@ -10,8 +11,9 @@ import {
 } from '@chakra-ui/react'
 import React from 'react'
 import { MdLocationOn } from 'react-icons/md'
+import { Link } from 'react-router-dom'
 
-const SimilarPropertyCard = () => {
+const SimilarPropertyCard = ({ property }) => {
   return (
     <Card
       bgColor={`transparent`}
@@ -30,12 +32,12 @@ const SimilarPropertyCard = () => {
             height={`100%`}
             objectFit={`cover`}
             borderRadius={7}
-            src='https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'
+            src={property?.media?.imgs?.[0]}
             alt='Green double couch with wooden legs'
           />
         </Box>
         <Stack flex={2}>
-          <Heading fontSize={`md`}>Prime Commercial Land</Heading>
+          <Heading fontSize={`md`}>{property?.title}</Heading>
           <Box
             color='blue.600'
             fontSize='md'
@@ -47,15 +49,17 @@ const SimilarPropertyCard = () => {
               <MdLocationOn size={`16px`} color={`grey`} />
             </Box>
             <Text fontSize={`sm`} color={`GrayText`}>
-              3, Ogunlesi Street, Lagos 100252
+              {property?.location}
             </Text>
           </Box>
           <Text fontSize={`3xl`} fontWeight={`bold`} color={`#0FB7C1`}>
-            $29,630
+            ${property?.price}
           </Text>
-          <Button variant='outline' colorScheme={`orange`}>
-            View Details
-          </Button>
+          <Link to={`/properties/${property?._id}/details`}>
+            <Button w={`100%`} variant='outline' colorScheme={`orange`}>
+              View Details
+            </Button>
+          </Link>
         </Stack>
       </CardBody>
     </Card>

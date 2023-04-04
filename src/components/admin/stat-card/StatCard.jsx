@@ -9,8 +9,10 @@ import {
   Text,
 } from '@chakra-ui/react'
 import React from 'react'
+import Spinner from '../../feedback/Spinner'
 
-const StatCard = ({ total, title }) => {
+const StatCard = ({ total, title, isLoading }) => {
+  console.log(isLoading)
   return (
     <Card borderRadius={10} bgColor={`transparent`} overflow={`hidden`}>
       <CardBody

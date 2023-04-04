@@ -8,10 +8,48 @@ import {
   Input,
   SimpleGrid,
 } from '@chakra-ui/react'
-import React from 'react'
+import React, { useCallback, useState } from 'react'
 import { IoOptionsOutline } from 'react-icons/io5'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  useListHousePropertiesMutation,
+  useListLandPropertiesMutation,
+} from '../../pages/admin/dashboard/api/propertiesApiSlice'
+import { selectPropertyState } from '../../pages/admin/dashboard/api/propertiesSlice'
 
 const SearchForm = () => {
+  // const [btnState, setBtnState] = useState({
+  //   landBtn: true,
+  //   houseBtn: false,
+  // })
+
+  const [listLandProperties] = useListLandPropertiesMutation()
+  const [listHouseProperties] = useListHousePropertiesMutation()
+  const propertyState = useSelector(selectPropertyState)
+  const dispatch = useDispatch()
+
+  const showLandProperties = useCallback(async () => {
+    await listLandProperties().unwrap()
+  }, [listLandProperties])
+
+  const showHouseProperties = useCallback(async () => {
+    await listHouseProperties().unwrap()
+  }, [listHouseProperties])
+
+  const handleLandBtnClick = () => {
+    // setBtnState({ houseBtn: false, landBtn: true })
+    showLandProperties()
+    dispatch({
+      type: `properties/changePropertyState`,
+      payload: true,
+    })
+  }
+  const handleHouseBtnClick = () => {
+    // setBtnState({ houseBtn: true, landBtn: false })
+    showHouseProperties()
+    dispatch({ type: `properties/changePropertyState`, payload: false })
+  }
+
   return (
     <Box
       maxW={`944px`}
@@ -32,22 +70,26 @@ const SearchForm = () => {
         overflow={`hidden`}
       >
         <Button
+          onClick={handleLandBtnClick}
           w={`50%`}
           height={`100%`}
           borderRadius={0}
-          bgColor={`black`}
-          _focus={{ bgColor: `primary`, color: `white` }}
+          bgColor={propertyState.isLand ? `primary` : `black`}
+          color={propertyState.isLand ? `white` : `primary`}
+          // _focus={{ bgColor: `primary`, color: `white` }}
           fontSize={`lg`}
           p={`1.9rem`}
         >
           Land
         </Button>
         <Button
+          onClick={handleHouseBtnClick}
           w={`50%`}
           height={`100%`}
           borderRadius={0}
-          bgColor={`black`}
-          _focus={{ bgColor: `primary`, color: `white` }}
+          bgColor={!propertyState.isLand ? `primary` : `black`}
+          color={!propertyState.isLand ? `white` : `primary`}
+          // _focus={{ bgColor: `primary`, color: `white` }}
           fontSize={`lg`}
           p={`1.9rem`}
         >

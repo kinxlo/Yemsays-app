@@ -3,7 +3,7 @@ import { Grid, GridItem, Image } from '@chakra-ui/react'
 import React from 'react'
 import EditImgOverlay from '../../components/editImgOverlay/EditImgOverlay'
 
-const GridImageLayout = ({ newProperty }) => {
+const GridImageLayout = ({ newProperty, isNotEditProperty, imageSet }) => {
   return (
     <Grid
       h='562px'
@@ -19,35 +19,39 @@ const GridImageLayout = ({ newProperty }) => {
         bg='dashboardBG'
         pos={`relative`}
       >
-        <EditImgOverlay />
+        <EditImgOverlay isNotEditProperty={isNotEditProperty} />
         <Image
+          height={`100%`}
           display={newProperty ? `none` : `block`}
           className='cc-img-fluid'
-          src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1678015983/project-yemsays/Rectangle_39_nai5r2.png`}
+          src={imageSet?.[0]}
         />
       </GridItem>
       <GridItem pos={`relative`} colSpan={1} bg='dashboardBG'>
-        <EditImgOverlay size={`2rem`} />
+        <EditImgOverlay size={`2rem`} isNotEditProperty={isNotEditProperty} />
         <Image
+          height={`177px`}
           display={newProperty ? `none` : `block`}
           className='cc-img-fluid'
-          src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1678015997/project-yemsays/Rectangle_42_nbonui.png`}
+          src={imageSet?.[1]}
         />
       </GridItem>
       <GridItem pos={`relative`} colSpan={1} bg='dashboardBG'>
-        <EditImgOverlay size={`2rem`} />
+        <EditImgOverlay size={`2rem`} isNotEditProperty={isNotEditProperty} />
         <Image
+          height={`177px`}
           display={newProperty ? `none` : `block`}
           className='cc-img-fluid'
-          src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1678015993/project-yemsays/Rectangle_41_ti79nf.png`}
+          src={imageSet?.[2]}
         />
       </GridItem>
       <GridItem pos={`relative`} colSpan={1} bg='dashboardBG'>
-        <EditImgOverlay size={`2rem`} />
+        <EditImgOverlay size={`2rem`} isNotEditProperty={isNotEditProperty} />
         <Image
+          height={`177px`}
           display={newProperty ? `none` : `block`}
           className='cc-img-fluid'
-          src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1678015987/project-yemsays/Rectangle_40_iernci.png`}
+          src={imageSet?.[3]}
         />
       </GridItem>
     </Grid>

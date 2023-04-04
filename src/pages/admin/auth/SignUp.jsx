@@ -60,7 +60,7 @@ const SignUp = () => {
       try {
         const res = await signup(data).unwrap()
         console.log(res)
-        res.success ? navigate(`/admin/dashboard`) : null
+        res.success ? navigate(`/admin/signin`) : null
       } catch (err) {
         toast({
           description: `${err.data.message}`,

@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-const STATE = { token: null }
+const STATE = { token: `null` }
 
 const AUTH_SLICE = {
   name: 'auth',

@@ -1,9 +1,15 @@
-import { Center, Text } from '@chakra-ui/react'
+/* eslint-disable react/prop-types */
+import { Center, Input, Text } from '@chakra-ui/react'
 import React from 'react'
 import { Icon } from '@iconify/react'
 
-// eslint-disable-next-line react/prop-types
-const EditImgOverlay = ({ size, removeText }) => {
+const EditImgOverlay = ({
+  size,
+  removeText,
+  handleClick,
+  id,
+  isNotEditProperty,
+}) => {
   return (
     <Center
       w={`100%`}
@@ -14,8 +20,10 @@ const EditImgOverlay = ({ size, removeText }) => {
       transform={`translate(-50%, -50%)`}
       fontSize={size || `4rem`}
       bgColor={`#00000090`}
+      hidden={isNotEditProperty}
     >
-      <Center flexDir={`column`}>
+      <Center onClick={handleClick} flexDir={`column`}>
+        <Input hidden id={id} type={`file`} />
         <Icon icon={`material-symbols:photo-camera-outline`} />
         <Text display={removeText ? `none` : `block`} textAlign={`center`}>
           Click to change video

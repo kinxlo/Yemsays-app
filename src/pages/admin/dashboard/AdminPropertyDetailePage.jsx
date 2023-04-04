@@ -8,7 +8,7 @@ import {
   Heading,
   Text,
 } from '@chakra-ui/react'
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { FaNetworkWired } from 'react-icons/fa'
 import {
   MdCropSquare,
@@ -23,6 +23,13 @@ import LinkButton from '../../../components/buttons/link-button/LinkButton'
 import SalesPersonCard from '../../../components/saleperson-profile-card/SalesPersonCard'
 import GridImageLayout from '../../../layout/GridImageLayout/GridImageLayout'
 import BreadCrumbHeader from '../../../components/breadcrumbHeader/BreadCrumbHeader'
+import {
+  useGetPropertyByIDMutation,
+  useListPropertyMutation,
+} from './api/propertiesApiSlice'
+import { useLocation } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { selectPropertyDetails } from './api/propertiesSlice'
 
 const links = [
   { name: `Home`, ref: `/` },
@@ -33,6 +40,28 @@ const links = [
 // eslint-disable-next-line react/prop-types
 const AdminPropertiesDetailsPage = () => {
   const [isListed, setListed] = useState(false)
+  const [getPropertyByID] = useGetPropertyByIDMutation()
+  const [listProperty] = useListPropertyMutation()
+  const location = useLocation()
+  const propertyID = location.pathname.split(`/`)[3]
+  const propertiesDetails = useSelector(selectPropertyDetails)
+
+  const getPropertiesDetails = useCallback(async () => {
+    await getPropertyByID(propertyID).unwrap()
+  }, [getPropertyByID, propertyID])
+
+  useEffect(() => {
+    getPropertiesDetails()
+  }, [getPropertiesDetails])
+
+  const setListedStatus = async () => {
+    const res = await listProperty({
+      id: propertyID,
+      body: { status: `listed` },
+    }).unwrap()
+    console.log(res)
+  }
+
   return (
     <>
       <Box id='top' mb={12}>
@@ -51,42 +80,56 @@ const AdminPropertiesDetailsPage = () => {
           <Text fontSize={{ lg: `xl` }}>Residential Land</Text>
           <Text fontSize={{ lg: `xl` }} color={`textGrey`}>
             <Text color={`primary`} as={`span`}>
-              {isListed ? `Listed Property` : `Unlisted Property`} /
+              {propertiesDetails?.property?.propertyStatus === `listed`
+                ? `Listed Property`
+                : `Unlisted Property`}{' '}
+              /
             </Text>{' '}
-            3 Ogunlesi Street, Onipanu
+            {propertiesDetails?.property?.title}
           </Text>
         </Box>
         <Flex gap={5}>
           <LinkButton
-            to={`/admin/properties/1/details/edit`}
+            to={`/admin/properties/${propertyID}/details/edit`}
             text={`Edit`}
             height={`66px`}
             width={`115px`}
           />
           <Button
-            onClick={() => setListed(!isListed)}
-            display={isListed ? `block` : `none`}
+            // onClick={setListedStatus}
             borderRadius={10}
             p={6}
             variant={`outline`}
             colorScheme={`orange`}
+            display={
+              propertiesDetails?.property?.propertyStatus === `listed`
+                ? `block`
+                : `none`
+            }
           >
-            Unlisted Property
+            Unlist Property
           </Button>
           <Button
-            onClick={() => setListed(!isListed)}
-            display={isListed ? `none` : `block`}
+            onClick={setListedStatus}
+            display={
+              propertiesDetails?.property?.propertyStatus === `unlisted`
+                ? `block`
+                : `none`
+            }
             borderRadius={10}
             p={6}
             variant={`outline`}
             colorScheme={`orange`}
           >
-            Listed Property
+            List Property
           </Button>
         </Flex>
       </Flex>
       <Box my={10}>
-        <GridImageLayout />
+        <GridImageLayout
+          isNotEditProperty
+          imageSet={propertiesDetails?.property?.media?.imgs}
+        />
       </Box>
       {/* section two  with unique layer */}
       <Box>
@@ -96,10 +139,18 @@ const AdminPropertiesDetailsPage = () => {
           <GridItem colSpan={{ base: 1, lg: 8 }} color={`white`}>
             {/* tags */}
             <Flex gap={5}>
-              <Tag bgColor={`accentBlue`} color={`primary`} text={`Network`}>
+              <Tag
+                bgColor={`accentBlue`}
+                color={`primary`}
+                text={propertiesDetails?.property?.tags[0]}
+              >
                 <FaNetworkWired />
               </Tag>
-              <Tag bgColor={`accentRed`} color={`red`} text={`Family`}>
+              <Tag
+                bgColor={`accentRed`}
+                color={`red`}
+                text={propertiesDetails?.property?.tags[1]}
+              >
                 <MdOutlineFamilyRestroom />
               </Tag>
             </Flex>
@@ -113,16 +164,16 @@ const AdminPropertiesDetailsPage = () => {
             >
               <Box>
                 <Heading fontSize={{ base: `3xl`, lg: `40px` }}>
-                  Luxury Family House
+                  {propertiesDetails?.property?.title}
                 </Heading>
                 <Text color={`textGrey`} fontSize={`xl`}>
-                  3, Ogunlesi Street, Lagos 100252
+                  {propertiesDetails?.property?.location}
                 </Text>
               </Box>
               <Box>
                 <Text color={`textGrey`}>Sales Price</Text>
                 <Text fontSize={`4xl`} color={`#0FB7C1`} fontWeight={`bold`}>
-                  $29,630
+                  ${propertiesDetails?.property?.price}
                 </Text>
               </Box>
             </Flex>
@@ -132,16 +183,7 @@ const AdminPropertiesDetailsPage = () => {
                 Description
               </Heading>
               <Text color={`textGrey`}>
-                Lorem ipsum dolor sit amet consectetur. Id libero suspendisse eu
-                risus amet vel. Aliquet contur consectetur purus amet ultricies
-                facilisis a pelloique. Telus et cras urna vel vitae. Ornare
-                aliquam dolor enim consequat sapien odio cras integer. Conmentum
-                adipiscing duis morbi laoreet aliquet viverra est auctor.
-                Aliquam blandit adipiscing potenti enim non proin erat fringilla
-                amet. Congue sit ac vulputate scelerisque libero malesuada eget.
-                Nulla ultricies aenean tellus congue molestie molestie enim
-                porta quisque. Neque imperdiet magna maecenas gravida quisque
-                duis porta lacus. Consectetur enim.
+                {propertiesDetails?.property?.description}
               </Text>
             </Box>
             {/* features */}
@@ -157,7 +199,7 @@ const AdminPropertiesDetailsPage = () => {
               >
                 <Tag
                   fs={`lg`}
-                  text={`3 Bedroom`}
+                  text={propertiesDetails?.property?.features[0]}
                   bgColor={`transparent`}
                   color={`textGrey`}
                 >
@@ -165,7 +207,7 @@ const AdminPropertiesDetailsPage = () => {
                 </Tag>
                 <Tag
                   fs={`lg`}
-                  text={`2 Bathroom`}
+                  text={propertiesDetails?.property?.features[1]}
                   bgColor={`transparent`}
                   color={`textGrey`}
                 >
@@ -173,7 +215,7 @@ const AdminPropertiesDetailsPage = () => {
                 </Tag>
                 <Tag
                   fs={`lg`}
-                  text={`3 Bedroom`}
+                  text={propertiesDetails?.property?.features[2]}
                   bgColor={`transparent`}
                   color={`textGrey`}
                 >
@@ -181,7 +223,7 @@ const AdminPropertiesDetailsPage = () => {
                 </Tag>
                 <Tag
                   fs={`lg`}
-                  text={`2 Bathroom`}
+                  text={propertiesDetails?.property?.features[3]}
                   bgColor={`transparent`}
                   color={`textGrey`}
                 >
@@ -189,7 +231,7 @@ const AdminPropertiesDetailsPage = () => {
                 </Tag>
                 <Tag
                   fs={`lg`}
-                  text={`Garage`}
+                  text={propertiesDetails?.property?.features[4]}
                   bgColor={`transparent`}
                   color={`textGrey`}
                 >
@@ -197,7 +239,7 @@ const AdminPropertiesDetailsPage = () => {
                 </Tag>
                 <Tag
                   fs={`lg`}
-                  text={`3 Square Feet`}
+                  text={propertiesDetails?.property?.features[5]}
                   bgColor={`transparent`}
                   color={`textGrey`}
                 >
@@ -213,7 +255,7 @@ const AdminPropertiesDetailsPage = () => {
                 </Tag>
                 <Tag
                   fs={`lg`}
-                  text={`3 Square Feet`}
+                  text={propertiesDetails?.property?.features[6]}
                   bgColor={`transparent`}
                   color={`textGrey`}
                 >
@@ -229,7 +271,8 @@ const AdminPropertiesDetailsPage = () => {
               <Box borderRadius={7} overflow={`hidden`}>
                 <video width={`100%`} controls>
                   <source
-                    src={`https://player.vimeo.com/external/392612459.sd.mp4?s=39589128d7c98ba18e262569fc7a5a6d31d89e22&profile_id=164&oauth2_token_id=57447761`}
+                    src={propertiesDetails?.property?.media?.video}
+                    // src={`https://player.vimeo.com/external/392612459.sd.mp4?s=39589128d7c98ba18e262569fc7a5a6d31d89e22&profile_id=164&oauth2_token_id=57447761`}
                     type='video/mp4'
                   />
                   <track

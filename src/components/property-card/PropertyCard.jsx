@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import {
   Box,
   Card,
@@ -14,33 +15,43 @@ import { FaNetworkWired } from 'react-icons/fa'
 import Tag from '../tag/Tag'
 import LinkButton from '../buttons/link-button/LinkButton'
 
-const PropertyCard = () => {
+const PropertyCard = ({ featuredProperty }) => {
   return (
-    <Card maxW={`529px`} borderRadius={`30px`}>
+    <Card w={`100%`} hidden={!featuredProperty} borderRadius={`30px`}>
       <CardBody
+        // width={{ base: `100%`, md: `530px` }}
         display={`flex`}
-        flexDir={{ base: `column`, xl: `row` }}
+        flexDir={{ base: `column`, md: `row` }}
         gap={5}
       >
-        <Box height={{ base: `20rem`, md: `100%` }} flex={{ lg: 1 }}>
+        <Box width={{ md: `50%` }} height={`315px`}>
           <Image
+            w={`100%`}
             height={`100%`}
             objectFit={`cover`}
             borderRadius={`30px`}
-            src='https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'
+            src={featuredProperty?.media.imgs?.[0]}
             alt='Green double couch with wooden legs'
           />
         </Box>
-        <Stack spacing='3' flex={1}>
+        <Stack width={{ md: `50%` }} spacing='3'>
           <Box display={`flex`} gap={5} mb={3}>
-            <Tag bgColor={`accentBlue`} color={`primary`} text={`Network`}>
-              <FaNetworkWired />
+            <Tag
+              bgColor={`accentBlue`}
+              color={`primary`}
+              text={featuredProperty?.tags[0]}
+            >
+              {/* <FaNetworkWired /> */}
             </Tag>
-            <Tag bgColor={`accentRed`} color={`red`} text={`Family`}>
-              <MdOutlineFamilyRestroom />
+            <Tag
+              bgColor={`accentRed`}
+              color={`red`}
+              text={featuredProperty?.tags[1]}
+            >
+              {/* <MdOutlineFamilyRestroom /> */}
             </Tag>
           </Box>
-          <Heading fontSize={`xl`}>Prime Commercial Land</Heading>
+          <Heading fontSize={`xl`}>{featuredProperty?.title}</Heading>
           <Box
             color='blue.600'
             fontSize='md'
@@ -52,11 +63,11 @@ const PropertyCard = () => {
               <MdLocationOn size={`16px`} color={`grey`} />
             </Box>
             <Text fontSize={`sm`} color={`GrayText`}>
-              3, Ogunlesi Street, Lagos 100252
+              {featuredProperty?.location}
             </Text>
           </Box>
           <Text fontSize={`3xl`} fontWeight={`bold`} color={`#0FB7C1`}>
-            $29,630
+            $ {featuredProperty?.price}
           </Text>
           <Box>
             <SimpleGrid columns={2} gap={2}>
@@ -68,7 +79,7 @@ const PropertyCard = () => {
                   />
                 </Box>
                 <Text mt={1} fontSize={`sm`}>
-                  3 Bedroom
+                  {featuredProperty?.features?.[0]}
                 </Text>
               </Box>
               <Box display={`flex`} alignItems={`center`} gap={2}>
@@ -76,7 +87,7 @@ const PropertyCard = () => {
                   src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1677923106/project-yemsays/Vector_1_tittna.png`}
                 />
                 <Text mt={1} fontSize={`sm`}>
-                  2 Bathroom
+                  {featuredProperty?.features?.[1]}
                 </Text>
               </Box>
               <Box display={`flex`} alignItems={`center`} gap={2}>
@@ -84,7 +95,7 @@ const PropertyCard = () => {
                   src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1677923199/project-yemsays/Group_33_q7dpvf.png`}
                 />
                 <Text mt={1} fontSize={`sm`}>
-                  Garage
+                  {featuredProperty?.features?.[2]}
                 </Text>
               </Box>
               <Box display={`flex`} alignItems={`center`} gap={2}>
@@ -92,14 +103,14 @@ const PropertyCard = () => {
                   src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1677923214/project-yemsays/Rectangle_13_v9y4bt.png`}
                 />
                 <Text mt={1} fontSize={`sm`}>
-                  3 Square Feet
+                  {featuredProperty?.features?.[3]}
                 </Text>
               </Box>
             </SimpleGrid>
           </Box>
           <Box paddingTop={4}>
             <LinkButton
-              to={`/properties/${1}/details`}
+              to={`/properties/${featuredProperty?._id}/details`}
               text={`View Details`}
               width={`128px`}
               height={`32px`}

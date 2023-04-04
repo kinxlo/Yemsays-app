@@ -1,5 +1,5 @@
 import { Box, Heading, Image, SimpleGrid, Text } from '@chakra-ui/react'
-import React from 'react'
+import React, { useCallback, useEffect } from 'react'
 import LinkButton from '../../components/buttons/link-button/LinkButton'
 import Container from '../../layout/Container'
 import { MdPlayArrow } from 'react-icons/md'
@@ -11,9 +11,39 @@ import QuestionBanner from '../../components/banner/QuestionBanner'
 import SearchForm from '../../components/search-form/SearchForm'
 import DefaultLayout from '../../layout/DefaultLayout'
 import img from '../../assets/heroImg.png'
+import {
+  useListHousePropertiesMutation,
+  useListLandPropertiesMutation,
+} from '../admin/dashboard/api/propertiesApiSlice'
+import { useSelector } from 'react-redux'
+import {
+  selectUserHouseProperties,
+  selectUserLandProperties,
+} from '../admin/dashboard/api/propertiesSlice'
 
 const Home = () => {
   const { hero, sectionTwo, sectionThree, Testimonials } = HOME_CONTENT
+  const [listLandProperties] = useListLandPropertiesMutation()
+  const [listHouseProperties] = useListHousePropertiesMutation()
+
+  const userLandProperties = useSelector(selectUserLandProperties)
+  const userHouseProperties = useSelector(selectUserHouseProperties)
+
+  const showLandProperties = useCallback(async () => {
+    await listLandProperties().unwrap()
+  }, [listLandProperties])
+
+  const showHouseProperties = useCallback(async () => {
+    await listHouseProperties().unwrap()
+  }, [listHouseProperties])
+
+  useEffect(() => {
+    showLandProperties()
+    showHouseProperties()
+  }, [showHouseProperties, showLandProperties])
+
+  // const featureList = userLandProperties.map((feature) => {})
+
   return (
     <DefaultLayout>
       {/* hero section */}
@@ -90,12 +120,13 @@ const Home = () => {
         </Box>
       </Box>
       {/* section two */}
-      <Box className='page_alignment' bgColor={`black`} color={`white`}>
+      <Box className='page_alignment' bgColor={`bgBlack`} color={`white`}>
         <Container>
           <Heading
             fontSize={{ base: `3xl`, md: `5xl` }}
             textAlign={`center`}
-            my={10}
+            mt={30}
+            mb={10}
           >
             {sectionTwo.title}
           </Heading>
@@ -150,7 +181,7 @@ const Home = () => {
             gap={20}
           >
             {/* article Picture */}
-            <Box flex={1}>
+            <Box className='page_alignment' flex={1}>
               <Box maxW={444}>
                 <Image
                   className='cc-img-fluid'
@@ -199,7 +230,7 @@ const Home = () => {
       <Banner />
       <Box
         className='page_alignment'
-        bgColor={`black`}
+        bgColor={`bgBlack`}
         color={`white`}
         bgImage={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1677823600/project-yemsays/Section_5_rhsutv.png`}
         bgRepeat={`no-repeat`}
@@ -216,19 +247,20 @@ const Home = () => {
           </Box>
           <Box>
             <SimpleGrid
-              columns={{ base: 1, md: 2 }}
+              columns={{ base: 1, xl: 2 }}
               gap={`32px`}
               justifyItems={`center`}
+              alignItems={`center`}
             >
-              <PropertyCard />
-              <PropertyCard />
-              <PropertyCard />
-              <PropertyCard />
+              <PropertyCard featuredProperty={userLandProperties?.[0]} />
+              <PropertyCard featuredProperty={userHouseProperties?.[1]} />
+              <PropertyCard featuredProperty={userHouseProperties?.[0]} />
+              <PropertyCard featuredProperty={userLandProperties?.[1]} />
             </SimpleGrid>
           </Box>
         </Container>
       </Box>
-      <Box bgColor={`black`} color={`white`}>
+      <Box bgColor={`bgBlack`} color={`white`}>
         <Container>
           <Box textAlign={`center`} pt={115} mb={14}>
             <Heading color={`primary`} fontSize={`xl`}>

@@ -26,26 +26,26 @@ const Banner = () => {
       </Box>
       <Box textAlign={`center`}>
         <Text fontWeight={`bold`} fontSize={`5xl`} color={`primary`}>
-          2349
+          33
         </Text>
         <Text fontSize={`xl`} fontWeight={`bold`}>
-          Homes for sale
+          Open Houses
         </Text>
       </Box>
       <Box textAlign={`center`}>
         <Text fontWeight={`bold`} fontSize={`5xl`} color={`primary`}>
-          2349
+          400
         </Text>
         <Text fontSize={`xl`} fontWeight={`bold`}>
-          Homes for sale
+          Recently sold
         </Text>
       </Box>
       <Box textAlign={`center`}>
         <Text fontWeight={`bold`} fontSize={`5xl`} color={`primary`}>
-          2349
+          9.5/10
         </Text>
         <Text fontSize={`xl`} fontWeight={`bold`}>
-          Homes for sale
+          User Satisfaction
         </Text>
       </Box>
     </SimpleGrid>

@@ -7,15 +7,18 @@ import {
   Flex,
   FormControl,
   FormLabel,
+  Grid,
   GridItem,
   Heading,
+  Image,
   Input,
   InputGroup,
   InputLeftElement,
   Select,
   Text,
+  Textarea,
 } from '@chakra-ui/react'
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Icon } from '@iconify/react'
 
 import TwoColumnLayout from '../../../layout/TwoColumnLayout'
@@ -25,6 +28,14 @@ import GridImageLayout from '../../../layout/GridImageLayout/GridImageLayout'
 import BreadCrumbHeader from '../../../components/breadcrumbHeader/BreadCrumbHeader'
 import EditImgOverlay from '../../../components/editImgOverlay/EditImgOverlay'
 import SalePersonEditForm from '../../../components/admin/salePersonEditForm/SalePersonEditForm'
+import { useSelector } from 'react-redux'
+import { useLocation } from 'react-router-dom'
+import { selectPropertyDetails } from './api/propertiesSlice'
+import {
+  useEditPropertyMutation,
+  useGetPropertyByIDMutation,
+} from './api/propertiesApiSlice'
+import { useForm } from 'react-hook-form'
 
 const links = [
   { name: `Home`, ref: `/` },
@@ -36,6 +47,101 @@ const links = [
 // eslint-disable-next-line react/prop-types
 const AdminPropertiesDetailsPage = () => {
   const [isListed, setListed] = useState(false)
+  const [videoFile, setVideoFile] = useState(null)
+  const [imageFile, setImageFile] = useState([])
+  const location = useLocation()
+  const propertyID = location.pathname.split(`/`)[3]
+  const [getPropertyByID] = useGetPropertyByIDMutation()
+  const [editProperty] = useEditPropertyMutation()
+  const propertiesDetails = useSelector(selectPropertyDetails)
+  const [imgPreview, setImgPreview] = useState({
+    img1: null,
+    img2: null,
+    img3: null,
+    img4: null,
+    property_video: `https://player.vimeo.com/external/392612459.sd.mp4?s=39589128d7c98ba18e262569fc7a5a6d31d89e22&profile_id=164&oauth2_token_id=57447761`,
+  })
+
+  const getPropertiesDetails = useCallback(async () => {
+    await getPropertyByID(propertyID).unwrap()
+  }, [getPropertyByID, propertyID])
+
+  useEffect(() => {
+    getPropertiesDetails()
+  }, [getPropertiesDetails])
+
+  const handleImageUpload = (id) => {
+    let fileInput = document.getElementById(id)
+    fileInput.click()
+    fileInput.onchange = () => {
+      const [file] = fileInput.files
+      let fileObj = {
+        fieldname: `images`,
+        originalname: file.name,
+        mimetype: file.type,
+      }
+      setImageFile((prevState) => {
+        return [...prevState, fileObj]
+      })
+      setImgPreview((prevState) => {
+        return { ...prevState, [id]: URL.createObjectURL(file) }
+      })
+    }
+  }
+
+  const handleVideoUpload = (id) => {
+    let fileInput = document.getElementById(id)
+    fileInput.click()
+    fileInput.onchange = () => {
+      const [file] = fileInput.files
+      let fileObj = {
+        fieldname: `videos`,
+        originalname: file.name,
+        mimetype: file.type,
+      }
+      setVideoFile(fileObj)
+      setImgPreview((prevState) => {
+        return { ...prevState, [id]: URL.createObjectURL(file) }
+      })
+    }
+  }
+
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm()
+
+  const submitEditedProperty = async (data) => {
+    let DATA = {
+      title: data.title,
+      location: data.location,
+      price: data.price,
+      propertyType: data.propertyType.toLowerCase(),
+      description: data.description,
+      tags: data.tags.split(' '),
+      features: [
+        data.feat_1,
+        data.feat_2,
+        data.feat_3,
+        data.feat_4,
+        data.feat_5,
+        data.feat_6,
+      ],
+      images: imageFile,
+      video: videoFile,
+    }
+
+    console.log(DATA, propertyID)
+
+    try {
+      const res = await editProperty({ id: propertyID, body: DATA }).unwrap()
+      console.log(res)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   return (
     <>
       <Box id='top' mb={12}>
@@ -61,8 +167,8 @@ const AdminPropertiesDetailsPage = () => {
         </Box>
         <Flex gap={5}>
           <Button
-            onClick={() => setListed(!isListed)}
-            display={isListed ? `none` : `block`}
+            onClick={handleSubmit(submitEditedProperty)}
+            // display={isListed ? `none` : `block`}
             borderRadius={10}
             p={6}
             colorScheme={`orange`}
@@ -73,7 +179,85 @@ const AdminPropertiesDetailsPage = () => {
         </Flex>
       </Flex>
       <Box my={10}>
-        <GridImageLayout />
+        {/* <GridImageLayout /> */}
+        <Grid
+          h='562px'
+          templateRows='repeat(3, 1fr)'
+          templateColumns='repeat(3, 1fr)'
+          gap={4}
+          borderRadius={10}
+          overflow={`hidden`}
+        >
+          <GridItem
+            rowSpan={{ base: 2, lg: 3 }}
+            colSpan={{ base: 3, lg: 2 }}
+            bg='dashboardBG'
+            overflow={`hidden`}
+            pos={`relative`}
+            height={`100%`}
+          >
+            <EditImgOverlay
+              id={`img1`}
+              handleClick={() => handleImageUpload(`img1`)}
+            />
+            <Image
+              className='cc-img-fluid'
+              src={null}
+              fallbackSrc={imgPreview.img1}
+            />
+          </GridItem>
+          <GridItem
+            pos={`relative`}
+            colSpan={1}
+            bg='dashboardBG'
+            height={`177px`}
+          >
+            <EditImgOverlay
+              size={`2rem`}
+              id={`img2`}
+              handleClick={() => handleImageUpload(`img2`)}
+            />
+            <Image
+              className='cc-img-fluid'
+              src={null}
+              fallbackSrc={imgPreview.img2}
+            />
+          </GridItem>
+          <GridItem
+            height={`177px`}
+            pos={`relative`}
+            colSpan={1}
+            bg='dashboardBG'
+          >
+            <EditImgOverlay
+              size={`2rem`}
+              id={`img3`}
+              handleClick={() => handleImageUpload(`img3`)}
+            />
+            <Image
+              className='cc-img-fluid'
+              src={null}
+              fallbackSrc={imgPreview.img3}
+            />
+          </GridItem>
+          <GridItem
+            height={`177px`}
+            pos={`relative`}
+            colSpan={1}
+            bg='dashboardBG'
+          >
+            <EditImgOverlay
+              size={`2rem`}
+              id={`img4`}
+              handleClick={() => handleImageUpload(`img4`)}
+            />
+            <Image
+              className='cc-img-fluid'
+              src={null}
+              fallbackSrc={imgPreview.img4}
+            />
+          </GridItem>
+        </Grid>
       </Box>
       {/* section two  with unique layer */}
       <Box>
@@ -89,11 +273,13 @@ const AdminPropertiesDetailsPage = () => {
                     Tags
                   </FormLabel>
                   <Input
+                    defaultValue={propertiesDetails?.property?.tags.join(` `)}
                     borderColor={`textGrey`}
                     fontSize={`xl`}
                     borderRadius={15}
                     h={`62px`}
                     type='text'
+                    {...register(`tags`)}
                   />
                 </FormControl>
               </Box>
@@ -103,11 +289,13 @@ const AdminPropertiesDetailsPage = () => {
                     Property type
                   </FormLabel>
                   <Select
+                    defaultValue={propertiesDetails?.property?.propertyType}
                     borderColor={`textGrey`}
                     fontSize={`xl`}
                     borderRadius={15}
                     h={`62px`}
-                    placeholder='Select country'
+                    {...register(`propertyType`)}
+                    // placeholder={propertiesDetails?.propery?.propertyType}
                   >
                     <option>Land</option>
                     <option>House</option>
@@ -123,11 +311,13 @@ const AdminPropertiesDetailsPage = () => {
                     Title
                   </FormLabel>
                   <Input
+                    defaultValue={propertiesDetails?.property?.title}
                     borderColor={`textGrey`}
                     fontSize={`xl`}
                     borderRadius={15}
                     h={`62px`}
                     type='text'
+                    {...register(`title`)}
                   />
                 </FormControl>
               </Box>
@@ -137,6 +327,7 @@ const AdminPropertiesDetailsPage = () => {
                     Sales Price
                   </FormLabel>
                   <Input
+                    defaultValue={propertiesDetails?.property?.price}
                     borderColor={`textGrey`}
                     fontSize={`xl`}
                     borderRadius={15}
@@ -144,6 +335,7 @@ const AdminPropertiesDetailsPage = () => {
                     type='text'
                     placeholder='$29,630:00'
                     _placeholder={{ fontSize: `xl` }}
+                    {...register(`price`)}
                   />
                 </FormControl>
               </Box>
@@ -166,6 +358,7 @@ const AdminPropertiesDetailsPage = () => {
                 </InputLeftElement> */}
 
                   <Input
+                    defaultValue={propertiesDetails?.property?.location}
                     px={20}
                     borderColor={`textGrey`}
                     fontSize={`xl`}
@@ -174,6 +367,7 @@ const AdminPropertiesDetailsPage = () => {
                     type='text'
                     placeholder='3, Ogunlesi Street, Lagos 100252'
                     _placeholder={{ fontSize: `xl` }}
+                    {...register(`location`)}
                   />
                 </InputGroup>
               </FormControl>
@@ -183,18 +377,14 @@ const AdminPropertiesDetailsPage = () => {
               <Heading color={`textGrey`} fontSize={`xl`} mb={5}>
                 Description
               </Heading>
-              <Text border={`1px solid #343434`} p={8} borderRadius={7}>
-                Lorem ipsum dolor sit amet consectetur. Id libero suspendisse eu
-                risus amet vel. Aliquet contur consectetur purus amet ultricies
-                facilisis a pelloique. Telus et cras urna vel vitae. Ornare
-                aliquam dolor enim consequat sapien odio cras integer. Conmentum
-                adipiscing duis morbi laoreet aliquet viverra est auctor.
-                Aliquam blandit adipiscing potenti enim non proin erat fringilla
-                amet. Congue sit ac vulputate scelerisque libero malesuada eget.
-                Nulla ultricies aenean tellus congue molestie molestie enim
-                porta quisque. Neque imperdiet magna maecenas gravida quisque
-                duis porta lacus. Consectetur enim.
-              </Text>
+              <Textarea
+                defaultValue={propertiesDetails?.property?.description}
+                border={`1px solid #343434`}
+                p={8}
+                borderRadius={7}
+                height={`15rem`}
+                {...register(`description`)}
+              ></Textarea>
             </Box>
             {/* features */}
             <Box my={10}>
@@ -217,11 +407,13 @@ const AdminPropertiesDetailsPage = () => {
                       </Box>
                     </InputLeftElement>
                     <Input
+                      defaultValue={propertiesDetails?.property?.features[0]}
                       size={`lg`}
                       borderColor={`textGrey`}
                       borderRadius={10}
                       type='text'
                       placeholder='3 bedroom'
+                      {...register(`feat_1`)}
                     />
                   </InputGroup>
                 </FormControl>
@@ -233,11 +425,13 @@ const AdminPropertiesDetailsPage = () => {
                       </Box>
                     </InputLeftElement>
                     <Input
+                      defaultValue={propertiesDetails?.property?.features[1]}
                       size={`lg`}
                       borderColor={`textGrey`}
                       borderRadius={10}
                       type='text'
                       placeholder='3 bathroom'
+                      {...register(`feat_2`)}
                     />
                   </InputGroup>
                 </FormControl>
@@ -249,11 +443,13 @@ const AdminPropertiesDetailsPage = () => {
                       </Box>
                     </InputLeftElement>
                     <Input
+                      defaultValue={propertiesDetails?.property?.features[2]}
                       size={`lg`}
                       borderColor={`textGrey`}
                       borderRadius={10}
                       type='text'
                       placeholder='3 bedroom'
+                      {...register(`feat_3`)}
                     />
                   </InputGroup>
                 </FormControl>
@@ -265,11 +461,13 @@ const AdminPropertiesDetailsPage = () => {
                       </Box>
                     </InputLeftElement>
                     <Input
+                      defaultValue={propertiesDetails?.property?.features[3]}
                       size={`lg`}
                       borderColor={`textGrey`}
                       borderRadius={10}
                       type='text'
                       placeholder='Garage'
+                      {...register(`feat_4`)}
                     />
                   </InputGroup>
                 </FormControl>
@@ -281,11 +479,13 @@ const AdminPropertiesDetailsPage = () => {
                       </Box>
                     </InputLeftElement>
                     <Input
+                      defaultValue={propertiesDetails?.property?.features[4]}
                       size={`lg`}
                       borderColor={`textGrey`}
                       borderRadius={10}
                       type='text'
                       placeholder='3 Square feet'
+                      {...register(`feat_5`)}
                     />
                   </InputGroup>
                 </FormControl>
@@ -297,11 +497,13 @@ const AdminPropertiesDetailsPage = () => {
                       </Box>
                     </InputLeftElement>
                     <Input
+                      defaultValue={propertiesDetails?.property?.features[5]}
                       size={`lg`}
                       borderColor={`textGrey`}
                       borderRadius={10}
                       type='text'
                       placeholder='Garage'
+                      {...register(`feat_6`)}
                     />
                   </InputGroup>
                 </FormControl>
@@ -314,9 +516,16 @@ const AdminPropertiesDetailsPage = () => {
               </Heading>
               <Box border={`1px solid #343434`} p={8} borderRadius={7}>
                 <Center pos={`relative`} borderRadius={7} overflow={`hidden`}>
-                  <EditImgOverlay />
+                  <Box zIndex={1}>
+                    <EditImgOverlay
+                      id={`property_video`}
+                      handleClick={() => handleVideoUpload(`property_video`)}
+                    />
+                  </Box>
                   <video width={`100%`}>
                     <source
+                      defaultValue={propertiesDetails?.property?.video}
+                      // src={propertiesDetails?.property?.video}
                       src={`https://player.vimeo.com/external/392612459.sd.mp4?s=39589128d7c98ba18e262569fc7a5a6d31d89e22&profile_id=164&oauth2_token_id=57447761`}
                       type='video/mp4'
                     />

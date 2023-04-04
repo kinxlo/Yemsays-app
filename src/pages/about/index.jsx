@@ -149,7 +149,7 @@ const index = () => {
       {/* banner stats */}
       <Banner />
       {/* section five */}
-      <Box bgColor={`black`} color={`white`} className='page_alignment'>
+      <Box bgColor={`bgBlack`} color={`white`} className='page_alignment'>
         <Container>
           <Box textAlign={`center`} pt={115} mb={14}>
             <Heading color={`primary`} fontSize={`xl`}>

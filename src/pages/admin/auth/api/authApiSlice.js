@@ -17,6 +17,18 @@ export const authApiSlice = apiSlice.injectEndpoints({
         method: 'POST',
         body: { ...credentials },
       }),
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled
+          dispatch(
+            setCredentials({
+              accessToken: data.data.accessToken,
+            })
+          )
+        } catch (err) {
+          console.log(err)
+        }
+      },
     }),
 
     // sendLogout: builder.mutation({

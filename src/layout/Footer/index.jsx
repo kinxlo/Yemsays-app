@@ -20,7 +20,7 @@ import { Link as ReactLink } from 'react-router-dom'
 
 const Footer = () => {
   return (
-    <Box bgColor={`black`} className='page_alignment'>
+    <Box bgColor={`bgBlack`} className='page_alignment'>
       <Container noPaddingBlock={'0'}>
         <Box color={`white`}>
           <Grid
@@ -57,6 +57,8 @@ const Footer = () => {
                 </Box>
                 <List>
                   <ListItem
+                    cursor={`pointer`}
+                    _hover={{ color: `primary` }}
                     color={`textGrey`}
                     textTransform={`capitalize`}
                     mb={`9px`}
@@ -64,6 +66,8 @@ const Footer = () => {
                     Company
                   </ListItem>
                   <ListItem
+                    cursor={`pointer`}
+                    _hover={{ color: `primary` }}
                     color={`textGrey`}
                     textTransform={`capitalize`}
                     mb={`9px`}
@@ -71,6 +75,8 @@ const Footer = () => {
                     Team
                   </ListItem>
                   <ListItem
+                    cursor={`pointer`}
+                    _hover={{ color: `primary` }}
                     color={`textGrey`}
                     textTransform={`capitalize`}
                     mb={`9px`}
@@ -78,6 +84,8 @@ const Footer = () => {
                     Testimonial
                   </ListItem>
                   <ListItem
+                    cursor={`pointer`}
+                    _hover={{ color: `primary` }}
                     color={`textGrey`}
                     textTransform={`capitalize`}
                     mb={`9px`}
@@ -94,6 +102,8 @@ const Footer = () => {
                 </Box>
                 <List>
                   <ListItem
+                    cursor={`pointer`}
+                    _hover={{ color: `primary` }}
                     color={`textGrey`}
                     textTransform={`capitalize`}
                     mb={`9px`}
@@ -101,6 +111,8 @@ const Footer = () => {
                     Listings
                   </ListItem>
                   <ListItem
+                    cursor={`pointer`}
+                    _hover={{ color: `primary` }}
                     color={`textGrey`}
                     textTransform={`capitalize`}
                     mb={`9px`}
@@ -108,6 +120,8 @@ const Footer = () => {
                     Lands
                   </ListItem>
                   <ListItem
+                    cursor={`pointer`}
+                    _hover={{ color: `primary` }}
                     color={`textGrey`}
                     textTransform={`capitalize`}
                     mb={`9px`}
@@ -115,6 +129,8 @@ const Footer = () => {
                     Houses
                   </ListItem>
                   <ListItem
+                    cursor={`pointer`}
+                    _hover={{ color: `primary` }}
                     color={`textGrey`}
                     textTransform={`capitalize`}
                     mb={`9px`}
@@ -131,6 +147,8 @@ const Footer = () => {
                 </Box>
                 <List>
                   <ListItem
+                    cursor={`pointer`}
+                    _hover={{ color: `primary` }}
                     color={`textGrey`}
                     textTransform={`capitalize`}
                     mb={`9px`}
@@ -138,6 +156,8 @@ const Footer = () => {
                     35a, Lörem ipsum birade fanas.
                   </ListItem>
                   <ListItem
+                    cursor={`pointer`}
+                    _hover={{ color: `primary` }}
                     color={`textGrey`}
                     textTransform={`capitalize`}
                     mb={`9px`}
@@ -145,6 +165,8 @@ const Footer = () => {
                     www.realestate.com
                   </ListItem>
                   <ListItem
+                    cursor={`pointer`}
+                    _hover={{ color: `primary` }}
                     color={`textGrey`}
                     textTransform={`capitalize`}
                     mb={`9px`}
@@ -152,6 +174,8 @@ const Footer = () => {
                     Support@realestate.com
                   </ListItem>
                   <ListItem
+                    cursor={`pointer`}
+                    _hover={{ color: `primary` }}
                     color={`textGrey`}
                     textTransform={`capitalize`}
                     mb={`9px`}

@@ -47,7 +47,6 @@ const SignUp = () => {
 
     try {
       const res = await login(data).unwrap()
-      console.log(res)
       res.success ? navigate(`/admin/dashboard`) : null
     } catch (err) {
       toast({
