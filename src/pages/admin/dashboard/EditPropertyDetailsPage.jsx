@@ -1,8 +1,6 @@
 import {
   Box,
   Button,
-  Card,
-  CardBody,
   Center,
   Flex,
   FormControl,
@@ -23,19 +21,23 @@ import { Icon } from '@iconify/react'
 
 import TwoColumnLayout from '../../../layout/TwoColumnLayout'
 
-import SalesPersonCard from '../../../components/saleperson-profile-card/SalesPersonCard'
-import GridImageLayout from '../../../layout/GridImageLayout/GridImageLayout'
 import BreadCrumbHeader from '../../../components/breadcrumbHeader/BreadCrumbHeader'
 import EditImgOverlay from '../../../components/editImgOverlay/EditImgOverlay'
 import SalePersonEditForm from '../../../components/admin/salePersonEditForm/SalePersonEditForm'
 import { useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
-import { selectPropertyDetails } from './api/propertiesSlice'
+import {
+  selectPropertyDetails,
+  setPropertyDetails,
+} from './api/propertiesSlice'
 import {
   useEditPropertyMutation,
   useGetPropertyByIDMutation,
 } from './api/propertiesApiSlice'
 import { useForm } from 'react-hook-form'
+import { selectCurrentToken } from '../auth/api/authSlice'
+import axios from 'axios'
+import ReactPlayer from 'react-player'
 
 const links = [
   { name: `Home`, ref: `/` },
@@ -47,13 +49,11 @@ const links = [
 // eslint-disable-next-line react/prop-types
 const AdminPropertiesDetailsPage = () => {
   const [isListed, setListed] = useState(false)
-  const [videoFile, setVideoFile] = useState(null)
-  const [imageFile, setImageFile] = useState([])
   const location = useLocation()
   const propertyID = location.pathname.split(`/`)[3]
   const [getPropertyByID] = useGetPropertyByIDMutation()
-  const [editProperty] = useEditPropertyMutation()
   const propertiesDetails = useSelector(selectPropertyDetails)
+  const token = useSelector(selectCurrentToken)
   const [imgPreview, setImgPreview] = useState({
     img1: null,
     img2: null,
@@ -62,27 +62,49 @@ const AdminPropertiesDetailsPage = () => {
     property_video: `https://player.vimeo.com/external/392612459.sd.mp4?s=39589128d7c98ba18e262569fc7a5a6d31d89e22&profile_id=164&oauth2_token_id=57447761`,
   })
 
-  const getPropertiesDetails = useCallback(async () => {
-    await getPropertyByID(propertyID).unwrap()
-  }, [getPropertyByID, propertyID])
+  // console.log(propertiesDetails)
+  const defaultFormData = {
+    title: propertiesDetails?.property?.title,
+    location: propertiesDetails?.property?.location,
+    tags: propertiesDetails?.property?.tags.join(` `),
+    propertyType: propertiesDetails?.property?.propertyType,
+    price: propertiesDetails?.property?.price,
+    description: propertiesDetails?.property?.description,
+    // image_1: propertiesDetails?.property?.media?.imgs[0],
+    // image_2: propertiesDetails?.property?.media?.imgs[1],
+    // image_3: propertiesDetails?.property?.media?.imgs[2],
+    // image_4: propertiesDetails?.property?.media?.imgs[3],
+    feat_1: propertiesDetails?.property?.features[0],
+    feat_2: propertiesDetails?.property?.features[1],
+    feat_3: propertiesDetails?.property?.features[2],
+    feat_4: propertiesDetails?.property?.features[3],
+    feat_5: propertiesDetails?.property?.features[4],
+    feat_6: propertiesDetails?.property?.features[5],
+    video: propertiesDetails?.property?.media?.video,
+    images: propertiesDetails?.property?.media?.imgs,
+  }
 
-  useEffect(() => {
-    getPropertiesDetails()
-  }, [getPropertiesDetails])
+  const {
+    handleSubmit,
+    register,
+    reset,
+    formState: { errors },
+  } = useForm({
+    defaultValues: defaultFormData,
+  })
+
+  const credentials = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data',
+    },
+  }
 
   const handleImageUpload = (id) => {
     let fileInput = document.getElementById(id)
     fileInput.click()
     fileInput.onchange = () => {
       const [file] = fileInput.files
-      let fileObj = {
-        fieldname: `images`,
-        originalname: file.name,
-        mimetype: file.type,
-      }
-      setImageFile((prevState) => {
-        return [...prevState, fileObj]
-      })
       setImgPreview((prevState) => {
         return { ...prevState, [id]: URL.createObjectURL(file) }
       })
@@ -92,50 +114,62 @@ const AdminPropertiesDetailsPage = () => {
   const handleVideoUpload = (id) => {
     let fileInput = document.getElementById(id)
     fileInput.click()
-    fileInput.onchange = () => {
-      const [file] = fileInput.files
-      let fileObj = {
-        fieldname: `videos`,
-        originalname: file.name,
-        mimetype: file.type,
-      }
-      setVideoFile(fileObj)
-      setImgPreview((prevState) => {
-        return { ...prevState, [id]: URL.createObjectURL(file) }
-      })
-    }
   }
 
-  const {
-    handleSubmit,
-    register,
-    formState: { errors },
-  } = useForm()
+  // console.log(defaultFormData)
+
+  const getPropertiesDetails = useCallback(async () => {
+    await getPropertyByID(propertyID).unwrap()
+  }, [getPropertyByID, propertyID])
+
+  useEffect(() => {
+    getPropertiesDetails()
+  }, [getPropertiesDetails, reset])
 
   const submitEditedProperty = async (data) => {
-    let DATA = {
-      title: data.title,
-      location: data.location,
-      price: data.price,
-      propertyType: data.propertyType.toLowerCase(),
-      description: data.description,
-      tags: data.tags.split(' '),
-      features: [
-        data.feat_1,
-        data.feat_2,
-        data.feat_3,
-        data.feat_4,
-        data.feat_5,
-        data.feat_6,
-      ],
-      images: imageFile,
-      video: videoFile,
+    console.log(data)
+    const formData = new FormData()
+    const tags = data.tags.split(' ')
+    const images = [
+      ...data.image_1,
+      ...data.image_2,
+      ...data.image_3,
+      ...data.image_4,
+    ]
+    const features = [
+      data.feat_1,
+      data.feat_2,
+      data.feat_3,
+      data.feat_4,
+      data.feat_5,
+      data.feat_6,
+    ]
+
+    const video = [...data.video]
+
+    formData.append(`title`, data.title)
+    formData.append(`location`, data.location)
+    formData.append(`price`, data.price)
+    formData.append(`propertyType`, data.propertyType.toLowerCase())
+    formData.append(`description`, data.description)
+    tags.forEach((tag) => formData.append(`tags[]`, tag))
+    features.forEach((feature) => formData.append(`features[]`, feature))
+    images.forEach((img) => {
+      typeof img === `object` ? formData.append(`images`, img) : null
+    })
+    typeof video[0] === `object` ? formData.append(`video`, video[0]) : null
+
+    console.log(typeof video[0])
+
+    for (var pair of formData.entries()) {
+      console.log(pair[0] + ', ' + pair[1])
     }
-
-    console.log(DATA, propertyID)
-
     try {
-      const res = await editProperty({ id: propertyID, body: DATA }).unwrap()
+      const res = await axios.put(
+        `https://yemsay-v2.onrender.com/api/v1/property/admin/${propertyID}`,
+        formData,
+        credentials
+      )
       console.log(res)
     } catch (err) {
       console.log(err)
@@ -196,14 +230,38 @@ const AdminPropertiesDetailsPage = () => {
             pos={`relative`}
             height={`100%`}
           >
-            <EditImgOverlay
-              id={`img1`}
-              handleClick={() => handleImageUpload(`img1`)}
-            />
+            <Center
+              w={`100%`}
+              h={`100%`}
+              pos={`absolute`}
+              top={`50%`}
+              left={`50%`}
+              transform={`translate(-50%, -50%)`}
+              fontSize={`4rem`}
+              bgColor={`#00000090`}
+            >
+              <Center
+                onClick={() => handleImageUpload(`img1`)}
+                flexDir={`column`}
+              >
+                <Input
+                  hidden
+                  id={`img1`}
+                  type={`file`}
+                  accept='image/*'
+                  {...register(`image_1`)}
+                />
+                <Icon icon={`material-symbols:photo-camera-outline`} />
+                <Text textAlign={`center`}>Click to change image</Text>
+              </Center>
+            </Center>
+
             <Image
               className='cc-img-fluid'
               src={null}
-              fallbackSrc={imgPreview.img1}
+              fallbackSrc={
+                imgPreview.img1 || propertiesDetails?.property?.media?.imgs[0]
+              }
             />
           </GridItem>
           <GridItem
@@ -212,15 +270,38 @@ const AdminPropertiesDetailsPage = () => {
             bg='dashboardBG'
             height={`177px`}
           >
-            <EditImgOverlay
-              size={`2rem`}
-              id={`img2`}
-              handleClick={() => handleImageUpload(`img2`)}
-            />
+            <Center
+              w={`100%`}
+              h={`100%`}
+              pos={`absolute`}
+              top={`50%`}
+              left={`50%`}
+              transform={`translate(-50%, -50%)`}
+              fontSize={`2rem`}
+              bgColor={`#00000090`}
+            >
+              <Center
+                onClick={() => handleImageUpload(`img2`)}
+                flexDir={`column`}
+              >
+                <Input
+                  hidden
+                  id={`img2`}
+                  type={`file`}
+                  accept='image/*'
+                  {...register(`image_2`)}
+                />
+                <Icon icon={`material-symbols:photo-camera-outline`} />
+                <Text textAlign={`center`}>Click to change image</Text>
+              </Center>
+            </Center>
+
             <Image
               className='cc-img-fluid'
               src={null}
-              fallbackSrc={imgPreview.img2}
+              fallbackSrc={
+                imgPreview.img2 || propertiesDetails?.property?.media?.imgs[1]
+              }
             />
           </GridItem>
           <GridItem
@@ -229,15 +310,37 @@ const AdminPropertiesDetailsPage = () => {
             colSpan={1}
             bg='dashboardBG'
           >
-            <EditImgOverlay
-              size={`2rem`}
-              id={`img3`}
-              handleClick={() => handleImageUpload(`img3`)}
-            />
+            <Center
+              w={`100%`}
+              h={`100%`}
+              pos={`absolute`}
+              top={`50%`}
+              left={`50%`}
+              transform={`translate(-50%, -50%)`}
+              fontSize={`2rem`}
+              bgColor={`#00000090`}
+            >
+              <Center
+                onClick={() => handleImageUpload(`img3`)}
+                flexDir={`column`}
+              >
+                <Input
+                  hidden
+                  id={`img3`}
+                  type={`file`}
+                  accept='image/*'
+                  {...register(`image_3`)}
+                />
+                <Icon icon={`material-symbols:photo-camera-outline`} />
+                <Text textAlign={`center`}>Click to change image</Text>
+              </Center>
+            </Center>
             <Image
               className='cc-img-fluid'
               src={null}
-              fallbackSrc={imgPreview.img3}
+              fallbackSrc={
+                imgPreview.img3 || propertiesDetails?.property?.media?.imgs[2]
+              }
             />
           </GridItem>
           <GridItem
@@ -246,15 +349,37 @@ const AdminPropertiesDetailsPage = () => {
             colSpan={1}
             bg='dashboardBG'
           >
-            <EditImgOverlay
-              size={`2rem`}
-              id={`img4`}
-              handleClick={() => handleImageUpload(`img4`)}
-            />
+            <Center
+              w={`100%`}
+              h={`100%`}
+              pos={`absolute`}
+              top={`50%`}
+              left={`50%`}
+              transform={`translate(-50%, -50%)`}
+              fontSize={`2rem`}
+              bgColor={`#00000090`}
+            >
+              <Center
+                onClick={() => handleImageUpload(`img4`)}
+                flexDir={`column`}
+              >
+                <Input
+                  hidden
+                  id={`img4`}
+                  type={`file`}
+                  accept='image/*'
+                  {...register(`image_4`)}
+                />
+                <Icon icon={`material-symbols:photo-camera-outline`} />
+                <Text textAlign={`center`}>Click to change images</Text>
+              </Center>
+            </Center>
             <Image
               className='cc-img-fluid'
               src={null}
-              fallbackSrc={imgPreview.img4}
+              fallbackSrc={
+                imgPreview.img4 || propertiesDetails?.property?.media?.imgs[3]
+              }
             />
           </GridItem>
         </Grid>
@@ -273,7 +398,7 @@ const AdminPropertiesDetailsPage = () => {
                     Tags
                   </FormLabel>
                   <Input
-                    defaultValue={propertiesDetails?.property?.tags.join(` `)}
+                    // defaultValue={propertiesDetails?.property?.tags.join(` `)}
                     borderColor={`textGrey`}
                     fontSize={`xl`}
                     borderRadius={15}
@@ -289,7 +414,7 @@ const AdminPropertiesDetailsPage = () => {
                     Property type
                   </FormLabel>
                   <Select
-                    defaultValue={propertiesDetails?.property?.propertyType}
+                    // defaultValue={propertiesDetails?.property?.propertyType}
                     borderColor={`textGrey`}
                     fontSize={`xl`}
                     borderRadius={15}
@@ -311,7 +436,7 @@ const AdminPropertiesDetailsPage = () => {
                     Title
                   </FormLabel>
                   <Input
-                    defaultValue={propertiesDetails?.property?.title}
+                    // defaultValue={propertiesDetails?.property?.title}
                     borderColor={`textGrey`}
                     fontSize={`xl`}
                     borderRadius={15}
@@ -327,7 +452,7 @@ const AdminPropertiesDetailsPage = () => {
                     Sales Price
                   </FormLabel>
                   <Input
-                    defaultValue={propertiesDetails?.property?.price}
+                    // defaultValue={propertiesDetails?.property?.price}
                     borderColor={`textGrey`}
                     fontSize={`xl`}
                     borderRadius={15}
@@ -358,7 +483,7 @@ const AdminPropertiesDetailsPage = () => {
                 </InputLeftElement> */}
 
                   <Input
-                    defaultValue={propertiesDetails?.property?.location}
+                    // defaultValue={propertiesDetails?.property?.location}
                     px={20}
                     borderColor={`textGrey`}
                     fontSize={`xl`}
@@ -378,7 +503,7 @@ const AdminPropertiesDetailsPage = () => {
                 Description
               </Heading>
               <Textarea
-                defaultValue={propertiesDetails?.property?.description}
+                // defaultValue={propertiesDetails?.property?.description}
                 border={`1px solid #343434`}
                 p={8}
                 borderRadius={7}
@@ -407,7 +532,7 @@ const AdminPropertiesDetailsPage = () => {
                       </Box>
                     </InputLeftElement>
                     <Input
-                      defaultValue={propertiesDetails?.property?.features[0]}
+                      // defaultValue={propertiesDetails?.property?.features[0]}
                       size={`lg`}
                       borderColor={`textGrey`}
                       borderRadius={10}
@@ -425,7 +550,7 @@ const AdminPropertiesDetailsPage = () => {
                       </Box>
                     </InputLeftElement>
                     <Input
-                      defaultValue={propertiesDetails?.property?.features[1]}
+                      // defaultValue={propertiesDetails?.property?.features[1]}
                       size={`lg`}
                       borderColor={`textGrey`}
                       borderRadius={10}
@@ -443,7 +568,7 @@ const AdminPropertiesDetailsPage = () => {
                       </Box>
                     </InputLeftElement>
                     <Input
-                      defaultValue={propertiesDetails?.property?.features[2]}
+                      // defaultValue={propertiesDetails?.property?.features[2]}
                       size={`lg`}
                       borderColor={`textGrey`}
                       borderRadius={10}
@@ -461,7 +586,7 @@ const AdminPropertiesDetailsPage = () => {
                       </Box>
                     </InputLeftElement>
                     <Input
-                      defaultValue={propertiesDetails?.property?.features[3]}
+                      // defaultValue={propertiesDetails?.property?.features[3]}
                       size={`lg`}
                       borderColor={`textGrey`}
                       borderRadius={10}
@@ -479,7 +604,7 @@ const AdminPropertiesDetailsPage = () => {
                       </Box>
                     </InputLeftElement>
                     <Input
-                      defaultValue={propertiesDetails?.property?.features[4]}
+                      // defaultValue={propertiesDetails?.property?.features[4]}
                       size={`lg`}
                       borderColor={`textGrey`}
                       borderRadius={10}
@@ -497,7 +622,7 @@ const AdminPropertiesDetailsPage = () => {
                       </Box>
                     </InputLeftElement>
                     <Input
-                      defaultValue={propertiesDetails?.property?.features[5]}
+                      // defaultValue={propertiesDetails?.property?.features[5]}
                       size={`lg`}
                       borderColor={`textGrey`}
                       borderRadius={10}
@@ -517,26 +642,39 @@ const AdminPropertiesDetailsPage = () => {
               <Box border={`1px solid #343434`} p={8} borderRadius={7}>
                 <Center pos={`relative`} borderRadius={7} overflow={`hidden`}>
                   <Box zIndex={1}>
-                    <EditImgOverlay
-                      id={`property_video`}
-                      handleClick={() => handleVideoUpload(`property_video`)}
-                    />
+                    <Center
+                      w={`100%`}
+                      h={`100%`}
+                      pos={`absolute`}
+                      top={`50%`}
+                      left={`50%`}
+                      transform={`translate(-50%, -50%)`}
+                      fontSize={`4rem`}
+                      bgColor={`#00000090`}
+                    >
+                      <Center
+                        onClick={() => handleVideoUpload(`property_video`)}
+                        flexDir={`column`}
+                      >
+                        <Input
+                          hidden
+                          id={`property_video`}
+                          type={`file`}
+                          accept='video/*'
+                          {...register(`video`)}
+                        />
+                        <Icon icon={`material-symbols:photo-camera-outline`} />
+                        <Text textAlign={`center`}>Click to change video</Text>
+                      </Center>
+                    </Center>
                   </Box>
-                  <video width={`100%`}>
-                    <source
-                      defaultValue={propertiesDetails?.property?.video}
-                      // src={propertiesDetails?.property?.video}
-                      src={`https://player.vimeo.com/external/392612459.sd.mp4?s=39589128d7c98ba18e262569fc7a5a6d31d89e22&profile_id=164&oauth2_token_id=57447761`}
-                      type='video/mp4'
-                    />
-                    <track
-                      src='captions_en.vtt'
-                      kind='captions'
-                      srcLang='en'
-                      label='english_captions'
-                    ></track>
-                    Your browser does not support the video tag.
-                  </video>
+                  <ReactPlayer
+                    width={`100%`}
+                    url={
+                      // imgPreview.property_video ||
+                      propertiesDetails?.property?.media?.video
+                    }
+                  />
                 </Center>
               </Box>
             </Box>

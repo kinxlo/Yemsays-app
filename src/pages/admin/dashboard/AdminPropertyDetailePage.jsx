@@ -8,6 +8,7 @@ import {
   Heading,
   Text,
 } from '@chakra-ui/react'
+import './scss/dashboard.scss'
 import React, { useCallback, useEffect, useState } from 'react'
 import { FaNetworkWired } from 'react-icons/fa'
 import {
@@ -30,6 +31,7 @@ import {
 import { useLocation } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { selectPropertyDetails } from './api/propertiesSlice'
+import ReactPlayer from 'react-player'
 
 const links = [
   { name: `Home`, ref: `/` },
@@ -237,7 +239,7 @@ const AdminPropertiesDetailsPage = () => {
                 >
                   <GiHomeGarage size={`1.5rem`} />
                 </Tag>
-                <Tag
+                {/* <Tag
                   fs={`lg`}
                   text={propertiesDetails?.property?.features[5]}
                   bgColor={`transparent`}
@@ -260,29 +262,26 @@ const AdminPropertiesDetailsPage = () => {
                   color={`textGrey`}
                 >
                   <MdCropSquare size={`1.5rem`} />
-                </Tag>
+                </Tag> */}
               </Flex>
             </Box>
             {/* property video */}
-            <Box border={`1px solid #343434`} p={8} borderRadius={7} my={10}>
+            <Box
+              className='propertyVideo'
+              border={`1px solid #343434`}
+              p={8}
+              borderRadius={7}
+              my={10}
+            >
               <Heading fontSize={`xl`} mb={5}>
                 Property Video
               </Heading>
               <Box borderRadius={7} overflow={`hidden`}>
-                <video width={`100%`} controls>
-                  <source
-                    src={propertiesDetails?.property?.media?.video}
-                    // src={`https://player.vimeo.com/external/392612459.sd.mp4?s=39589128d7c98ba18e262569fc7a5a6d31d89e22&profile_id=164&oauth2_token_id=57447761`}
-                    type='video/mp4'
-                  />
-                  <track
-                    src='captions_en.vtt'
-                    kind='captions'
-                    srcLang='en'
-                    label='english_captions'
-                  ></track>
-                  Your browser does not support the video tag.
-                </video>
+                <ReactPlayer
+                  width={`100%`}
+                  controls
+                  url={propertiesDetails?.property?.media?.video}
+                />
               </Box>
             </Box>
           </GridItem>

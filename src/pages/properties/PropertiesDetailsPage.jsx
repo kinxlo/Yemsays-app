@@ -3,29 +3,22 @@ import {
   Button,
   Flex,
   FormControl,
-  Grid,
   GridItem,
   Heading,
-  Image,
   Input,
   Progress,
   SimpleGrid,
   Text,
   Textarea,
 } from '@chakra-ui/react'
+import ReactPlayer from 'react-player'
 import React, { useCallback, useEffect, useState } from 'react'
-import { FaNetworkWired } from 'react-icons/fa'
-import {
-  MdCropSquare,
-  MdOutlineBed,
-  MdOutlineFamilyRestroom,
-} from 'react-icons/md'
+import { MdCropSquare, MdOutlineBed } from 'react-icons/md'
 import { BiBath } from 'react-icons/bi'
 import { GiHomeGarage } from 'react-icons/gi'
 import LinkButton from '../../components/buttons/link-button/LinkButton'
 import Tag from '../../components/tag/Tag'
 import Container from '../../layout/Container'
-// import video from '../../assets/video/video.mp4'
 import StarRatings from 'react-star-ratings'
 import SalesPersonCard from '../../components/saleperson-profile-card/SalesPersonCard'
 import SimilarPropertyCard from '../../components/property-card/SimilarPropertyCard'
@@ -39,10 +32,11 @@ import {
   useAddReviewMutation,
   useGetPropertyByIDClientMutation,
 } from '../admin/dashboard/api/propertiesApiSlice'
-import { Controller, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 
 const PropertiesDetailsPage = () => {
   const [propertyDetails, setProppertyDetails] = useState({})
+  const [videoFile, setVideoFile] = useState(null)
   const [reviewRatings, setReviewRatings] = useState({
     property: 0,
     valueForMoney: 0,
@@ -59,6 +53,7 @@ const PropertiesDetailsPage = () => {
     const res = await getPropertyByIDClient(propertyID).unwrap()
     console.log(res)
     setProppertyDetails(res.property)
+    setVideoFile(res.property.media.video)
     setSimilarProppertyDetails(res.similarProperties)
   }, [getPropertyByIDClient, propertyID])
 
@@ -70,18 +65,15 @@ const PropertiesDetailsPage = () => {
     return <SimilarPropertyCard key={property?._id} property={property} />
   })
 
-  const {
-    handleSubmit,
-    register,
-    control,
-    formState: { errors },
-  } = useForm()
+  const { handleSubmit, register } = useForm()
 
   const changeRating = (newRating, name) => {
     setReviewRatings((prevState) => {
       return { ...prevState, [name]: newRating }
     })
   }
+
+  console.log(videoFile)
 
   const handleSubmitReview = async (data) => {
     console.log(data)
@@ -125,7 +117,7 @@ const PropertiesDetailsPage = () => {
           {/* section two  with unique layer */}
           <TwoColumnLayout>
             {/* grid one */}
-            <GridItem colSpan={{ base: 1, lg: 8 }} color={`white`}>
+            <GridItem colSpan={{ base: 2, lg: 8 }} color={`white`}>
               {/* tags */}
               <Flex gap={5}>
                 <Tag
@@ -243,19 +235,11 @@ const PropertiesDetailsPage = () => {
                   Property Video
                 </Heading>
                 <Box borderRadius={7} overflow={`hidden`}>
-                  <video controls>
-                    <source
-                      src={propertyDetails?.media?.video}
-                      type='video/mp4'
-                    />
-                    <track
-                      src='captions_en.vtt'
-                      kind='captions'
-                      srcLang='en'
-                      label='english_captions'
-                    ></track>
-                    Your browser does not support the video tag.
-                  </video>
+                  <ReactPlayer
+                    width={`100%`}
+                    controls
+                    url={propertyDetails?.media?.video}
+                  />
                 </Box>
               </Box>
               {/* Ratings */}
@@ -275,13 +259,13 @@ const PropertiesDetailsPage = () => {
                     p={5}
                   >
                     <Text fontSize={`4xl`} fontWeight={`bold`}>
-                      4.5
+                      {propertyDetails?.avgReviewScore}
                     </Text>
                     <Text>out of 5.0</Text>
                     <Box mt={3}>
                       <StarRatings
                         starRatedColor='orange'
-                        rating={4.5}
+                        rating={propertyDetails?.avgReviewScore}
                         starDimension='20px'
                         starSpacing='5px'
                       />
@@ -295,9 +279,13 @@ const PropertiesDetailsPage = () => {
                           alignItems={`flex-start`}
                         >
                           <Text mb={2}>Property</Text>
-                          <Text>4</Text>
+                          <Text>{propertyDetails?.avgPropertyScore}</Text>
                         </Flex>
-                        <Progress value={80} size='xs' colorScheme='orange' />
+                        <Progress
+                          value={propertyDetails?.avgPropertyScore}
+                          size='xs'
+                          colorScheme='orange'
+                        />
                       </Box>
                       <Box>
                         <Flex
@@ -305,9 +293,13 @@ const PropertiesDetailsPage = () => {
                           alignItems={`flex-start`}
                         >
                           <Text mb={2}>Value for Money</Text>
-                          <Text>5</Text>
+                          <Text>{propertyDetails?.avgValueForMoneyScore}</Text>
                         </Flex>
-                        <Progress value={100} size='xs' colorScheme='orange' />
+                        <Progress
+                          value={propertyDetails?.avgValueForMoneyScore}
+                          size='xs'
+                          colorScheme='orange'
+                        />
                       </Box>
                       <Box>
                         <Flex
@@ -315,9 +307,13 @@ const PropertiesDetailsPage = () => {
                           alignItems={`flex-start`}
                         >
                           <Text mb={2}>Location</Text>
-                          <Text>5</Text>
+                          <Text>{propertyDetails?.avgLocationScore}</Text>
                         </Flex>
-                        <Progress value={100} size='xs' colorScheme='orange' />
+                        <Progress
+                          value={propertyDetails?.avgLocationScore}
+                          size='xs'
+                          colorScheme='orange'
+                        />
                       </Box>
                       <Box>
                         <Flex
@@ -325,9 +321,13 @@ const PropertiesDetailsPage = () => {
                           alignItems={`flex-start`}
                         >
                           <Text mb={2}>Support</Text>
-                          <Text>5</Text>
+                          <Text>{propertyDetails?.avgSupportScore}</Text>
                         </Flex>
-                        <Progress value={100} size='xs' colorScheme='orange' />
+                        <Progress
+                          value={propertyDetails?.avgSupportScore}
+                          size='xs'
+                          colorScheme='orange'
+                        />
                       </Box>
                     </SimpleGrid>
                   </Box>
@@ -502,7 +502,7 @@ const PropertiesDetailsPage = () => {
               </Box>
             </GridItem>
             {/* grid two */}
-            <GridItem colSpan={{ base: 1, lg: 4 }}>
+            <GridItem colSpan={{ base: 2, lg: 4 }}>
               <Box>
                 {/* sales person card */}
                 <SalesPersonCard />

@@ -260,7 +260,7 @@ const Home = () => {
           </Box>
         </Container>
       </Box>
-      <Box bgColor={`bgBlack`} color={`white`}>
+      <Box bgColor={`bgBlack`} color={`white`} className='page_alignment'>
         <Container>
           <Box textAlign={`center`} pt={115} mb={14}>
             <Heading color={`primary`} fontSize={`xl`}>
