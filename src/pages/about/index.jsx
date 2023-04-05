@@ -5,12 +5,19 @@ import { FaFacebookF, FaLinkedinIn } from 'react-icons/fa'
 import Banner from '../../components/banner/Banner'
 import QuestionBanner from '../../components/banner/QuestionBanner'
 import LinkButton from '../../components/buttons/link-button/LinkButton'
+import Map from '../../components/map/Map'
 import ProfileCard from '../../components/profile-card/ProfileCard'
 import TestimonialCard from '../../components/testimonial-card/TestimonialCard'
 import Container from '../../layout/Container'
 import DefaultLayout from '../../layout/DefaultLayout'
 import { HOME_CONTENT } from '../home/content'
 import { ABOUT_CONTENT } from './content'
+
+const location = {
+  address: 'yemsays map',
+  lat: 6.53577,
+  lng: 3.36596,
+}
 
 const index = () => {
   const { hero, sectionTwo, sectionThree, sectionFour } = ABOUT_CONTENT
@@ -101,7 +108,7 @@ const index = () => {
             {sectionThree.title}
           </Heading>
           <Box>
-            <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={5}>
+            <SimpleGrid columns={{ base: 1, sm: 2, lg: 3 }} gap={5}>
               <ProfileCard />
               <ProfileCard />
               <ProfileCard />
@@ -138,14 +145,20 @@ const index = () => {
                 </Text>
               </Flex>
             </Box>
-            <Box flex={1}>
-              <Image
-                src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1678304902/project-yemsays/Rectangle_36_1_tdndxm.png`}
-              />
+            <Box
+              border={`2px solid orange`}
+              borderBottomEndRadius={`3rem`}
+              borderTopStartRadius={`3rem`}
+              overflow={`hidden`}
+              height={`30rem`}
+              flex={{ md: 1 }}
+            >
+              <Map location={location} />
             </Box>
           </Flex>
         </Container>
       </Box>
+
       {/* banner stats */}
       <Banner />
       {/* section five */}

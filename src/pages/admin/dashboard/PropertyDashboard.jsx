@@ -26,6 +26,7 @@ import {
   selectHouseProperties,
   selectLandProperty,
 } from './api/propertiesSlice'
+import SpinnerComponent from '../../../components/feedback/SpinnerComponent'
 
 const links = [
   { name: `Home`, ref: `/` },
@@ -34,7 +35,7 @@ const links = [
 
 const PropertyDashboard = () => {
   const [propertyType, setPropertyType] = useState(`land`)
-  const [getAllProperties] = useGetAllPropertiesMutation()
+  const [getAllProperties, { isLoading }] = useGetAllPropertiesMutation()
   const houseProperties = useSelector(selectHouseProperties)
   const landProperties = useSelector(selectLandProperty)
 
@@ -224,17 +225,17 @@ const PropertyDashboard = () => {
           <TabPanels>
             <TabPanel p={0} my={5}>
               <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={6}>
-                {propertyList_L}
+                {isLoading ? <SpinnerComponent size={`xl`} /> : propertyList_L}
               </SimpleGrid>
             </TabPanel>
             <TabPanel p={0} my={5}>
               <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={6}>
-                {propertyList_U}
+                {isLoading ? <SpinnerComponent size={`xl`} /> : propertyList_U}
               </SimpleGrid>
             </TabPanel>
             <TabPanel p={0} my={5}>
               <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={6}>
-                {propertyList_S}
+                {isLoading ? <SpinnerComponent size={`xl`} /> : propertyList_S}
               </SimpleGrid>
             </TabPanel>
           </TabPanels>

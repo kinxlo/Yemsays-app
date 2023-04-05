@@ -33,10 +33,11 @@ import {
   useGetPropertyByIDClientMutation,
 } from '../admin/dashboard/api/propertiesApiSlice'
 import { useForm } from 'react-hook-form'
+import Spinner from '../../components/feedback/SpinnerComponent'
+import SpinnerComponent from '../../components/feedback/SpinnerComponent'
 
 const PropertiesDetailsPage = () => {
   const [propertyDetails, setProppertyDetails] = useState({})
-  const [videoFile, setVideoFile] = useState(null)
   const [reviewRatings, setReviewRatings] = useState({
     property: 0,
     valueForMoney: 0,
@@ -46,14 +47,14 @@ const PropertiesDetailsPage = () => {
   const [similarPropertyDetails, setSimilarProppertyDetails] = useState([])
   const location = useLocation()
   const propertyID = location.pathname.split(`/`)[2]
-  const [getPropertyByIDClient] = useGetPropertyByIDClientMutation()
+  const [getPropertyByIDClient, { isLoading }] =
+    useGetPropertyByIDClientMutation()
   const [addReview] = useAddReviewMutation()
 
   const showPropertiesDetails = useCallback(async () => {
     const res = await getPropertyByIDClient(propertyID).unwrap()
     console.log(res)
     setProppertyDetails(res.property)
-    setVideoFile(res.property.media.video)
     setSimilarProppertyDetails(res.similarProperties)
   }, [getPropertyByIDClient, propertyID])
 
@@ -72,8 +73,6 @@ const PropertiesDetailsPage = () => {
       return { ...prevState, [name]: newRating }
     })
   }
-
-  console.log(videoFile)
 
   const handleSubmitReview = async (data) => {
     console.log(data)
@@ -106,6 +105,7 @@ const PropertiesDetailsPage = () => {
       <Box className='page_alignment' bgColor={`black`}>
         <Container paddingBlock={0}>
           <GridImageLayout
+            isLoading={isLoading}
             isNotEditProperty
             imageSet={propertyDetails?.media?.imgs}
           />
@@ -166,68 +166,76 @@ const PropertiesDetailsPage = () => {
                 <Heading fontSize={`xl`} mb={5}>
                   Description
                 </Heading>
-                <Text color={`textGrey`}>{propertyDetails?.description}</Text>
+                {isLoading ? (
+                  <SpinnerComponent size={`lg`} />
+                ) : (
+                  <Text color={`textGrey`}>{propertyDetails?.description}</Text>
+                )}
               </Box>
               {/* features */}
               <Box border={`1px solid #343434`} p={8} borderRadius={7} my={10}>
                 <Heading fontSize={`xl`} mb={5}>
                   Features
                 </Heading>
-                <Flex
-                  color={`textGrey`}
-                  flexWrap={`wrap`}
-                  justifyContent={`space-between`}
-                  gap={3}
-                >
-                  <Tag
-                    fs={`lg`}
-                    text={propertyDetails?.features?.[0]}
-                    bgColor={`transparent`}
+                {isLoading ? (
+                  <SpinnerComponent size={`lg`} />
+                ) : (
+                  <Flex
                     color={`textGrey`}
+                    flexWrap={`wrap`}
+                    justifyContent={`space-between`}
+                    gap={3}
                   >
-                    <MdOutlineBed size={`1.5rem`} />
-                  </Tag>
-                  <Tag
-                    fs={`lg`}
-                    text={propertyDetails?.features?.[1]}
-                    bgColor={`transparent`}
-                    color={`textGrey`}
-                  >
-                    <BiBath size={`1.5rem`} />
-                  </Tag>
-                  <Tag
-                    fs={`lg`}
-                    text={propertyDetails?.features?.[2]}
-                    bgColor={`transparent`}
-                    color={`textGrey`}
-                  >
-                    <MdOutlineBed size={`1.5rem`} />
-                  </Tag>
-                  <Tag
-                    fs={`lg`}
-                    text={propertyDetails?.features?.[3]}
-                    bgColor={`transparent`}
-                    color={`textGrey`}
-                  >
-                    <BiBath size={`1.5rem`} />
-                  </Tag>
-                  <Tag
-                    fs={`lg`}
-                    text={propertyDetails?.features?.[4]}
-                    bgColor={`transparent`}
-                    color={`textGrey`}
-                  >
-                    <GiHomeGarage size={`1.5rem`} />
-                  </Tag>
-                  <Tag
-                    fs={`lg`}
-                    text={propertyDetails?.features?.[5]}
-                    bgColor={`transparent`}
-                    color={`textGrey`}
-                  >
-                    <MdCropSquare size={`1.5rem`} />
-                  </Tag>
-                </Flex>
+                    <Tag
+                      fs={`lg`}
+                      text={propertyDetails?.features?.[0]}
+                      bgColor={`transparent`}
+                      color={`textGrey`}
+                    >
+                      <MdOutlineBed size={`1.5rem`} />
+                    </Tag>
+                    <Tag
+                      fs={`lg`}
+                      text={propertyDetails?.features?.[1]}
+                      bgColor={`transparent`}
+                      color={`textGrey`}
+                    >
+                      <BiBath size={`1.5rem`} />
+                    </Tag>
+                    <Tag
+                      fs={`lg`}
+                      text={propertyDetails?.features?.[2]}
+                      bgColor={`transparent`}
+                      color={`textGrey`}
+                    >
+                      <MdOutlineBed size={`1.5rem`} />
+                    </Tag>
+                    <Tag
+                      fs={`lg`}
+                      text={propertyDetails?.features?.[3]}
+                      bgColor={`transparent`}
+                      color={`textGrey`}
+                    >
+                      <BiBath size={`1.5rem`} />
+                    </Tag>
+                    <Tag
+                      fs={`lg`}
+                      text={propertyDetails?.features?.[4]}
+                      bgColor={`transparent`}
+                      color={`textGrey`}
+                    >
+                      <GiHomeGarage size={`1.5rem`} />
+                    </Tag>
+                    <Tag
+                      fs={`lg`}
+                      text={propertyDetails?.features?.[5]}
+                      bgColor={`transparent`}
+                      color={`textGrey`}
+                    >
+                      <MdCropSquare size={`1.5rem`} />
+                    </Tag>
+                  </Flex>
+                )}
               </Box>
               {/* property video */}
               <Box border={`1px solid #343434`} p={8} borderRadius={7} my={10}>
@@ -235,11 +243,15 @@ const PropertiesDetailsPage = () => {
                   Property Video
                 </Heading>
                 <Box borderRadius={7} overflow={`hidden`}>
-                  <ReactPlayer
-                    width={`100%`}
-                    controls
-                    url={propertyDetails?.media?.video}
-                  />
+                  {isLoading ? (
+                    <SpinnerComponent size={`lg`} />
+                  ) : (
+                    <ReactPlayer
+                      width={`100%`}
+                      controls
+                      url={propertyDetails?.media?.video}
+                    />
+                  )}
                 </Box>
               </Box>
               {/* Ratings */}
@@ -247,91 +259,97 @@ const PropertiesDetailsPage = () => {
                 <Heading fontSize={`xl`} mb={5}>
                   Visitor Ratings
                 </Heading>
-                <Flex
-                  flexDir={{ base: `column`, lg: `row` }}
-                  borderRadius={7}
-                  bgColor={`bgBlack`}
-                  p={5}
-                >
-                  <Box
-                    textAlign={`center`}
-                    borderRight={{ lg: `1px solid grey` }}
+                {isLoading ? (
+                  <SpinnerComponent size={`lg`} />
+                ) : (
+                  <Flex
+                    flexDir={{ base: `column`, lg: `row` }}
+                    borderRadius={7}
+                    bgColor={`bgBlack`}
                     p={5}
                   >
-                    <Text fontSize={`4xl`} fontWeight={`bold`}>
-                      {propertyDetails?.avgReviewScore}
-                    </Text>
-                    <Text>out of 5.0</Text>
-                    <Box mt={3}>
-                      <StarRatings
-                        starRatedColor='orange'
-                        rating={propertyDetails?.avgReviewScore}
-                        starDimension='20px'
-                        starSpacing='5px'
-                      />
+                    <Box
+                      textAlign={`center`}
+                      borderRight={{ lg: `1px solid grey` }}
+                      p={5}
+                    >
+                      <Text fontSize={`4xl`} fontWeight={`bold`}>
+                        {propertyDetails?.avgReviewScore}
+                      </Text>
+                      <Text>out of 5.0</Text>
+                      <Box mt={3}>
+                        <StarRatings
+                          starRatedColor='orange'
+                          rating={propertyDetails?.avgReviewScore}
+                          starDimension='20px'
+                          starSpacing='5px'
+                        />
+                      </Box>
                     </Box>
-                  </Box>
-                  <Box flex={1} p={5}>
-                    <SimpleGrid columns={{ base: 1, lg: 2 }} gap={10}>
-                      <Box>
-                        <Flex
-                          justifyContent={`space-between`}
-                          alignItems={`flex-start`}
-                        >
-                          <Text mb={2}>Property</Text>
-                          <Text>{propertyDetails?.avgPropertyScore}</Text>
-                        </Flex>
-                        <Progress
-                          value={propertyDetails?.avgPropertyScore}
-                          size='xs'
-                          colorScheme='orange'
-                        />
-                      </Box>
-                      <Box>
-                        <Flex
-                          justifyContent={`space-between`}
-                          alignItems={`flex-start`}
-                        >
-                          <Text mb={2}>Value for Money</Text>
-                          <Text>{propertyDetails?.avgValueForMoneyScore}</Text>
-                        </Flex>
-                        <Progress
-                          value={propertyDetails?.avgValueForMoneyScore}
-                          size='xs'
-                          colorScheme='orange'
-                        />
-                      </Box>
-                      <Box>
-                        <Flex
-                          justifyContent={`space-between`}
-                          alignItems={`flex-start`}
-                        >
-                          <Text mb={2}>Location</Text>
-                          <Text>{propertyDetails?.avgLocationScore}</Text>
-                        </Flex>
-                        <Progress
-                          value={propertyDetails?.avgLocationScore}
-                          size='xs'
-                          colorScheme='orange'
-                        />
-                      </Box>
-                      <Box>
-                        <Flex
-                          justifyContent={`space-between`}
-                          alignItems={`flex-start`}
-                        >
-                          <Text mb={2}>Support</Text>
-                          <Text>{propertyDetails?.avgSupportScore}</Text>
-                        </Flex>
-                        <Progress
-                          value={propertyDetails?.avgSupportScore}
-                          size='xs'
-                          colorScheme='orange'
-                        />
-                      </Box>
-                    </SimpleGrid>
-                  </Box>
-                </Flex>
+                    <Box flex={1} p={5}>
+                      <SimpleGrid columns={{ base: 1, lg: 2 }} gap={10}>
+                        <Box>
+                          <Flex
+                            justifyContent={`space-between`}
+                            alignItems={`flex-start`}
+                          >
+                            <Text mb={2}>Property</Text>
+                            <Text>{propertyDetails?.avgPropertyScore}</Text>
+                          </Flex>
+                          <Progress
+                            value={propertyDetails?.avgPropertyScore}
+                            size='xs'
+                            colorScheme='orange'
+                          />
+                        </Box>
+                        <Box>
+                          <Flex
+                            justifyContent={`space-between`}
+                            alignItems={`flex-start`}
+                          >
+                            <Text mb={2}>Value for Money</Text>
+                            <Text>
+                              {propertyDetails?.avgValueForMoneyScore}
+                            </Text>
+                          </Flex>
+                          <Progress
+                            value={propertyDetails?.avgValueForMoneyScore}
+                            size='xs'
+                            colorScheme='orange'
+                          />
+                        </Box>
+                        <Box>
+                          <Flex
+                            justifyContent={`space-between`}
+                            alignItems={`flex-start`}
+                          >
+                            <Text mb={2}>Location</Text>
+                            <Text>{propertyDetails?.avgLocationScore}</Text>
+                          </Flex>
+                          <Progress
+                            value={propertyDetails?.avgLocationScore}
+                            size='xs'
+                            colorScheme='orange'
+                          />
+                        </Box>
+                        <Box>
+                          <Flex
+                            justifyContent={`space-between`}
+                            alignItems={`flex-start`}
+                          >
+                            <Text mb={2}>Support</Text>
+                            <Text>{propertyDetails?.avgSupportScore}</Text>
+                          </Flex>
+                          <Progress
+                            value={propertyDetails?.avgSupportScore}
+                            size='xs'
+                            colorScheme='orange'
+                          />
+                        </Box>
+                      </SimpleGrid>
+                    </Box>
+                  </Flex>
+                )}
               </Box>
               {/* reviews */}
               <Box border={`1px solid #343434`} p={8} borderRadius={7} my={10}>

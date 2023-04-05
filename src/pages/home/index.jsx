@@ -262,7 +262,7 @@ const Home = () => {
       </Box>
       <Box bgColor={`bgBlack`} color={`white`} className='page_alignment'>
         <Container>
-          <Box textAlign={`center`} pt={115} mb={14}>
+          <Box id={`testimonials`} textAlign={`center`} pt={115} mb={14}>
             <Heading color={`primary`} fontSize={`xl`}>
               {Testimonials.title}
             </Heading>

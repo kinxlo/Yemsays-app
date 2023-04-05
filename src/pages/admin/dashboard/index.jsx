@@ -15,6 +15,7 @@ import CustomerCard from '../../../components/admin/recentCustomerCard/CustomerC
 import Reviews from '../../../components/admin/reviews-card/Reviews'
 import StatCard from '../../../components/admin/stat-card/StatCard'
 import BreadCrumbHeader from '../../../components/breadcrumbHeader/BreadCrumbHeader'
+import SpinnerComponent from '../../../components/feedback/SpinnerComponent'
 import TwoColumnLayout from '../../../layout/TwoColumnLayout'
 import { useGetDashboardDataMutation } from './api/propertiesApiSlice'
 import { selectDashboardData } from './api/propertiesSlice'
@@ -31,10 +32,6 @@ const Dashboard = () => {
 
   const showDashboardData = useCallback(async () => {
     await getDashboardData().unwrap()
-    // if (res) {
-    //   setLoading(false)
-    //   setDashboardInfo(res)
-    // }
   }, [getDashboardData])
 
   useEffect(() => {
@@ -52,17 +49,17 @@ const Dashboard = () => {
           <StatCard
             title={`All Properties`}
             total={dashboardData?.allProperties}
-            // isLoading={isLoading}
+            isLoading={isLoading}
           />
           <StatCard
             title={`Listed Properties`}
             total={dashboardData?.listed}
-            // isLoading={isLoading}
+            isLoading={isLoading}
           />
           <StatCard
             title={`Unlisted Properties`}
             total={dashboardData?.unlisted}
-            // isLoading={isLoading}
+            isLoading={isLoading}
           />
         </SimpleGrid>
       </Box>
@@ -85,14 +82,22 @@ const Dashboard = () => {
                 </Link>
               </Flex>
               <SimpleGrid columns={{ base: 1, lg: 2 }} gap={10}>
-                <AdminPropertyCard
-                  listed={false}
-                  propertyDescription={dashboardData?.recentlyAdded[0]}
-                />
-                <AdminPropertyCard
-                  listed={false}
-                  propertyDescription={dashboardData?.recentlyAdded[1]}
-                />
+                {isLoading ? (
+                  <SpinnerComponent size={`xl`} />
+                ) : (
+                  <AdminPropertyCard
+                    listed={false}
+                    propertyDescription={dashboardData?.recentlyAdded[0]}
+                  />
+                )}
+                {isLoading ? (
+                  <SpinnerComponent size={`xl`} />
+                ) : (
+                  <AdminPropertyCard
+                    listed={false}
+                    propertyDescription={dashboardData?.recentlyAdded[1]}
+                  />
+                )}
               </SimpleGrid>
             </Box>
 
@@ -117,10 +122,16 @@ const Dashboard = () => {
                 </Link>
               </Flex>
               <Flex flexDir={`column`} gap={5}>
-                <CustomerCard />
-                <CustomerCard />
-                <CustomerCard />
-                <CustomerCard />
+                {!isLoading ? (
+                  <SpinnerComponent size={`xl`} />
+                ) : (
+                  <>
+                    <CustomerCard />
+                    <CustomerCard />
+                    <CustomerCard />
+                    <CustomerCard />
+                  </>
+                )}
               </Flex>
             </Box>
           </GridItem>

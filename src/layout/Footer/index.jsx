@@ -55,7 +55,7 @@ const Footer = () => {
                 <Box h={`3rem`}>
                   <Text fontWeight={`bold`}>About</Text>
                 </Box>
-                <List>
+                <List as={`div`}>
                   <ListItem
                     cursor={`pointer`}
                     _hover={{ color: `primary` }}
@@ -72,7 +72,9 @@ const Footer = () => {
                     textTransform={`capitalize`}
                     mb={`9px`}
                   >
-                    Team
+                    <Link as={ReactLink} display={`inline`} to={'/about-us'}>
+                      Team
+                    </Link>
                   </ListItem>
                   <ListItem
                     cursor={`pointer`}
@@ -81,7 +83,13 @@ const Footer = () => {
                     textTransform={`capitalize`}
                     mb={`9px`}
                   >
-                    Testimonial
+                    <Link
+                      as={ReactLink}
+                      display={`inline`}
+                      to={'#testimonials'}
+                    >
+                      Testimonial
+                    </Link>
                   </ListItem>
                   <ListItem
                     cursor={`pointer`}
@@ -90,7 +98,9 @@ const Footer = () => {
                     textTransform={`capitalize`}
                     mb={`9px`}
                   >
-                    Contact
+                    <Link as={ReactLink} display={`inline`} to={'/contact'}>
+                      Contact
+                    </Link>
                   </ListItem>
                 </List>
               </Box>
@@ -135,7 +145,9 @@ const Footer = () => {
                     textTransform={`capitalize`}
                     mb={`9px`}
                   >
-                    Book Now
+                    <Link as={ReactLink} display={`inline`} to={'/book-now'}>
+                      Book Now
+                    </Link>
                   </ListItem>
                 </List>
               </Box>

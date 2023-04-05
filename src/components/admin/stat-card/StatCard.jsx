@@ -9,7 +9,7 @@ import {
   Text,
 } from '@chakra-ui/react'
 import React from 'react'
-import Spinner from '../../feedback/Spinner'
+import SpinnerComponent from '../../feedback/SpinnerComponent'
 
 const StatCard = ({ total, title, isLoading }) => {
   console.log(isLoading)
@@ -21,16 +21,22 @@ const StatCard = ({ total, title, isLoading }) => {
         display={`flex`}
         gap={10}
       >
-        <Flex flex={1} flexDir={`column`} justifyContent={`space-between`}>
-          <Text>{title}</Text>
-          <Heading fontSize={`5xl`}>{total}</Heading>
-        </Flex>
-        <Box flex={1}>
-          <Image
-            className='cc-img-fluid'
-            src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1678318984/project-yemsays/Group_157_fupa9j.png`}
-          />
-        </Box>
+        {isLoading ? (
+          <SpinnerComponent size={`xl`} />
+        ) : (
+          <>
+            <Flex flex={1} flexDir={`column`} justifyContent={`space-between`}>
+              <Text>{title}</Text>
+              <Heading fontSize={`5xl`}>{total}</Heading>
+            </Flex>
+            <Box flex={1}>
+              <Image
+                className='cc-img-fluid'
+                src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1678318984/project-yemsays/Group_157_fupa9j.png`}
+              />
+            </Box>
+          </>
+        )}
       </CardBody>
     </Card>
   )

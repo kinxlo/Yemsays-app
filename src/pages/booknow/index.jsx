@@ -12,8 +12,9 @@ import {
   SimpleGrid,
   Text,
   Textarea,
+  useToast,
 } from '@chakra-ui/react'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { FaEnvelope, FaPhoneAlt, FaUserAlt } from 'react-icons/fa'
 import {
@@ -26,12 +27,10 @@ import { useBookApointmentMutation } from '../admin/dashboard/api/propertiesApiS
 // import Container from '../../layout/Container'
 
 const BookApointment = () => {
-  const [bookApointment] = useBookApointmentMutation()
-  const {
-    handleSubmit,
-    register,
-    formState: { errors },
-  } = useForm()
+  const [isSafeToReset, setIsSafeToReset] = useState(false)
+  const [bookApointment, { isLoading }] = useBookApointmentMutation()
+  const toast = useToast()
+  const { handleSubmit, register, reset } = useForm()
 
   const handleBookNow = async (data) => {
     console.log(data)
@@ -49,10 +48,27 @@ const BookApointment = () => {
     try {
       const res = await bookApointment(formData).unwrap()
       console.log(res)
+      if (res.success) {
+        toast({
+          description: `${res.data.message}`,
+          status: 'success',
+          variant: 'left-accent',
+          position: 'top',
+          duration: 5000,
+          isClosable: false,
+        })
+        setIsSafeToReset(true)
+      }
     } catch (err) {
       console.log(err)
     }
   }
+
+  useEffect(() => {
+    if (!isSafeToReset) return
+    reset()
+  }, [isSafeToReset, reset])
+
   return (
     <DefaultLayout>
       {/* hero section */}
@@ -187,7 +203,13 @@ const BookApointment = () => {
               </GridItem>
             </SimpleGrid>
             <Center mt={5}>
-              <Button type='submit' w={`50%`} colorScheme={`orange`}>
+              <Button
+                type='submit'
+                isLoading={isLoading}
+                loadingText='Sending message...'
+                w={`50%`}
+                colorScheme={`orange`}
+              >
                 Submit
               </Button>
             </Center>

@@ -18,15 +18,12 @@ import {
 import { selectPropertyState } from '../../pages/admin/dashboard/api/propertiesSlice'
 
 const SearchForm = () => {
-  // const [btnState, setBtnState] = useState({
-  //   landBtn: true,
-  //   houseBtn: false,
-  // })
-
   const [listLandProperties] = useListLandPropertiesMutation()
   const [listHouseProperties] = useListHousePropertiesMutation()
   const propertyState = useSelector(selectPropertyState)
   const dispatch = useDispatch()
+
+  // console.log(args_1, args_2)
 
   const showLandProperties = useCallback(async () => {
     await listLandProperties().unwrap()

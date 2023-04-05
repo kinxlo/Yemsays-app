@@ -49,6 +49,7 @@ const links = [
 // eslint-disable-next-line react/prop-types
 const AdminPropertiesDetailsPage = () => {
   const [isListed, setListed] = useState(false)
+  const [isLoading, setLoading] = useState(false)
   const location = useLocation()
   const propertyID = location.pathname.split(`/`)[3]
   const [getPropertyByID] = useGetPropertyByIDMutation()
@@ -127,6 +128,7 @@ const AdminPropertiesDetailsPage = () => {
   }, [getPropertiesDetails, reset])
 
   const submitEditedProperty = async (data) => {
+    setLoading(true)
     console.log(data)
     const formData = new FormData()
     const tags = data.tags.split(' ')
@@ -171,8 +173,12 @@ const AdminPropertiesDetailsPage = () => {
         credentials
       )
       console.log(res)
+      if (res.status === 200) {
+        setLoading(false)
+      }
     } catch (err) {
       console.log(err)
+      setLoading(false)
     }
   }
 
@@ -202,7 +208,8 @@ const AdminPropertiesDetailsPage = () => {
         <Flex gap={5}>
           <Button
             onClick={handleSubmit(submitEditedProperty)}
-            // display={isListed ? `none` : `block`}
+            isLoading={isLoading}
+            loadingText='Saving...'
             borderRadius={10}
             p={6}
             colorScheme={`orange`}

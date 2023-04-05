@@ -32,6 +32,7 @@ import { useLocation } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { selectPropertyDetails } from './api/propertiesSlice'
 import ReactPlayer from 'react-player'
+import SpinnerComponent from '../../../components/feedback/SpinnerComponent'
 
 const links = [
   { name: `Home`, ref: `/` },
@@ -42,7 +43,7 @@ const links = [
 // eslint-disable-next-line react/prop-types
 const AdminPropertiesDetailsPage = () => {
   const [isListed, setListed] = useState(false)
-  const [getPropertyByID] = useGetPropertyByIDMutation()
+  const [getPropertyByID, { isLoading }] = useGetPropertyByIDMutation()
   const [listProperty] = useListPropertyMutation()
   const location = useLocation()
   const propertyID = location.pathname.split(`/`)[3]
@@ -129,6 +130,7 @@ const AdminPropertiesDetailsPage = () => {
       </Flex>
       <Box my={10}>
         <GridImageLayout
+          isLoading={isLoading}
           isNotEditProperty
           imageSet={propertiesDetails?.property?.media?.imgs}
         />
@@ -184,62 +186,69 @@ const AdminPropertiesDetailsPage = () => {
               <Heading fontSize={`xl`} mb={5}>
                 Description
               </Heading>
-              <Text color={`textGrey`}>
-                {propertiesDetails?.property?.description}
-              </Text>
+              {isLoading ? (
+                <SpinnerComponent size={`xl`} />
+              ) : (
+                <Text color={`textGrey`}>
+                  {propertiesDetails?.property?.description}
+                </Text>
+              )}
             </Box>
             {/* features */}
             <Box border={`1px solid #343434`} p={8} borderRadius={7} my={10}>
               <Heading fontSize={`xl`} mb={5}>
                 Features
               </Heading>
-              <Flex
-                color={`textGrey`}
-                flexWrap={`wrap`}
-                justifyContent={`space-between`}
-                gap={3}
-              >
-                <Tag
-                  fs={`lg`}
-                  text={propertiesDetails?.property?.features[0]}
-                  bgColor={`transparent`}
+              {isLoading ? (
+                <SpinnerComponent size={`xl`} />
+              ) : (
+                <Flex
                   color={`textGrey`}
+                  flexWrap={`wrap`}
+                  justifyContent={`space-between`}
+                  gap={3}
                 >
-                  <MdOutlineBed size={`1.5rem`} />
-                </Tag>
-                <Tag
-                  fs={`lg`}
-                  text={propertiesDetails?.property?.features[1]}
-                  bgColor={`transparent`}
-                  color={`textGrey`}
-                >
-                  <BiBath size={`1.5rem`} />
-                </Tag>
-                <Tag
-                  fs={`lg`}
-                  text={propertiesDetails?.property?.features[2]}
-                  bgColor={`transparent`}
-                  color={`textGrey`}
-                >
-                  <MdOutlineBed size={`1.5rem`} />
-                </Tag>
-                <Tag
-                  fs={`lg`}
-                  text={propertiesDetails?.property?.features[3]}
-                  bgColor={`transparent`}
-                  color={`textGrey`}
-                >
-                  <BiBath size={`1.5rem`} />
-                </Tag>
-                <Tag
-                  fs={`lg`}
-                  text={propertiesDetails?.property?.features[4]}
-                  bgColor={`transparent`}
-                  color={`textGrey`}
-                >
-                  <GiHomeGarage size={`1.5rem`} />
-                </Tag>
-                {/* <Tag
+                  <Tag
+                    fs={`lg`}
+                    text={propertiesDetails?.property?.features[0]}
+                    bgColor={`transparent`}
+                    color={`textGrey`}
+                  >
+                    <MdOutlineBed size={`1.5rem`} />
+                  </Tag>
+                  <Tag
+                    fs={`lg`}
+                    text={propertiesDetails?.property?.features[1]}
+                    bgColor={`transparent`}
+                    color={`textGrey`}
+                  >
+                    <BiBath size={`1.5rem`} />
+                  </Tag>
+                  <Tag
+                    fs={`lg`}
+                    text={propertiesDetails?.property?.features[2]}
+                    bgColor={`transparent`}
+                    color={`textGrey`}
+                  >
+                    <MdOutlineBed size={`1.5rem`} />
+                  </Tag>
+                  <Tag
+                    fs={`lg`}
+                    text={propertiesDetails?.property?.features[3]}
+                    bgColor={`transparent`}
+                    color={`textGrey`}
+                  >
+                    <BiBath size={`1.5rem`} />
+                  </Tag>
+                  <Tag
+                    fs={`lg`}
+                    text={propertiesDetails?.property?.features[4]}
+                    bgColor={`transparent`}
+                    color={`textGrey`}
+                  >
+                    <GiHomeGarage size={`1.5rem`} />
+                  </Tag>
+                  {/* <Tag
                   fs={`lg`}
                   text={propertiesDetails?.property?.features[5]}
                   bgColor={`transparent`}
@@ -263,7 +272,8 @@ const AdminPropertiesDetailsPage = () => {
                 >
                   <MdCropSquare size={`1.5rem`} />
                 </Tag> */}
-              </Flex>
+                </Flex>
+              )}
             </Box>
             {/* property video */}
             <Box
@@ -276,13 +286,17 @@ const AdminPropertiesDetailsPage = () => {
               <Heading fontSize={`xl`} mb={5}>
                 Property Video
               </Heading>
-              <Box borderRadius={7} overflow={`hidden`}>
-                <ReactPlayer
-                  width={`100%`}
-                  controls
-                  url={propertiesDetails?.property?.media?.video}
-                />
-              </Box>
+              {isLoading ? (
+                <SpinnerComponent size={`xl`} />
+              ) : (
+                <Box borderRadius={7} overflow={`hidden`}>
+                  <ReactPlayer
+                    width={`100%`}
+                    controls
+                    url={propertiesDetails?.property?.media?.video}
+                  />
+                </Box>
+              )}
             </Box>
           </GridItem>
           {/* grid two */}

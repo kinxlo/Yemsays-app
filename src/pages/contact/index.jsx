@@ -10,12 +10,14 @@ import {
   Textarea,
   Button,
   Image,
+  useToast,
 } from '@chakra-ui/react'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiFillPhone } from 'react-icons/ai'
 import { FaMapMarkerAlt } from 'react-icons/fa'
 import { MdEmail } from 'react-icons/md'
+import { useLocation } from 'react-router-dom'
 import Container from '../../layout/Container'
 import DefaultLayout from '../../layout/DefaultLayout'
 import { useContactUsMutation } from '../admin/dashboard/api/propertiesApiSlice'
@@ -23,14 +25,18 @@ import { CONTACT_CONTENT } from './content'
 
 const ContactUs = () => {
   const { sectionOne, contacts } = CONTACT_CONTENT
+  const [isSafeToReset, setIsSafeToReset] = useState(false)
+  const [contactUs, { isLoading }] = useContactUsMutation()
+  const toast = useToast()
+  const location = useLocation()
 
-  const [contactUs] = useContactUsMutation()
+  const defaultData = {
+    email: location?.state?.data?.email,
+  }
 
-  const {
-    handleSubmit,
-    register,
-    formState: { errors },
-  } = useForm()
+  const { handleSubmit, register, reset } = useForm({
+    defaultValues: defaultData,
+  })
 
   const handleSubmitContact = async (data) => {
     console.log(parseInt(data.phoneNumber))
@@ -40,23 +46,30 @@ const ContactUs = () => {
       phoneNumber: parseInt(data.phoneNumber),
       message: data.message,
     }
-    // const formData = new FormData()
-    // formData.append(`name`, data.name)
-    // formData.append(`email`, data.email)
-    // formData.append(`phoneNumber`, parseInt(data.phoneNumber))
-    // formData.append(`message`, data.message)
-
-    // for (var pair of formData.entries()) {
-    //   console.log(pair[0] + ', ' + pair[1])
-    // }
 
     try {
       const res = await contactUs(formData).unwrap()
       console.log(res)
+      if (res.success) {
+        toast({
+          description: `${res.data.message}`,
+          status: 'success',
+          variant: 'left-accent',
+          position: 'top',
+          duration: 5000,
+          isClosable: false,
+        })
+        setIsSafeToReset(true)
+      }
     } catch (err) {
       console.log(err)
     }
   }
+
+  useEffect(() => {
+    if (!isSafeToReset) return
+    reset()
+  }, [isSafeToReset, reset])
 
   return (
     <DefaultLayout>
@@ -188,6 +201,8 @@ const ContactUs = () => {
                   <Box>
                     <Button
                       type='submit'
+                      isLoading={isLoading}
+                      loadingText='Sending message...'
                       w={`100%`}
                       colorScheme={`orange`}
                       fontWeight={300}
