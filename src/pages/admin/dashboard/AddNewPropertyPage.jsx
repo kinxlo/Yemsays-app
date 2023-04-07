@@ -21,17 +21,12 @@ import { Icon } from '@iconify/react'
 
 import TwoColumnLayout from '../../../layout/TwoColumnLayout'
 import BreadCrumbHeader from '../../../components/breadcrumbHeader/BreadCrumbHeader'
-import EditImgOverlay from '../../../components/editImgOverlay/EditImgOverlay'
 import SalePersonEditForm from '../../../components/admin/salePersonEditForm/SalePersonEditForm'
 import { useForm } from 'react-hook-form'
-import {
-  useAddPropertyMutation,
-  useGetSignedURLMutation,
-  useSendMediaToGoogleApiMutation,
-} from './api/propertiesApiSlice'
 import { useSelector } from 'react-redux'
 import { selectCurrentToken } from '../auth/api/authSlice'
 import axios from 'axios'
+import ReactPlayer from 'react-player'
 
 const links = [
   { name: `Home`, ref: `admin/dashboard` },
@@ -39,8 +34,8 @@ const links = [
 ]
 
 const AdminPropertiesDetailsPage = () => {
-  const [isListed, setListed] = useState(false)
-  const [videoFile, setVideoFile] = useState(null)
+  const [isListed] = useState(false)
+  const [isLoading, setLoading] = useState(false)
   const [imgPreview, setImgPreview] = useState({
     img1: null,
     img2: null,
@@ -48,10 +43,6 @@ const AdminPropertiesDetailsPage = () => {
     img4: null,
     property_video: `https://player.vimeo.com/external/392612459.sd.mp4?s=39589128d7c98ba18e262569fc7a5a6d31d89e22&profile_id=164&oauth2_token_id=57447761`,
   })
-
-  // const [getSignedURL] = useGetSignedURLMutation()
-  const [addProperty] = useAddPropertyMutation()
-  // const [sendMediaToGoogleApi] = useSendMediaToGoogleApiMutation()
 
   const token = useSelector(selectCurrentToken)
 
@@ -70,57 +61,25 @@ const AdminPropertiesDetailsPage = () => {
       setImgPreview((prevState) => {
         return { ...prevState, [id]: URL.createObjectURL(file) }
       })
-      // setImageFileObject((prevState) => {
-      //   return [...prevState, file]
-      // })
-      // setImageFile((prevState) => {
-      //   return [...prevState, fileObj]
-      // })
     }
   }
 
   const handleVideoUpload = (id) => {
     let fileInput = document.getElementById(id)
     fileInput.click()
-    // fileInput.onchange = () => {
-    //   const [file] = fileInput.files
-    //   setVideoFile(file)
-    // }
+    fileInput.onchange = () => {
+      const [file] = fileInput.files
+      setImgPreview((prevState) => {
+        return { ...prevState, [id]: URL.createObjectURL(file) }
+      })
+    }
   }
 
-  const {
-    handleSubmit,
-    register,
-    formState: { errors },
-  } = useForm()
+  const { handleSubmit, register } = useForm()
 
   const submitNewProperty = async (data) => {
     const formData = new FormData()
     console.log(data)
-    // let DATA = {
-    //   title: data.title,
-    //   location: data.location,
-    //   price: data.price,
-    //   propertyType: data.propertyType.toLowerCase(),
-    //   description: data.description,
-    //   tags: data.tags.split(' '),
-    //   features: [
-    //     data.feat_1,
-    //     data.feat_2,
-    //     data.feat_3,
-    //     data.feat_4,
-    //     data.feat_5,
-    //     data.feat_6,
-    //   ],
-    //   images: [
-    //     ...data.image_1,
-    //     ...data.image_2,
-    //     ...data.image_3,
-    //     // ...data.image_4,
-    //   ],
-    //   video: data.video.File,
-    // }
-    // console.log(DATA)
     const tags = data.tags.split(' ')
     const images = [
       ...data.image_1,
@@ -191,7 +150,7 @@ const AdminPropertiesDetailsPage = () => {
         <Flex gap={5}>
           <Button
             onClick={handleSubmit(submitNewProperty)}
-            display={isListed ? `none` : `block`}
+            // display={isListed ? `none` : `block`}
             borderRadius={10}
             p={6}
             colorScheme={`orange`}
@@ -627,16 +586,7 @@ const AdminPropertiesDetailsPage = () => {
                       </Center>
                     </Center>
                   </Box>
-                  <video width={`100%`}>
-                    <source src={imgPreview.property_video} type='video/mp4' />
-                    <track
-                      src='captions_en.vtt'
-                      kind='captions'
-                      srcLang='en'
-                      label='english_captions'
-                    ></track>
-                    Your browser does not support the video tag.
-                  </video>
+                  <ReactPlayer width={`100%`} url={imgPreview.property_video} />
                 </Center>
               </Box>
             </Box>

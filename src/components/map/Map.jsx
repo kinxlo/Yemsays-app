@@ -4,7 +4,7 @@ import GoogleMapReact from 'google-map-react'
 // import './map.css'
 import { Icon } from '@iconify/react'
 
-const Marker = ({ text }) => (
+const Marker = () => (
   <div>
     <Icon width={`3rem`} color='red' icon={`entypo:location-pin`} />
   </div>

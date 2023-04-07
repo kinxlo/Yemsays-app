@@ -24,7 +24,7 @@ const PropertyCard = ({ featuredProperty }) => {
         flexDir={{ base: `column`, md: `row` }}
         gap={5}
       >
-        <Box width={{ md: `50%` }} height={`315px`}>
+        <Box width={{ md: `50%` }} height={`340px`}>
           <Image
             w={`100%`}
             height={`100%`}
@@ -34,7 +34,11 @@ const PropertyCard = ({ featuredProperty }) => {
             alt='Green double couch with wooden legs'
           />
         </Box>
-        <Stack width={{ md: `50%` }} spacing='3'>
+        <Stack
+          justifyContent={`space-between`}
+          width={{ md: `50%` }}
+          spacing='3'
+        >
           <Box display={`flex`} gap={5} mb={3}>
             <Tag
               bgColor={`accentBlue`}

@@ -76,23 +76,34 @@ const PropertiesDetailsPage = () => {
 
   const handleSubmitReview = async (data) => {
     console.log(data)
-    const formData = new FormData()
-    formData.append(`property`, parseInt(reviewRatings.property))
-    formData.append(`valueForMoney`, parseInt(reviewRatings.valueForMoney))
-    formData.append(`location`, parseInt(reviewRatings.location))
-    formData.append(`support`, parseInt(reviewRatings.support))
-    formData.append(`name`, data.name)
-    formData.append(`email`, data.email)
-    formData.append(`review`, data.review)
 
-    for (var pair of formData.entries()) {
-      console.log(pair[0] + ', ' + pair[1])
+    const formDataII = {
+      property: reviewRatings.property,
+      valueForMoney: reviewRatings.valueForMoney,
+      location: reviewRatings.location,
+      support: reviewRatings.support,
+      name: data.name,
+      email: data.email,
+      review: data.review,
     }
+
+    // const formData = new FormData()
+    // formData.append(`property`, parseInt(reviewRatings.property))
+    // formData.append(`valueForMoney`, parseInt(reviewRatings.valueForMoney))
+    // formData.append(`location`, parseInt(reviewRatings.location))
+    // formData.append(`support`, parseInt(reviewRatings.support))
+    // formData.append(`name`, data.name)
+    // formData.append(`email`, data.email)
+    // formData.append(`review`, data.review)
+
+    // for (var pair of formData.entries()) {
+    //   console.log(pair[0] + ', ' + pair[1])
+    // }
 
     try {
       const res = await addReview({
         propertyId: propertyID,
-        body: formData,
+        body: formDataII,
       }).unwrap()
       console.log(res)
     } catch (err) {
@@ -155,6 +166,7 @@ const PropertiesDetailsPage = () => {
                 </Box>
                 <Box>
                   <LinkButton
+                    to={`/book-now`}
                     text={`Book Now`}
                     width={`158px`}
                     height={`42px`}

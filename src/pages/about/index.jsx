@@ -151,7 +151,7 @@ const index = () => {
               borderTopStartRadius={`3rem`}
               overflow={`hidden`}
               height={`30rem`}
-              flex={{ md: 1 }}
+              flex={{ xl: 1 }}
             >
               <Map location={location} />
             </Box>

@@ -101,6 +101,10 @@ const PropertyDashboard = () => {
     getProperties()
   }, [getProperties])
 
+  const handleRefresh = () => {
+    getProperties()
+  }
+
   return (
     <>
       <Box id='top' mb={12}>
@@ -192,6 +196,7 @@ const PropertyDashboard = () => {
                 </MenuList>
               </Menu>
               <Center
+                onClick={handleRefresh}
                 border={`1px solid #F78214`}
                 borderRadius={15}
                 color='primary'

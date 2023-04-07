@@ -22,11 +22,12 @@ const SimilarPropertyCard = ({ property }) => {
       color={`white`}
     >
       <CardBody
+        // border={`1px solid red`}
         display={`flex`}
-        flexDir={{ base: `column`, xl: `row` }}
+        flexDir={{ base: `column`, sm: `row` }}
         gap={3}
       >
-        <Box w={`35%`}>
+        <Box height={`12rem`} w={{ md: `50%` }}>
           <Image
             w={`100%`}
             height={`100%`}
@@ -36,7 +37,7 @@ const SimilarPropertyCard = ({ property }) => {
             alt='Green double couch with wooden legs'
           />
         </Box>
-        <Stack flex={2}>
+        <Stack justifyContent={`space-between`} w={{ md: `50%` }}>
           <Heading fontSize={`md`}>{property?.title}</Heading>
           <Box
             color='blue.600'

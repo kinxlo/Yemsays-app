@@ -11,7 +11,6 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link as ReactLink } from 'react-router-dom'
 import AdminPropertyCard from '../../../components/admin/propertyCard/AdminPropertyCard'
-import CustomerCard from '../../../components/admin/recentCustomerCard/CustomerCard'
 import Reviews from '../../../components/admin/reviews-card/Reviews'
 import StatCard from '../../../components/admin/stat-card/StatCard'
 import BreadCrumbHeader from '../../../components/breadcrumbHeader/BreadCrumbHeader'
@@ -77,7 +76,7 @@ const Dashboard = () => {
                 <Heading fontSize={{ base: `lg`, lg: `3xl` }}>
                   Recently Added Properties
                 </Heading>
-                <Link color={`primary`} as={ReactLink}>
+                <Link to={`/admin/properties`} color={`primary`} as={ReactLink}>
                   <Text>View All Properties</Text>
                 </Link>
               </Flex>
@@ -98,10 +97,26 @@ const Dashboard = () => {
                     propertyDescription={dashboardData?.recentlyAdded[1]}
                   />
                 )}
+                {isLoading ? (
+                  <SpinnerComponent size={`xl`} />
+                ) : (
+                  <AdminPropertyCard
+                    listed={false}
+                    propertyDescription={dashboardData?.recentlyAdded[1]}
+                  />
+                )}
+                {isLoading ? (
+                  <SpinnerComponent size={`xl`} />
+                ) : (
+                  <AdminPropertyCard
+                    listed={false}
+                    propertyDescription={dashboardData?.recentlyAdded[0]}
+                  />
+                )}
               </SimpleGrid>
             </Box>
 
-            <Box
+            {/* <Box
               display={{ base: `none`, lg: `block` }}
               my={10}
               p={5}
@@ -133,7 +148,7 @@ const Dashboard = () => {
                   </>
                 )}
               </Flex>
-            </Box>
+            </Box> */}
           </GridItem>
           <GridItem colSpan={{ base: 1, lg: 4 }}>
             <Box borderRadius={10} bgColor={`dashboardBG`} p={5}>

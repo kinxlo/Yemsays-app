@@ -10,16 +10,6 @@ import {
 
 export const authApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    // sendMediaToGoogleApi: builder.mutation({
-    //   query: (credentials) => ({
-    //     url: credentials.url,
-    //     method: 'POST',
-    //     body: { ...credentials.body },
-    //   }),
-    // }),
-
-    // NOT IN USE AT THE MOMENT
-
     addProperty: builder.mutation({
       query: (credentials) => ({
         url: '/property/admin',
@@ -114,19 +104,6 @@ export const authApiSlice = apiSlice.injectEndpoints({
         method: 'PUT',
         body: { ...credentials.body },
       }),
-      // async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-      //   try {
-      //     const { data } = await queryFulfilled
-      //     console.log(data)
-      //     dispatch(
-      //       setPropertyDetails({
-      //         propertyDetails: data.data.property,
-      //       })
-      //     )
-      //   } catch (err) {
-      //     console.log(err)
-      //   }
-      // },
     }),
 
     // ========== External API ==================
@@ -176,18 +153,6 @@ export const authApiSlice = apiSlice.injectEndpoints({
         url: `property/${id}`,
         method: 'GET',
       }),
-      // async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-      //   try {
-      //     const { data } = await queryFulfilled
-      //     dispatch(
-      //       setPropertyDetailsC\({
-      //         propertyDetails: data.data,
-      //       })
-      //     )
-      //   } catch (err) {
-      //     console.log(err)
-      //   }
-      // },
     }),
 
     addReview: builder.mutation({
@@ -213,6 +178,25 @@ export const authApiSlice = apiSlice.injectEndpoints({
       }),
     }),
 
+    searchProperty: builder.mutation({
+      query: (credentials) => ({
+        url: `/search?location=${credentials.location}&property=${credentials.property}&averagePrice=${credentials.averagePrice}&propertyType=${credentials.propertyType}`,
+        method: 'GET',
+      }),
+      // async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+      //   try {
+      //     const { data } = await queryFulfilled
+      //     dispatch(
+      //       setProperties({
+      //         properties: data.data,
+      //       })
+      //     )
+      //   } catch (err) {
+      //     console.log(err)
+      //   }
+      // },
+    }),
+
     // ========== External API ==================
   }),
 })
@@ -232,5 +216,6 @@ export const {
   useAddReviewMutation,
   useContactUsMutation,
   useBookApointmentMutation,
+  useSearchPropertyMutation,
   // useRefreshMutation,
 } = authApiSlice
