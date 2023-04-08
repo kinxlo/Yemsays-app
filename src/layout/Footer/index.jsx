@@ -36,7 +36,7 @@ const Footer = () => {
               >
                 <Link as={ReactLink} to={`/`}>
                   <Image
-                    src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1677576945/project-yemsays/Group_86_btjv9i.png`}
+                    src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1680856120/project-yemsays/Group_87_qudnxl.png`}
                   />
                 </Link>
               </Box>

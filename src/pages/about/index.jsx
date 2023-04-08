@@ -33,23 +33,38 @@ const index = () => {
         bgPosition={`center`}
         height={`706`}
         color={`white`}
+        pos={`relative`}
+        _after={{
+          pos: `absolute`,
+          content: '""',
+          top: 0,
+          left: 0,
+          width: `100%`,
+          height: `100%`,
+          bgColor: `#00000060`,
+        }}
       >
         <Container>
-          <Box mt={32} width={{ md: `50%` }}>
-            <Heading fontSize={{ base: `5xl`, md: `6xl` }} fontWeight={`bold`}>
-              {hero.title}
-            </Heading>
-          </Box>
-          <Text width={{ md: `50%` }} color={`#D0D0D0`} my={5}>
-            {hero.subTitle}
-          </Text>
-          <Box display={`flex`} alignItems={`center`} gap={4} mt={22}>
-            <LinkButton
-              to={`/properties`}
-              width={167}
-              text={`View Properties`}
-              height={`40px`}
-            />
+          <Box pos={`relative`} zIndex={1}>
+            <Box mt={32} width={{ md: `50%` }}>
+              <Heading
+                fontSize={{ base: `5xl`, md: `6xl` }}
+                fontWeight={`bold`}
+              >
+                {hero.title}
+              </Heading>
+            </Box>
+            <Text width={{ md: `50%` }} color={`#D0D0D0`} my={5}>
+              {hero.subTitle}
+            </Text>
+            <Box display={`flex`} alignItems={`center`} gap={4} mt={22}>
+              <LinkButton
+                to={`/properties`}
+                width={167}
+                text={`View Properties`}
+                height={`40px`}
+              />
+            </Box>
           </Box>
         </Container>
       </Box>

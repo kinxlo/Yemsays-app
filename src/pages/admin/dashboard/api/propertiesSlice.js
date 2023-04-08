@@ -12,6 +12,7 @@ const STATE = {
     isLand: true,
     // isHouse: false,
   },
+  recentProperties: null,
 }
 
 const PROPERTIES_SLICE = {
@@ -41,6 +42,11 @@ const PROPERTIES_SLICE = {
       state.userLandProperties = land
     },
 
+    setRecentProperties: (state, action) => {
+      const { recentProperties } = action.payload
+      state.recentProperties = recentProperties
+    },
+
     setUserHouseProperties: (state, action) => {
       const house = action.payload.user_house_properties
       state.userHouseProperties = house
@@ -65,6 +71,7 @@ export const {
   setPropertyDetails,
   setUserLandProperties,
   setUserHouseProperties,
+  setRecentProperties,
   changePropertyState,
 } = propertiesSlice.actions
 
@@ -82,3 +89,5 @@ export const selectUserLandProperties = (state) =>
 export const selectUserHouseProperties = (state) =>
   state.properties.userHouseProperties
 export const selectPropertyState = (state) => state.properties.propertyState
+export const selectRecentProperties = (state) =>
+  state.properties.recentProperties

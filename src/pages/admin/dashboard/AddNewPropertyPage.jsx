@@ -1,6 +1,9 @@
 import {
+  Avatar,
   Box,
   Button,
+  Card,
+  CardBody,
   Center,
   Flex,
   FormControl,
@@ -27,6 +30,8 @@ import { useSelector } from 'react-redux'
 import { selectCurrentToken } from '../auth/api/authSlice'
 import axios from 'axios'
 import ReactPlayer from 'react-player'
+import EditImgOverlay from '../../../components/editImgOverlay/EditImgOverlay'
+import FeedbackModal from '../../../components/modals/Modal'
 
 const links = [
   { name: `Home`, ref: `admin/dashboard` },
@@ -35,12 +40,15 @@ const links = [
 
 const AdminPropertiesDetailsPage = () => {
   const [isListed] = useState(false)
+  const [action, setAction] = useState(null)
+  const [isOpen, setIsOpen] = useState(false)
   const [isLoading, setLoading] = useState(false)
   const [imgPreview, setImgPreview] = useState({
     img1: null,
     img2: null,
     img3: null,
     img4: null,
+    avatar: null,
     property_video: `https://player.vimeo.com/external/392612459.sd.mp4?s=39589128d7c98ba18e262569fc7a5a6d31d89e22&profile_id=164&oauth2_token_id=57447761`,
   })
 
@@ -51,6 +59,16 @@ const AdminPropertiesDetailsPage = () => {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'multipart/form-data',
     },
+  }
+  // const { features, location, id, media, price, status, tags, title, type } =
+  //   propertyDescription
+  const handleOpen = (action) => {
+    setAction(action)
+    setIsOpen(true)
+  }
+
+  const handleClose = () => {
+    setIsOpen(false)
   }
 
   const handleImageUpload = (id) => {
@@ -78,6 +96,7 @@ const AdminPropertiesDetailsPage = () => {
   const { handleSubmit, register } = useForm()
 
   const submitNewProperty = async (data) => {
+    setLoading(true)
     const formData = new FormData()
     console.log(data)
     const tags = data.tags.split(' ')
@@ -96,7 +115,8 @@ const AdminPropertiesDetailsPage = () => {
       data.feat_6,
     ]
 
-    const video = [...data.video]
+    const video = [...data.video] //not nessecary
+    const avatar = [...data.avatar] //not nessecary
 
     formData.append(`title`, data.title)
     formData.append(`location`, data.location)
@@ -107,6 +127,9 @@ const AdminPropertiesDetailsPage = () => {
     features.forEach((feature) => formData.append(`features[]`, feature))
     images.forEach((img) => formData.append(`images`, img))
     formData.append(`video`, video[0])
+    formData.append(`salesSupportName`, data.salesSupportName)
+    formData.append(`salesSupportNum`, parseInt(data.salesSupportNumber))
+    formData.append(`avatar`, avatar[0])
 
     for (var pair of formData.entries()) {
       console.log(pair[0] + ', ' + pair[1])
@@ -119,7 +142,11 @@ const AdminPropertiesDetailsPage = () => {
         credentials
       )
       console.log(res)
+      if (res.data.success) {
+        setLoading(false)
+      }
     } catch (err) {
+      setLoading(false)
       console.log(err)
     }
   }
@@ -148,9 +175,17 @@ const AdminPropertiesDetailsPage = () => {
           </Text>
         </Box>
         <Flex gap={5}>
+          <FeedbackModal
+            handleSubmit={handleSubmit(submitNewProperty)}
+            action={action}
+            onClose={handleClose}
+            isOpen={isOpen}
+          />
           <Button
-            onClick={handleSubmit(submitNewProperty)}
-            // display={isListed ? `none` : `block`}
+            isLoading={isLoading}
+            loadingText={`saving...`}
+            onClick={() => handleOpen(`addProperty`)}
+            // onClick={handleSubmit(submitNewProperty)}
             borderRadius={10}
             p={6}
             colorScheme={`orange`}
@@ -595,7 +630,87 @@ const AdminPropertiesDetailsPage = () => {
           <GridItem colSpan={{ base: 1, lg: 4 }}>
             <Box>
               {/* sales person card */}
-              <SalePersonEditForm />
+              {/* <SalePersonEditForm /> */}
+              <Card
+                bgColor={`transparent`}
+                color={`white`}
+                border={`1px solid #343434`}
+                borderRadius={7}
+                mb={10}
+              >
+                <CardBody p={10}>
+                  <Flex
+                    flexDir={`column`}
+                    flex='1'
+                    gap={10}
+                    alignItems='center'
+                    flexWrap='wrap'
+                  >
+                    <Avatar
+                      name='Segun Adebayo'
+                      src={imgPreview.avatar}
+                      size={`2xl`}
+                      overflow={`hidden`}
+                      pos={`relative`}
+                    >
+                      <Center
+                        w={`100%`}
+                        h={`100%`}
+                        pos={`absolute`}
+                        top={`50%`}
+                        left={`50%`}
+                        transform={`translate(-50%, -50%)`}
+                        fontSize={`2rem`}
+                        bgColor={`#00000090`}
+                      >
+                        <Center
+                          onClick={() => handleImageUpload(`avatar`)}
+                          flexDir={`column`}
+                        >
+                          <Input
+                            hidden
+                            id={`avatar`}
+                            type={`file`}
+                            accept='image/*'
+                            {...register(`avatar`)}
+                          />
+                          <Icon
+                            icon={`material-symbols:photo-camera-outline`}
+                          />
+                        </Center>
+                      </Center>
+                    </Avatar>
+
+                    <FormControl display={`flex`} flexDir={`column`} gap={5}>
+                      <Box>
+                        <FormLabel color={`textGrey`}>
+                          Support In-Charge
+                        </FormLabel>
+                        <Input
+                          borderRadius={15}
+                          size={`lg`}
+                          placeholder='Ezra Aduramigba'
+                          _placeholder={{ fontSize: `xl` }}
+                          {...register(`salesSupportName`)}
+                        />
+                      </Box>
+                      <Box>
+                        <FormLabel color={`textGrey`}>
+                          Contact Details
+                          {/* WhatsApp Contact Details */}
+                        </FormLabel>
+                        <Input
+                          borderRadius={15}
+                          size={`lg`}
+                          placeholder='08118951879'
+                          _placeholder={{ fontSize: `xl` }}
+                          {...register(`salesSupportNumber`)}
+                        />
+                      </Box>
+                    </FormControl>
+                  </Flex>
+                </CardBody>
+              </Card>
             </Box>
           </GridItem>
         </TwoColumnLayout>

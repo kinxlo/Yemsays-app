@@ -89,3 +89,22 @@ select {
     font-size: fn.rem(14);
   }
 }
+
+.custom-date-input::-webkit-calendar-picker-indicator {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.rotate-refresh-icon {
+  animation-name: rotate;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+}

@@ -30,7 +30,7 @@ const PropertyCard = ({ featuredProperty }) => {
             height={`100%`}
             objectFit={`cover`}
             borderRadius={`30px`}
-            src={featuredProperty?.media.imgs?.[0]}
+            src={featuredProperty?.image}
             alt='Green double couch with wooden legs'
           />
         </Box>
@@ -114,7 +114,7 @@ const PropertyCard = ({ featuredProperty }) => {
           </Box>
           <Box paddingTop={4}>
             <LinkButton
-              to={`/properties/${featuredProperty?._id}/details`}
+              to={`/properties/${featuredProperty?.id}/details`}
               text={`View Details`}
               width={`128px`}
               height={`32px`}

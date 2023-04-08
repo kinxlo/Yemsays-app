@@ -11,11 +11,7 @@ import {
 import './scss/dashboard.scss'
 import React, { useCallback, useEffect, useState } from 'react'
 import { FaNetworkWired } from 'react-icons/fa'
-import {
-  MdCropSquare,
-  MdOutlineBed,
-  MdOutlineFamilyRestroom,
-} from 'react-icons/md'
+import { MdOutlineBed, MdOutlineFamilyRestroom } from 'react-icons/md'
 import { BiBath } from 'react-icons/bi'
 import { GiHomeGarage } from 'react-icons/gi'
 import TwoColumnLayout from '../../../layout/TwoColumnLayout'
@@ -33,6 +29,7 @@ import { useSelector } from 'react-redux'
 import { selectPropertyDetails } from './api/propertiesSlice'
 import ReactPlayer from 'react-player'
 import SpinnerComponent from '../../../components/feedback/SpinnerComponent'
+import FeedbackModal from '../../../components/modals/Modal'
 
 const links = [
   { name: `Home`, ref: `/` },
@@ -42,31 +39,46 @@ const links = [
 
 // eslint-disable-next-line react/prop-types
 const AdminPropertiesDetailsPage = () => {
-  const [isListed, setListed] = useState(false)
+  const [action, setAction] = useState(null)
+  const [isOpen, setIsOpen] = useState(false)
   const [getPropertyByID, { isLoading }] = useGetPropertyByIDMutation()
   const [listProperty] = useListPropertyMutation()
   const location = useLocation()
   const propertyID = location.pathname.split(`/`)[3]
   const propertiesDetails = useSelector(selectPropertyDetails)
 
+  const handleOpen = (action) => {
+    setAction(action)
+    setIsOpen(true)
+  }
+
+  const handleClose = () => {
+    setIsOpen(false)
+  }
+
   const getPropertiesDetails = useCallback(async () => {
     await getPropertyByID(propertyID).unwrap()
   }, [getPropertyByID, propertyID])
 
+  const setListedStatus = useCallback(
+    async (status) => {
+      const res = await listProperty({
+        id: propertyID,
+        body: { status: status },
+      }).unwrap()
+      if (res.success) {
+        getPropertiesDetails()
+      }
+    },
+    [getPropertiesDetails, listProperty, propertyID]
+  )
+
   useEffect(() => {
     getPropertiesDetails()
-  }, [getPropertiesDetails])
-
-  const setListedStatus = async () => {
-    const res = await listProperty({
-      id: propertyID,
-      body: { status: `listed` },
-    }).unwrap()
-    console.log(res)
-  }
-
+  }, [getPropertiesDetails, setListedStatus])
   return (
     <>
+      <FeedbackModal action={action} onClose={handleClose} isOpen={isOpen} />
       <Box id='top' mb={12}>
         <BreadCrumbHeader title={`Properties Details`} links={links} />
       </Box>
@@ -83,12 +95,12 @@ const AdminPropertiesDetailsPage = () => {
           <Text fontSize={{ lg: `xl` }}>Residential Land</Text>
           <Text fontSize={{ lg: `xl` }} color={`textGrey`}>
             <Text color={`primary`} as={`span`}>
-              {propertiesDetails?.property?.propertyStatus === `listed`
+              {propertiesDetails?.status === `listed`
                 ? `Listed Property`
                 : `Unlisted Property`}{' '}
               /
             </Text>{' '}
-            {propertiesDetails?.property?.title}
+            {propertiesDetails?.title}
           </Text>
         </Box>
         <Flex gap={5}>
@@ -99,25 +111,20 @@ const AdminPropertiesDetailsPage = () => {
             width={`115px`}
           />
           <Button
-            // onClick={setListedStatus}
+            onClick={() => handleOpen(`unlisted`)}
             borderRadius={10}
             p={6}
             variant={`outline`}
             colorScheme={`orange`}
-            display={
-              propertiesDetails?.property?.propertyStatus === `listed`
-                ? `block`
-                : `none`
-            }
+            display={propertiesDetails?.status === `listed` ? `block` : `none`}
           >
             Unlist Property
           </Button>
           <Button
-            onClick={setListedStatus}
+            // onClick={() => setListedStatus(`listed`)}
+            onClick={() => handleOpen(`listed`)}
             display={
-              propertiesDetails?.property?.propertyStatus === `unlisted`
-                ? `block`
-                : `none`
+              propertiesDetails?.status === `unlisted` ? `block` : `none`
             }
             borderRadius={10}
             p={6}
@@ -132,7 +139,7 @@ const AdminPropertiesDetailsPage = () => {
         <GridImageLayout
           isLoading={isLoading}
           isNotEditProperty
-          imageSet={propertiesDetails?.property?.media?.imgs}
+          imageSet={propertiesDetails?.media?.imgs}
         />
       </Box>
       {/* section two  with unique layer */}
@@ -146,14 +153,14 @@ const AdminPropertiesDetailsPage = () => {
               <Tag
                 bgColor={`accentBlue`}
                 color={`primary`}
-                text={propertiesDetails?.property?.tags[0]}
+                text={propertiesDetails?.tags[0]}
               >
                 <FaNetworkWired />
               </Tag>
               <Tag
                 bgColor={`accentRed`}
                 color={`red`}
-                text={propertiesDetails?.property?.tags[1]}
+                text={propertiesDetails?.tags[1]}
               >
                 <MdOutlineFamilyRestroom />
               </Tag>
@@ -168,16 +175,16 @@ const AdminPropertiesDetailsPage = () => {
             >
               <Box>
                 <Heading fontSize={{ base: `3xl`, lg: `40px` }}>
-                  {propertiesDetails?.property?.title}
+                  {propertiesDetails?.title}
                 </Heading>
                 <Text color={`textGrey`} fontSize={`xl`}>
-                  {propertiesDetails?.property?.location}
+                  {propertiesDetails?.location}
                 </Text>
               </Box>
               <Box>
                 <Text color={`textGrey`}>Sales Price</Text>
                 <Text fontSize={`4xl`} color={`#0FB7C1`} fontWeight={`bold`}>
-                  ${propertiesDetails?.property?.price}
+                  ${propertiesDetails?.price}
                 </Text>
               </Box>
             </Flex>
@@ -189,9 +196,7 @@ const AdminPropertiesDetailsPage = () => {
               {isLoading ? (
                 <SpinnerComponent size={`xl`} />
               ) : (
-                <Text color={`textGrey`}>
-                  {propertiesDetails?.property?.description}
-                </Text>
+                <Text color={`textGrey`}>{propertiesDetails?.description}</Text>
               )}
             </Box>
             {/* features */}
@@ -210,7 +215,7 @@ const AdminPropertiesDetailsPage = () => {
                 >
                   <Tag
                     fs={`lg`}
-                    text={propertiesDetails?.property?.features[0]}
+                    text={propertiesDetails?.features[0]}
                     bgColor={`transparent`}
                     color={`textGrey`}
                   >
@@ -218,7 +223,7 @@ const AdminPropertiesDetailsPage = () => {
                   </Tag>
                   <Tag
                     fs={`lg`}
-                    text={propertiesDetails?.property?.features[1]}
+                    text={propertiesDetails?.features[1]}
                     bgColor={`transparent`}
                     color={`textGrey`}
                   >
@@ -226,7 +231,7 @@ const AdminPropertiesDetailsPage = () => {
                   </Tag>
                   <Tag
                     fs={`lg`}
-                    text={propertiesDetails?.property?.features[2]}
+                    text={propertiesDetails?.features[2]}
                     bgColor={`transparent`}
                     color={`textGrey`}
                   >
@@ -234,7 +239,7 @@ const AdminPropertiesDetailsPage = () => {
                   </Tag>
                   <Tag
                     fs={`lg`}
-                    text={propertiesDetails?.property?.features[3]}
+                    text={propertiesDetails?.features[3]}
                     bgColor={`transparent`}
                     color={`textGrey`}
                   >
@@ -242,7 +247,7 @@ const AdminPropertiesDetailsPage = () => {
                   </Tag>
                   <Tag
                     fs={`lg`}
-                    text={propertiesDetails?.property?.features[4]}
+                    text={propertiesDetails?.features[4]}
                     bgColor={`transparent`}
                     color={`textGrey`}
                   >
@@ -293,7 +298,7 @@ const AdminPropertiesDetailsPage = () => {
                   <ReactPlayer
                     width={`100%`}
                     controls
-                    url={propertiesDetails?.property?.media?.video}
+                    url={propertiesDetails?.media?.video}
                   />
                 </Box>
               )}
@@ -303,7 +308,7 @@ const AdminPropertiesDetailsPage = () => {
           <GridItem colSpan={{ base: 2, lg: 4 }}>
             <Box>
               {/* sales person card */}
-              <SalesPersonCard />
+              <SalesPersonCard salePerson={propertiesDetails?.salesSupport} />
             </Box>
             {/* old properties action */}
             <Box>
@@ -322,7 +327,12 @@ const AdminPropertiesDetailsPage = () => {
                     </Text>
                   </Flex>
                   <Flex flexDir={`column`} gap={5} mt={10}>
-                    <Button size={`lg`} bgColor={`primary`} color={`white`}>
+                    <Button
+                      onClick={() => handleOpen(`sold`)}
+                      size={`lg`}
+                      bgColor={`primary`}
+                      color={`white`}
+                    >
                       Mark as Sold
                     </Button>
                     <Button

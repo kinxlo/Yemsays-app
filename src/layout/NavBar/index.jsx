@@ -78,7 +78,7 @@ const NavBar = ({ children, transparentBg }) => {
             <Link to={'/'}>
               <img
                 className={styles.navLogo}
-                src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1677576945/project-yemsays/Group_86_btjv9i.png`}
+                src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1680856120/project-yemsays/Group_87_qudnxl.png`}
                 alt='logo'
               />
             </Link>
@@ -95,14 +95,14 @@ const NavBar = ({ children, transparentBg }) => {
               }`}
             >
               <div className={styles.navItems}>
-                <Link
+                {/* <Link
                   className={styles.navLink}
                   to={'/'}
                   onClick={handleCloseNavBar}
                   color={activeRoute(`/`) ? `primary` : `white`}
                 >
                   <Text>Home</Text>
-                </Link>
+                </Link> */}
                 <Link
                   className={styles.navLink}
                   to='/about-us'

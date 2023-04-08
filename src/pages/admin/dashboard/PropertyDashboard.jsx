@@ -22,6 +22,7 @@ import AdminPropertyCard from '../../../components/admin/propertyCard/AdminPrope
 import BreadCrumbHeader from '../../../components/breadcrumbHeader/BreadCrumbHeader'
 import { useGetAllPropertiesMutation } from './api/propertiesApiSlice'
 import { useSelector } from 'react-redux'
+import { Link as ReactLink } from 'react-router-dom'
 import {
   selectHouseProperties,
   selectLandProperty,
@@ -155,7 +156,7 @@ const PropertyDashboard = () => {
                   py={7}
                   h={`100%`}
                   transition='all 0.2s'
-                  fontSize={{ base: `lg`, lg: `2xl` }}
+                  fontSize={`2xl`}
                   borderRadius={15}
                   _expanded={{ bg: 'primary', color: `white` }}
                   bgColor={`dashboardBG`}
@@ -165,8 +166,7 @@ const PropertyDashboard = () => {
                     <Box mt={-1} ms={5}>
                       <Icon
                         icon={`majesticons:chevron-down-circle`}
-                        width={`1.2rem`}
-                        height={`1.2rem`}
+                        width={`1.5rem`}
                       />
                     </Box>
                   }
@@ -174,6 +174,7 @@ const PropertyDashboard = () => {
                   {propertyType}
                 </MenuButton>
                 <MenuList
+                  minW={{ base: `10rem`, lg: `11rem` }}
                   mt={1}
                   borderColor={`primary`}
                   bgColor={`dashboardBG`}
@@ -203,45 +204,63 @@ const PropertyDashboard = () => {
                 bgColor={`dashboardBG`}
                 p={5}
               >
-                <Icon icon={`pepicons-pop:refresh`} width={`2rem`} />
+                <Icon
+                  className={isLoading ? 'rotate-refresh-icon' : null}
+                  icon={`pepicons-pop:refresh`}
+                  width={`2rem`}
+                />
               </Center>
 
               <Box>
-                <Button
-                  leftIcon={
-                    <Box mt={-1}>
-                      <Icon icon={`ic:baseline-plus`} width={`1.5rem`} />
-                    </Box>
-                  }
-                  bgColor={`primary`}
-                  borderRadius={15}
-                  variant='solid'
-                  py={9}
-                  width={`12rem`}
-                >
-                  <Text fontSize={`2xl`} mb={-1}>
-                    Add New
-                  </Text>
-                </Button>
+                <Link as={ReactLink} to={`/admin/property/new`}>
+                  <Button
+                    leftIcon={
+                      <Box mt={-1}>
+                        <Icon icon={`ic:baseline-plus`} width={`1.5rem`} />
+                      </Box>
+                    }
+                    bgColor={`primary`}
+                    borderRadius={15}
+                    variant='solid'
+                    py={9}
+                    width={`12rem`}
+                  >
+                    <Text fontSize={`2xl`} mb={-1}>
+                      Add New
+                    </Text>
+                  </Button>
+                </Link>
               </Box>
             </Flex>
           </Flex>
 
           <TabPanels>
             <TabPanel p={0} my={5}>
-              <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={6}>
-                {isLoading ? <SpinnerComponent size={`xl`} /> : propertyList_L}
-              </SimpleGrid>
+              {isLoading ? (
+                <SpinnerComponent size={`xl`} />
+              ) : (
+                <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={6}>
+                  {propertyList_L}
+                </SimpleGrid>
+              )}
             </TabPanel>
             <TabPanel p={0} my={5}>
-              <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={6}>
-                {isLoading ? <SpinnerComponent size={`xl`} /> : propertyList_U}
-              </SimpleGrid>
+              {isLoading ? (
+                <SpinnerComponent size={`xl`} />
+              ) : (
+                <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={6}>
+                  {propertyList_U}
+                </SimpleGrid>
+              )}
             </TabPanel>
             <TabPanel p={0} my={5}>
-              <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={6}>
-                {isLoading ? <SpinnerComponent size={`xl`} /> : propertyList_S}
-              </SimpleGrid>
+              {isLoading ? (
+                <SpinnerComponent size={`xl`} />
+              ) : (
+                <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={6}>
+                  {propertyList_S}
+                </SimpleGrid>
+              )}
             </TabPanel>
           </TabPanels>
         </Tabs>

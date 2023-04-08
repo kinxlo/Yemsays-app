@@ -1,5 +1,5 @@
 import { Box, Heading, SimpleGrid, Text } from '@chakra-ui/react'
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import Banner from '../../components/banner/Banner'
 import QuestionBanner from '../../components/banner/QuestionBanner'
@@ -7,6 +7,11 @@ import PropertyCard from '../../components/property-card/PropertyCard'
 import SearchForm from '../../components/search-form/SearchForm'
 import Container from '../../layout/Container'
 import DefaultLayout from '../../layout/DefaultLayout'
+import SpinnerComponent from '../../components/feedback/SpinnerComponent'
+import {
+  useListHousePropertiesMutation,
+  useListLandPropertiesMutation,
+} from '../admin/dashboard/api/propertiesApiSlice'
 import {
   selectPropertyState,
   selectUserHouseProperties,
@@ -14,17 +19,45 @@ import {
 } from '../admin/dashboard/api/propertiesSlice'
 
 const Properties = () => {
+  const [isSearch, setSearch] = useState(false)
+  const [listLandProperties, { isLoading }] = useListLandPropertiesMutation()
+  const [listHouseProperties] = useListHousePropertiesMutation()
   const userLandProperties = useSelector(selectUserLandProperties)
   const userHouseProperties = useSelector(selectUserHouseProperties)
   const propertyState = useSelector(selectPropertyState)
 
-  const properties = propertyState.isLand
-    ? userLandProperties?.map((property) => {
-        return <PropertyCard key={property._id} featuredProperty={property} />
+  const showLandProperties = useCallback(async () => {
+    await listLandProperties().unwrap()
+  }, [listLandProperties])
+
+  const showHouseProperties = useCallback(async () => {
+    await listHouseProperties().unwrap()
+  }, [listHouseProperties])
+
+  useEffect(() => {
+    showLandProperties()
+    showHouseProperties()
+  }, [showHouseProperties, showLandProperties])
+
+  const properties = propertyState.isLand ? (
+    userLandProperties?.length ? (
+      userLandProperties?.map((property) => {
+        return <PropertyCard key={property.id} featuredProperty={property} />
       })
-    : userHouseProperties?.map((property) => {
-        return <PropertyCard key={property._id} featuredProperty={property} />
-      })
+    ) : (
+      <Text textAlign={`center`} width={{ xl: `1091px` }}>
+        No Land Property found!
+      </Text>
+    )
+  ) : userHouseProperties?.length ? (
+    userHouseProperties?.map((property) => {
+      return <PropertyCard key={property.id} featuredProperty={property} />
+    })
+  ) : (
+    <Text textAlign={`center`} width={{ xl: `1091px` }}>
+      No house Property found!
+    </Text>
+  )
 
   return (
     <DefaultLayout>
@@ -47,7 +80,7 @@ const Properties = () => {
         </Container>
       </Box>
       <Box bgColor={`bgBlack`} py={10} display={{ base: `none`, lg: `block` }}>
-        <SearchForm />
+        <SearchForm setSearch={setSearch} />
       </Box>
       {/* section two */}
       <Box bgColor={`bgBlack`} color={`white`} className='page_alignment'>
@@ -56,14 +89,19 @@ const Properties = () => {
             <Heading fontSize={{ base: `3xl`, lg: `5xl` }} color={`textLight`}>
               Property Listings - {propertyState.isLand ? `land` : `House`}
             </Heading>
-            <Text color={`textGrey`} fontSize={`lg`}>
-              {/* Search Results For: Deluxe */}
+            <Text hidden={!isSearch} color={`textGrey`} fontSize={`lg`}>
+              Search Results For:{' '}
+              {propertyState.isLand ? `land properties` : `House properties`}
             </Text>
           </Box>
           <Box>
-            <SimpleGrid columns={{ base: 1, lg: 2 }} gap={10}>
-              {properties}
-            </SimpleGrid>
+            {isLoading ? (
+              <SpinnerComponent size={`xl`} />
+            ) : (
+              <SimpleGrid columns={{ base: 1, lg: 2 }} gap={10}>
+                {properties}
+              </SimpleGrid>
+            )}
           </Box>
         </Container>
       </Box>

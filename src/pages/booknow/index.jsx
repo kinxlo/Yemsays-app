@@ -1,3 +1,4 @@
+/* eslint-disable react/no-children-prop */
 import {
   Box,
   Button,
@@ -9,11 +10,13 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
+  InputRightElement,
   SimpleGrid,
   Text,
   Textarea,
   useToast,
 } from '@chakra-ui/react'
+import { Icon } from '@iconify/react'
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { FaEnvelope, FaPhoneAlt, FaUserAlt } from 'react-icons/fa'
@@ -169,6 +172,8 @@ const BookApointment = () => {
                     <MdDateRange color='orange' size={`1.5rem`} />
                   </InputLeftElement>
                   <Input
+                    className='custom-date-input'
+                    color={`white`}
                     type='date'
                     placeholder='Inspection Date'
                     {...register(`inspectionDate`)}
@@ -182,6 +187,7 @@ const BookApointment = () => {
                     <MdOutlineAccessTimeFilled color='orange' size={`1.5rem`} />
                   </InputLeftElement>
                   <Input
+                    className='custom-date-input'
                     type='time'
                     placeholder='Inspection Time'
                     {...register(`inspectionTime`)}

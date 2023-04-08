@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import {
   Box,
   Button,
@@ -19,7 +20,7 @@ import {
 } from '../../pages/admin/dashboard/api/propertiesApiSlice'
 import { selectPropertyState } from '../../pages/admin/dashboard/api/propertiesSlice'
 
-const SearchForm = () => {
+const SearchForm = ({ setSearch }) => {
   const [listLandProperties] = useListLandPropertiesMutation()
   const [listHouseProperties] = useListHousePropertiesMutation()
   const [searchProperty, { isLoading }] = useSearchPropertyMutation()
@@ -38,6 +39,7 @@ const SearchForm = () => {
   }, [listHouseProperties])
 
   const handleLandBtnClick = () => {
+    setSearch(false)
     // setBtnState({ houseBtn: false, landBtn: true })
     showLandProperties()
     dispatch({
@@ -46,6 +48,7 @@ const SearchForm = () => {
     })
   }
   const handleHouseBtnClick = () => {
+    setSearch(false)
     // setBtnState({ houseBtn: true, landBtn: false })
     showHouseProperties()
     dispatch({ type: `properties/changePropertyState`, payload: false })
@@ -55,15 +58,16 @@ const SearchForm = () => {
     console.log(data)
     const formData = {
       location: data.location,
-      property: propertyState.isLand ? `Land` : `house`,
+      property: propertyState.isLand ? `land` : `house`,
       averagePrice: data.averagePrice,
-      propertyType: data.propertyType,
+      propertyType: propertyState.isLand
+        ? data.propertyTypeLand
+        : data.propertyTypeHouse,
     }
 
-    console.log(formData)
     try {
-      const res = await searchProperty(formData).unwrap()
-      console.log(res)
+      setSearch(true)
+      await searchProperty(formData).unwrap()
     } catch (err) {
       console.log(err)
     }
@@ -145,7 +149,7 @@ const SearchForm = () => {
                 bgColor={`textLight`}
                 type='text'
                 placeholder='Deluxe'
-                {...register(`propertyType`)}
+                {...register(`propertyTypeLand`)}
               />
             </FormControl>
           </GridItem>
@@ -157,7 +161,7 @@ const SearchForm = () => {
                 bgColor={`textLight`}
                 type='text'
                 placeholder='Deluxe'
-                {...register(`propertyType`)}
+                {...register(`propertyTypeHouse`)}
               />
             </FormControl>
           </GridItem>

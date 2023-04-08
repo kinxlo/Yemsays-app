@@ -4,6 +4,7 @@ import {
   setDashboardData,
   setProperties,
   setPropertyDetails,
+  setRecentProperties,
   setUserHouseProperties,
   setUserLandProperties,
 } from './propertiesSlice'
@@ -30,7 +31,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
           console.log(data)
           dispatch(
             setDashboardData({
-              dashboardData: data,
+              dashboardData: data.data,
             })
           )
         } catch (err) {
@@ -66,6 +67,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled
+          console.log(data)
           dispatch(
             setPropertyDetails({
               propertyDetails: data.data,
@@ -119,7 +121,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
           console.log(data)
           dispatch(
             setUserLandProperties({
-              user_land_properties: data.listedLands,
+              user_land_properties: data.data,
             })
           )
         } catch (err) {
@@ -139,7 +141,27 @@ export const authApiSlice = apiSlice.injectEndpoints({
           console.log(data)
           dispatch(
             setUserHouseProperties({
-              user_house_properties: data.listedHouses,
+              user_house_properties: data.data,
+            })
+          )
+        } catch (err) {
+          console.log(err)
+        }
+      },
+    }),
+
+    recentProperties: builder.mutation({
+      query: () => ({
+        url: `/property/recent`,
+        method: 'GET',
+      }),
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled
+          console.log(data)
+          dispatch(
+            setRecentProperties({
+              recentProperties: data.data,
             })
           )
         } catch (err) {
@@ -170,6 +192,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
         body: { ...credentials },
       }),
     }),
+
     bookApointment: builder.mutation({
       query: (credentials) => ({
         url: `/mailing/appointment`,
@@ -183,18 +206,29 @@ export const authApiSlice = apiSlice.injectEndpoints({
         url: `/search?location=${credentials.location}&property=${credentials.property}&averagePrice=${credentials.averagePrice}&propertyType=${credentials.propertyType}`,
         method: 'GET',
       }),
-      // async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-      //   try {
-      //     const { data } = await queryFulfilled
-      //     dispatch(
-      //       setProperties({
-      //         properties: data.data,
-      //       })
-      //     )
-      //   } catch (err) {
-      //     console.log(err)
-      //   }
-      // },
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled
+          console.log(data)
+          if (arg.property === `land`) {
+            console.log(`land property`)
+            dispatch(
+              setUserLandProperties({
+                user_land_properties: data.data,
+              })
+            )
+          } else {
+            console.log(`house property`)
+            dispatch(
+              setUserHouseProperties({
+                user_house_properties: data.data,
+              })
+            )
+          }
+        } catch (err) {
+          console.log(err)
+        }
+      },
     }),
 
     // ========== External API ==================
@@ -217,5 +251,6 @@ export const {
   useContactUsMutation,
   useBookApointmentMutation,
   useSearchPropertyMutation,
+  useRecentPropertiesMutation,
   // useRefreshMutation,
 } = authApiSlice

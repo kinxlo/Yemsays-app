@@ -1,5 +1,5 @@
 import { Box, Heading, Image, SimpleGrid, Text } from '@chakra-ui/react'
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import LinkButton from '../../components/buttons/link-button/LinkButton'
 import Container from '../../layout/Container'
 import { MdPlayArrow } from 'react-icons/md'
@@ -11,38 +11,38 @@ import QuestionBanner from '../../components/banner/QuestionBanner'
 import SearchForm from '../../components/search-form/SearchForm'
 import DefaultLayout from '../../layout/DefaultLayout'
 import img from '../../assets/heroImg.png'
-import {
-  useListHousePropertiesMutation,
-  useListLandPropertiesMutation,
-} from '../admin/dashboard/api/propertiesApiSlice'
+import { useRecentPropertiesMutation } from '../admin/dashboard/api/propertiesApiSlice'
 import { useSelector } from 'react-redux'
-import {
-  selectUserHouseProperties,
-  selectUserLandProperties,
-} from '../admin/dashboard/api/propertiesSlice'
+import { selectRecentProperties } from '../admin/dashboard/api/propertiesSlice'
+import ReactPlayer from 'react-player'
+import { Icon } from '@iconify/react'
+import SpinnerComponent from '../../components/feedback/SpinnerComponent'
+
+const reactPlayer = {
+  // width: `100%`,
+  // height: `100%`,
+  // transform: `scale(2)` /* 16:9 aspect ratio */,
+}
 
 const Home = () => {
   const { hero, sectionTwo, sectionThree, Testimonials } = HOME_CONTENT
-  const [listLandProperties] = useListLandPropertiesMutation()
-  const [listHouseProperties] = useListHousePropertiesMutation()
+  const [play, setPlay] = useState(false)
+  const recentProps = useSelector(selectRecentProperties)
+  const [recentProperties, { isLoading }] = useRecentPropertiesMutation()
 
-  const userLandProperties = useSelector(selectUserLandProperties)
-  const userHouseProperties = useSelector(selectUserHouseProperties)
-
-  const showLandProperties = useCallback(async () => {
-    await listLandProperties().unwrap()
-  }, [listLandProperties])
-
-  const showHouseProperties = useCallback(async () => {
-    await listHouseProperties().unwrap()
-  }, [listHouseProperties])
+  const showRecentProperties = useCallback(async () => {
+    await recentProperties().unwrap()
+  }, [recentProperties])
 
   useEffect(() => {
-    showLandProperties()
-    showHouseProperties()
-  }, [showHouseProperties, showLandProperties])
+    showRecentProperties()
+  }, [showRecentProperties])
 
-  // const featureList = userLandProperties.map((feature) => {})
+  const recentPropertyList = recentProps?.map((recentProperty) => {
+    return (
+      <PropertyCard key={recentProperty.id} featuredProperty={recentProperty} />
+    )
+  })
 
   return (
     <DefaultLayout>
@@ -50,12 +50,36 @@ const Home = () => {
       <Box
         className='page_alignment'
         backgroundRepeat={`no-repeat`}
-        bgSize={`cover`}
-        bgPosition={`center`}
         height={`706`}
         pos={`relative`}
       >
+        <Box
+          pos={`absolute`}
+          top={0}
+          left={0}
+          w={`100%`}
+          h={`100%`}
+          _after={{
+            pos: `absolute`,
+            content: '""',
+            top: 0,
+            left: 0,
+            width: `100%`,
+            height: `100%`,
+            bgColor: `#ffffff60`,
+          }}
+          zIndex={-1}
+        >
+          <ReactPlayer
+            style={reactPlayer}
+            width={`100%`}
+            height={`100%`}
+            url={`https://player.vimeo.com/external/392612459.sd.mp4?s=39589128d7c98ba18e262569fc7a5a6d31d89e22&profile_id=164&oauth2_token_id=57447761`}
+            playing={play}
+          />
+        </Box>
         <Image
+          filter={`blur(5px)`}
           fallbackSrc={img}
           pos={`absolute`}
           top={0}
@@ -63,8 +87,8 @@ const Home = () => {
           w={`100%`}
           h={`100%`}
           objectFit={`cover`}
-          zIndex={-1}
-          src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1677665416/project-yemsays/unsplash_JQUrgUn_pr4_maw4p0.png`}
+          zIndex={-2}
+          src={`https://images.pexels.com/photos/3288103/pexels-photo-3288103.png?auto=compress&cs=tinysrgb&w=1600`}
         />
         <Container>
           <Box mt={32} width={`fit-content`}>
@@ -99,7 +123,9 @@ const Home = () => {
               </Heading>
             </Box>
           </Box>
-          <Text width={{ md: `50%` }}>{hero.subTitle}</Text>
+          <Text fontWeight={600} width={{ md: `50%` }}>
+            {hero.subTitle}
+          </Text>
           <Box display={`flex`} alignItems={`center`} gap={4} mt={22}>
             <LinkButton
               to={`/properties`}
@@ -107,8 +133,21 @@ const Home = () => {
               text={`View Properties`}
               height={`40px`}
             />
-            <Box bg={`white`} borderRadius={`100%`} padding={1}>
-              <MdPlayArrow size={`1.5rem`} color={`orange`} />
+            <Box
+              onClick={() => setPlay((prevState) => !prevState)}
+              bg={`white`}
+              borderRadius={`100%`}
+              padding={1}
+              color={`primary`}
+            >
+              <Icon
+                width={`1.5rem`}
+                icon={
+                  !play
+                    ? `material-symbols:play-arrow-rounded`
+                    : `material-symbols:pause`
+                }
+              />
             </Box>
           </Box>
         </Container>
@@ -246,17 +285,18 @@ const Home = () => {
             </Text>
           </Box>
           <Box>
-            <SimpleGrid
-              columns={{ base: 1, xl: 2 }}
-              gap={`32px`}
-              justifyItems={`center`}
-              alignItems={`center`}
-            >
-              <PropertyCard featuredProperty={userLandProperties?.[0]} />
-              <PropertyCard featuredProperty={userHouseProperties?.[1]} />
-              <PropertyCard featuredProperty={userHouseProperties?.[0]} />
-              <PropertyCard featuredProperty={userLandProperties?.[1]} />
-            </SimpleGrid>
+            {isLoading ? (
+              <SpinnerComponent size={`xl`} />
+            ) : (
+              <SimpleGrid
+                columns={{ base: 1, xl: 2 }}
+                gap={`32px`}
+                justifyItems={`center`}
+                alignItems={`center`}
+              >
+                {recentPropertyList}
+              </SimpleGrid>
+            )}
           </Box>
         </Container>
       </Box>

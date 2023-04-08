@@ -37,33 +37,51 @@ import Spinner from '../../components/feedback/SpinnerComponent'
 import SpinnerComponent from '../../components/feedback/SpinnerComponent'
 
 const PropertiesDetailsPage = () => {
-  const [propertyDetails, setProppertyDetails] = useState({})
+  const [propertyDetails, setPropertyDetails] = useState({})
   const [reviewRatings, setReviewRatings] = useState({
     property: 0,
     valueForMoney: 0,
     location: 0,
     support: 0,
   })
-  const [similarPropertyDetails, setSimilarProppertyDetails] = useState([])
+  const [similarPropertyDetails, setSimilarPropertyDetails] = useState([])
   const location = useLocation()
   const propertyID = location.pathname.split(`/`)[2]
-  const [getPropertyByIDClient, { isLoading }] =
-    useGetPropertyByIDClientMutation()
-  const [addReview] = useAddReviewMutation()
+  const [getPropertyByIDClient, args1] = useGetPropertyByIDClientMutation()
+  const [addReview, arg2] = useAddReviewMutation()
 
   const showPropertiesDetails = useCallback(async () => {
     const res = await getPropertyByIDClient(propertyID).unwrap()
     console.log(res)
-    setProppertyDetails(res.property)
-    setSimilarProppertyDetails(res.similarProperties)
+    setPropertyDetails(res.data.property)
+    setSimilarPropertyDetails(res.data.similarProperties)
   }, [getPropertyByIDClient, propertyID])
 
   useEffect(() => {
     showPropertiesDetails()
   }, [showPropertiesDetails])
 
-  const similarProperties = similarPropertyDetails.map((property) => {
-    return <SimilarPropertyCard key={property?._id} property={property} />
+  const reviews = propertyDetails?.reviewers?.map((review) => {
+    return (
+      <Box mb={6} key={review._id}>
+        <Box mb={2}>
+          <Text fontSize={`xl`}>
+            {review.name}{' '}
+            <Text fontSize={`md`} color={`primary`} as={`span`}>
+              ({review.email})
+            </Text>
+          </Text>
+          <Text color={`#0FB7C1`}>{review.createdAt}</Text>
+        </Box>
+        <Box>
+          <Text color={`textGrey`}>{review.review}</Text>
+        </Box>
+      </Box>
+    )
+  })
+
+  const similarProperties = similarPropertyDetails?.map((property) => {
+    return <SimilarPropertyCard key={property?.id} property={property} />
   })
 
   const { handleSubmit, register } = useForm()
@@ -87,19 +105,6 @@ const PropertiesDetailsPage = () => {
       review: data.review,
     }
 
-    // const formData = new FormData()
-    // formData.append(`property`, parseInt(reviewRatings.property))
-    // formData.append(`valueForMoney`, parseInt(reviewRatings.valueForMoney))
-    // formData.append(`location`, parseInt(reviewRatings.location))
-    // formData.append(`support`, parseInt(reviewRatings.support))
-    // formData.append(`name`, data.name)
-    // formData.append(`email`, data.email)
-    // formData.append(`review`, data.review)
-
-    // for (var pair of formData.entries()) {
-    //   console.log(pair[0] + ', ' + pair[1])
-    // }
-
     try {
       const res = await addReview({
         propertyId: propertyID,
@@ -116,7 +121,7 @@ const PropertiesDetailsPage = () => {
       <Box className='page_alignment' bgColor={`black`}>
         <Container paddingBlock={0}>
           <GridImageLayout
-            isLoading={isLoading}
+            isLoading={args1.isLoading}
             isNotEditProperty
             imageSet={propertyDetails?.media?.imgs}
           />
@@ -178,7 +183,7 @@ const PropertiesDetailsPage = () => {
                 <Heading fontSize={`xl`} mb={5}>
                   Description
                 </Heading>
-                {isLoading ? (
+                {args1.isLoading ? (
                   <SpinnerComponent size={`lg`} />
                 ) : (
                   <Text color={`textGrey`}>{propertyDetails?.description}</Text>
@@ -189,7 +194,7 @@ const PropertiesDetailsPage = () => {
                 <Heading fontSize={`xl`} mb={5}>
                   Features
                 </Heading>
-                {isLoading ? (
+                {args1.isLoading ? (
                   <SpinnerComponent size={`lg`} />
                 ) : (
                   <Flex
@@ -255,7 +260,7 @@ const PropertiesDetailsPage = () => {
                   Property Video
                 </Heading>
                 <Box borderRadius={7} overflow={`hidden`}>
-                  {isLoading ? (
+                  {args1.isLoading ? (
                     <SpinnerComponent size={`lg`} />
                   ) : (
                     <ReactPlayer
@@ -271,7 +276,7 @@ const PropertiesDetailsPage = () => {
                 <Heading fontSize={`xl`} mb={5}>
                   Visitor Ratings
                 </Heading>
-                {isLoading ? (
+                {args1.isLoading ? (
                   <SpinnerComponent size={`lg`} />
                 ) : (
                   <Flex
@@ -367,26 +372,11 @@ const PropertiesDetailsPage = () => {
               <Box border={`1px solid #343434`} p={8} borderRadius={7} my={10}>
                 <Box mb={5}>
                   <Heading fontSize={`xl`}>Reviews</Heading>
-                  <Text color={`textGrey`}>1 review</Text>
-                </Box>
-                <Box mb={5}>
-                  <Text fontSize={`xl`}>
-                    Aisha Akinwumi{' '}
-                    <Text fontSize={`md`} color={`primary`} as={`span`}>
-                      (oyelolaifeoluwa@gmail.com)
-                    </Text>
-                  </Text>
-                  <Text color={`#0FB7C1`}>22-03-2023 09:30:20am</Text>
-                </Box>
-                <Box>
                   <Text color={`textGrey`}>
-                    Lorem ipsum dolor sit amet consectetur. Id libero
-                    suspendisse eu risus amet vel. Aliquet contur consectetur
-                    purus amet ultricies facilisis a pelloique. Telus et cras
-                    urna vel vitae. Ornare aliquam dolor enim consequat sapien
-                    odio cras integer.
+                    {propertyDetails?.reviewers?.length} review
                   </Text>
                 </Box>
+                {reviews}
               </Box>
               {/* Comment a review */}
               <Box border={`1px solid #343434`} p={8} borderRadius={7} my={10}>
@@ -522,6 +512,8 @@ const PropertiesDetailsPage = () => {
                     </GridItem>
                   </SimpleGrid>
                   <Button
+                    isLoading={arg2.isLoading}
+                    loadingText='Sending review...'
                     onClick={handleSubmit(handleSubmitReview)}
                     mt={5}
                     colorScheme={`orange`}

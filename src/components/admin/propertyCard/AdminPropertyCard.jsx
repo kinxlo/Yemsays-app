@@ -10,15 +10,27 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react'
-import React from 'react'
+import React, { useState } from 'react'
 import { FaNetworkWired } from 'react-icons/fa'
 import { MdLocationOn, MdOutlineFamilyRestroom } from 'react-icons/md'
 import LinkButton from '../../buttons/link-button/LinkButton'
+import FeedbackModal from '../../modals/Modal'
 import Tag from '../../tag/Tag'
 
 const AdminPropertyCard = ({ listed, sold, propertyDescription }) => {
+  const [action, setAction] = useState(null)
+  const [isOpen, setIsOpen] = useState(false)
   // const { features, location, id, media, price, status, tags, title, type } =
   //   propertyDescription
+  const handleOpen = (action) => {
+    setAction(action)
+    setIsOpen(true)
+  }
+
+  const handleClose = () => {
+    setIsOpen(false)
+  }
+
   return (
     <Card
       bgColor={`transparent`}
@@ -45,7 +57,7 @@ const AdminPropertyCard = ({ listed, sold, propertyDescription }) => {
             height={`100%`}
             objectFit={`cover`}
             borderRadius={10}
-            src={propertyDescription?.media?.imgs[0]}
+            src={propertyDescription?.image}
             alt='img'
           />
         </Box>
@@ -136,7 +148,14 @@ const AdminPropertyCard = ({ listed, sold, propertyDescription }) => {
               />
             </Box>
             <Box paddingTop={4}>
+              <FeedbackModal
+                propertyID={propertyDescription?.id}
+                action={action}
+                onClose={handleClose}
+                isOpen={isOpen}
+              />
               <Button
+                onClick={() => handleOpen(`listed`)}
                 display={!sold ? `none` : null}
                 variant={`outline`}
                 colorScheme={`orange`}

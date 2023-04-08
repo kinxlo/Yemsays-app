@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import {
   Avatar,
   Box,
@@ -10,7 +11,7 @@ import {
 } from '@chakra-ui/react'
 import React from 'react'
 
-const SalesPersonCard = () => {
+const SalesPersonCard = ({ salePerson }) => {
   return (
     <Card
       bgColor={`transparent`}
@@ -27,14 +28,10 @@ const SalesPersonCard = () => {
           alignItems='center'
           flexWrap='wrap'
         >
-          <Avatar
-            name='Segun Adebayo'
-            src='https://bit.ly/sage-adebayo'
-            size={`2xl`}
-          />
+          <Avatar name='Segun Adebayo' src={salePerson?.avatar} size={`2xl`} />
 
           <Box textAlign={`center`}>
-            <Heading fontSize={`2xl`}>Segun Adebayo</Heading>
+            <Heading fontSize={`2xl`}>{salePerson?.name}</Heading>
             <Text fontSize={`lg`} color={`textGrey`}>
               Sales Support
             </Text>
