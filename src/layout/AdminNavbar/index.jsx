@@ -4,15 +4,11 @@ import {
   Flex,
   Heading,
   Text,
-  Input,
-  InputGroup,
-  InputRightElement,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
 } from '@chakra-ui/react'
-import { Icon } from '@iconify/react'
 import React from 'react'
 import { useDispatch } from 'react-redux'
 import { SidebarResponsive } from '../../components/sidebar/Sidebar'
@@ -28,18 +24,24 @@ const AdminNavbar = (props) => {
 
   return (
     <nav>
-      <Flex p={7} alignItems={`center`} justifyContent={`flex-end`}>
+      <Flex
+        p={7}
+        alignItems={`center`}
+        justifyContent={{ base: `space-between`, xl: `flex-end` }}
+        flexDir={{ base: `row-reverse`, xl: `row` }}
+      >
         <Flex alignItems={`center`} gap={{ base: 20, lg: 30 }}>
           <Box>
             <Flex>
               <Flex
-                flexDir={{ base: `column-reverse`, sm: `row` }}
+                flexDir={{ sm: `row` }}
                 gap='4'
                 alignItems='center'
+                // justifyContent={`center`}
                 flexWrap='wrap'
               >
                 <Box>
-                  <Heading size='sm'>Segun Adebayo</Heading>
+                  <Heading size='sm'>Ezra Aduramiba</Heading>
                   <Text textAlign={`right`} color={`textGrey`}>
                     Admin
                   </Text>
@@ -48,8 +50,8 @@ const AdminNavbar = (props) => {
                   <MenuButton as={Box}>
                     <Avatar
                       borderRadius={5}
-                      name='Segun Adebayo'
-                      src='https://bit.ly/sage-adebayo'
+                      name='Ezra Aduramiba'
+                      // src='https://bit.ly/sage-adebayo'
                     />
                   </MenuButton>
                   <MenuList

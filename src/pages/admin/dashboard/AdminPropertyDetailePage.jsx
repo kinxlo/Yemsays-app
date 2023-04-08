@@ -84,7 +84,7 @@ const AdminPropertiesDetailsPage = () => {
       </Box>
       <Flex
         p={5}
-        flexDir={{ base: `column`, lg: `row` }}
+        flexDir={{ base: `column`, sm: `row` }}
         justifyContent={`space-between`}
         alignItems={`center`}
         bgColor={`dashboardBG`}

@@ -33,7 +33,6 @@ import {
   useGetPropertyByIDClientMutation,
 } from '../admin/dashboard/api/propertiesApiSlice'
 import { useForm } from 'react-hook-form'
-import Spinner from '../../components/feedback/SpinnerComponent'
 import SpinnerComponent from '../../components/feedback/SpinnerComponent'
 
 const PropertiesDetailsPage = () => {
@@ -291,13 +290,13 @@ const PropertiesDetailsPage = () => {
                       p={5}
                     >
                       <Text fontSize={`4xl`} fontWeight={`bold`}>
-                        {propertyDetails?.avgReviewScore}
+                        {propertyDetails?.totalRating}
                       </Text>
                       <Text>out of 5.0</Text>
                       <Box mt={3}>
                         <StarRatings
                           starRatedColor='orange'
-                          rating={propertyDetails?.avgReviewScore}
+                          rating={propertyDetails?.totalRating}
                           starDimension='20px'
                           starSpacing='5px'
                         />
@@ -311,10 +310,10 @@ const PropertiesDetailsPage = () => {
                             alignItems={`flex-start`}
                           >
                             <Text mb={2}>Property</Text>
-                            <Text>{propertyDetails?.avgPropertyScore}</Text>
+                            <Text>{propertyDetails?.propertyRating}</Text>
                           </Flex>
                           <Progress
-                            value={propertyDetails?.avgPropertyScore}
+                            value={propertyDetails?.propertyRating}
                             size='xs'
                             colorScheme='orange'
                           />
@@ -325,12 +324,10 @@ const PropertiesDetailsPage = () => {
                             alignItems={`flex-start`}
                           >
                             <Text mb={2}>Value for Money</Text>
-                            <Text>
-                              {propertyDetails?.avgValueForMoneyScore}
-                            </Text>
+                            <Text>{propertyDetails?.valueForMoneyRating}</Text>
                           </Flex>
                           <Progress
-                            value={propertyDetails?.avgValueForMoneyScore}
+                            value={propertyDetails?.valueForMoneyRating}
                             size='xs'
                             colorScheme='orange'
                           />
@@ -341,10 +338,10 @@ const PropertiesDetailsPage = () => {
                             alignItems={`flex-start`}
                           >
                             <Text mb={2}>Location</Text>
-                            <Text>{propertyDetails?.avgLocationScore}</Text>
+                            <Text>{propertyDetails?.locationRating}</Text>
                           </Flex>
                           <Progress
-                            value={propertyDetails?.avgLocationScore}
+                            value={propertyDetails?.locationRating}
                             size='xs'
                             colorScheme='orange'
                           />
@@ -355,10 +352,10 @@ const PropertiesDetailsPage = () => {
                             alignItems={`flex-start`}
                           >
                             <Text mb={2}>Support</Text>
-                            <Text>{propertyDetails?.avgSupportScore}</Text>
+                            <Text>{propertyDetails?.supportRating}</Text>
                           </Flex>
                           <Progress
-                            value={propertyDetails?.avgSupportScore}
+                            value={propertyDetails?.supportRating}
                             size='xs'
                             colorScheme='orange'
                           />
@@ -527,16 +524,23 @@ const PropertiesDetailsPage = () => {
             <GridItem colSpan={{ base: 2, lg: 4 }}>
               <Box>
                 {/* sales person card */}
-                <SalesPersonCard />
+                <SalesPersonCard
+                  isLoading={args1.isLoading}
+                  salePerson={propertyDetails?.salesSupport}
+                />
               </Box>
               {/* similar properties */}
               <Box>
                 <Heading fontSize={`3xl`} color={`textLight`} mb={5}>
                   Similar Properties
                 </Heading>
-                <SimpleGrid columns={1} gap={5}>
-                  {similarProperties}
-                </SimpleGrid>
+                {args1.isLoading ? (
+                  <SpinnerComponent size={`xl`} />
+                ) : (
+                  <SimpleGrid columns={1} gap={5}>
+                    {similarProperties}
+                  </SimpleGrid>
+                )}
               </Box>
             </GridItem>
           </TwoColumnLayout>

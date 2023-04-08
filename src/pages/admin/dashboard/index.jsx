@@ -37,6 +37,10 @@ const Dashboard = () => {
     showDashboardData()
   }, [showDashboardData])
 
+  const reviews = dashboardData?.reviews?.map((review, index) => {
+    return <Reviews key={index} review={review} />
+  })
+
   return (
     <>
       <Box>
@@ -80,7 +84,7 @@ const Dashboard = () => {
                   <Text>View All Properties</Text>
                 </Link>
               </Flex>
-              <SimpleGrid columns={{ base: 1, lg: 2 }} gap={10}>
+              <SimpleGrid columns={{ base: 1, sm: 2 }} gap={10}>
                 {isLoading ? (
                   <SpinnerComponent size={`xl`} />
                 ) : (
@@ -157,11 +161,7 @@ const Dashboard = () => {
                 <Text color={`primary`}>See All</Text>
               </Flex>
               <SimpleGrid mt={10} columns={1} gap={3}>
-                <Reviews />
-                <Reviews />
-                <Reviews />
-                <Reviews />
-                <Reviews />
+                {isLoading ? <SpinnerComponent size={`xl`} /> : reviews}
               </SimpleGrid>
             </Box>
           </GridItem>

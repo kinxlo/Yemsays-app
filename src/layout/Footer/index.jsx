@@ -160,7 +160,6 @@ const Footer = () => {
                 <List>
                   <ListItem
                     cursor={`pointer`}
-                    _hover={{ color: `primary` }}
                     color={`textGrey`}
                     textTransform={`capitalize`}
                     mb={`9px`}
@@ -169,7 +168,6 @@ const Footer = () => {
                   </ListItem>
                   <ListItem
                     cursor={`pointer`}
-                    _hover={{ color: `primary` }}
                     color={`textGrey`}
                     textTransform={`capitalize`}
                     mb={`9px`}
@@ -178,7 +176,6 @@ const Footer = () => {
                   </ListItem>
                   <ListItem
                     cursor={`pointer`}
-                    _hover={{ color: `primary` }}
                     color={`textGrey`}
                     textTransform={`capitalize`}
                     mb={`9px`}
@@ -187,7 +184,6 @@ const Footer = () => {
                   </ListItem>
                   <ListItem
                     cursor={`pointer`}
-                    _hover={{ color: `primary` }}
                     color={`textGrey`}
                     textTransform={`capitalize`}
                     mb={`9px`}

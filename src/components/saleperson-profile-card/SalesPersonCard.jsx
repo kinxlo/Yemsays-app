@@ -10,8 +10,22 @@ import {
   Text,
 } from '@chakra-ui/react'
 import React from 'react'
+import SpinnerComponent from '../feedback/SpinnerComponent'
 
-const SalesPersonCard = ({ salePerson }) => {
+const SalesPersonCard = ({ salePerson, isLoading }) => {
+  const base64String = salePerson?.avatar
+  const phoneNumber = salePerson?.phoneNumber // Replace with the phone number you want to call
+  const message = 'Hello!' // Replace with the message you want to send
+  const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}` // Create the WhatsApp message link
+  const call_url = `tel:${phoneNumber}`
+
+  function callViaWhatsapp() {
+    window.location.href = url // Redirect the user to the WhatsApp call link
+  }
+  function callViaPhone() {
+    window.location.href = call_url // Redirect the user to the WhatsApp call link
+  }
+
   return (
     <Card
       bgColor={`transparent`}
@@ -28,7 +42,15 @@ const SalesPersonCard = ({ salePerson }) => {
           alignItems='center'
           flexWrap='wrap'
         >
-          <Avatar name='Segun Adebayo' src={salePerson?.avatar} size={`2xl`} />
+          {isLoading ? (
+            <SpinnerComponent size={`xl`} />
+          ) : (
+            <Avatar
+              name={salePerson?.name}
+              src={`data:image/png;base64,${base64String}`}
+              size={`2xl`}
+            />
+          )}
 
           <Box textAlign={`center`}>
             <Heading fontSize={`2xl`}>{salePerson?.name}</Heading>
@@ -38,10 +60,20 @@ const SalesPersonCard = ({ salePerson }) => {
           </Box>
         </Flex>
         <Flex flexDir={`column`} gap={5} mt={20}>
-          <Button size={`lg`} bgColor={`white`} color={`black`}>
+          <Button
+            onClick={callViaWhatsapp}
+            size={`lg`}
+            bgColor={`white`}
+            color={`black`}
+          >
             Message
           </Button>
-          <Button size={`lg`} bgColor={`#F5D9BE`} color={`primary`}>
+          <Button
+            onClick={callViaPhone}
+            size={`lg`}
+            bgColor={`#F5D9BE`}
+            color={`primary`}
+          >
             Call
           </Button>
         </Flex>

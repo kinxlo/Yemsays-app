@@ -28,12 +28,14 @@ const FeedbackModal = ({ isOpen, onClose, action, id, handleSubmit }) => {
   useEffect(() => {
     if (!id) {
       setPropertyID(location.pathname.split(`/`)[3])
+    } else {
+      setPropertyID(id)
     }
   }, [id, location.pathname])
 
   const showSuccessMessage = () => {
     setSuccess(true)
-    setTimeout(() => setSuccess(false), 5000) //use the close function on the modal
+    setTimeout(() => setSuccess(false), 10000) //use the close function on the modal
   }
 
   const getPropertiesDetails = useCallback(async () => {
@@ -103,7 +105,7 @@ const FeedbackModal = ({ isOpen, onClose, action, id, handleSubmit }) => {
 
   return (
     <>
-      <Modal isOpen={isOpen} size={`xl`}>
+      <Modal isOpen={isOpen} size={{ base: `full`, md: `xl` }} isCentered>
         <ModalOverlay />
         <ModalContent borderRadius={20} overflow={`hidden`}>
           <ModalBody

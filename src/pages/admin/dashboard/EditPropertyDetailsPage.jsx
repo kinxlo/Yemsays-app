@@ -1,6 +1,9 @@
 import {
+  Avatar,
   Box,
   Button,
+  Card,
+  CardBody,
   Center,
   Flex,
   FormControl,
@@ -22,22 +25,15 @@ import { Icon } from '@iconify/react'
 import TwoColumnLayout from '../../../layout/TwoColumnLayout'
 
 import BreadCrumbHeader from '../../../components/breadcrumbHeader/BreadCrumbHeader'
-import EditImgOverlay from '../../../components/editImgOverlay/EditImgOverlay'
-import SalePersonEditForm from '../../../components/admin/salePersonEditForm/SalePersonEditForm'
 import { useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
-import {
-  selectPropertyDetails,
-  setPropertyDetails,
-} from './api/propertiesSlice'
-import {
-  useEditPropertyMutation,
-  useGetPropertyByIDMutation,
-} from './api/propertiesApiSlice'
+import { selectPropertyDetails } from './api/propertiesSlice'
+import { useGetPropertyByIDMutation } from './api/propertiesApiSlice'
 import { useForm } from 'react-hook-form'
 import { selectCurrentToken } from '../auth/api/authSlice'
 import axios from 'axios'
 import ReactPlayer from 'react-player'
+import FeedbackModal from '../../../components/modals/Modal'
 
 const links = [
   { name: `Home`, ref: `/` },
@@ -48,7 +44,8 @@ const links = [
 
 // eslint-disable-next-line react/prop-types
 const AdminPropertiesDetailsPage = () => {
-  const [isListed, setListed] = useState(false)
+  const [action, setAction] = useState(null)
+  const [isOpen, setIsOpen] = useState(false)
   const [isLoading, setLoading] = useState(false)
   const location = useLocation()
   const propertyID = location.pathname.split(`/`)[3]
@@ -56,41 +53,48 @@ const AdminPropertiesDetailsPage = () => {
   const propertiesDetails = useSelector(selectPropertyDetails)
   const token = useSelector(selectCurrentToken)
   const [imgPreview, setImgPreview] = useState({
-    img1: null,
-    img2: null,
-    img3: null,
-    img4: null,
-    property_video: `https://player.vimeo.com/external/392612459.sd.mp4?s=39589128d7c98ba18e262569fc7a5a6d31d89e22&profile_id=164&oauth2_token_id=57447761`,
+    img1: propertiesDetails?.media?.imgs?.[0],
+    img2: propertiesDetails?.media?.imgs?.[1],
+    img3: propertiesDetails?.media?.imgs?.[2],
+    img4: propertiesDetails?.media?.imgs?.[3],
+    avatar: `data:image/png;base64,${propertiesDetails?.salesSupport?.avatar}`,
+    property_video: propertiesDetails?.media?.video,
   })
 
-  // console.log(propertiesDetails)
-  const defaultFormData = {
-    title: propertiesDetails?.property?.title,
-    location: propertiesDetails?.property?.location,
-    tags: propertiesDetails?.property?.tags.join(` `),
-    propertyType: propertiesDetails?.property?.propertyType,
-    price: propertiesDetails?.property?.price,
-    description: propertiesDetails?.property?.description,
-    // image_1: propertiesDetails?.property?.media?.imgs[0],
-    // image_2: propertiesDetails?.property?.media?.imgs[1],
-    // image_3: propertiesDetails?.property?.media?.imgs[2],
-    // image_4: propertiesDetails?.property?.media?.imgs[3],
-    feat_1: propertiesDetails?.property?.features[0],
-    feat_2: propertiesDetails?.property?.features[1],
-    feat_3: propertiesDetails?.property?.features[2],
-    feat_4: propertiesDetails?.property?.features[3],
-    feat_5: propertiesDetails?.property?.features[4],
-    feat_6: propertiesDetails?.property?.features[5],
-    video: propertiesDetails?.property?.media?.video,
-    images: propertiesDetails?.property?.media?.imgs,
+  const handleOpen = (action) => {
+    setAction(action)
+    setIsOpen(true)
   }
 
-  const {
-    handleSubmit,
-    register,
-    reset,
-    formState: { errors },
-  } = useForm({
+  const handleClose = () => {
+    setIsOpen(false)
+  }
+
+  const defaultFormData = {
+    title: propertiesDetails?.title,
+    location: propertiesDetails?.location,
+    tags: propertiesDetails?.tags.join(` `),
+    propertyType: propertiesDetails?.type,
+    price: propertiesDetails?.price,
+    description: propertiesDetails?.description,
+    feat_1: propertiesDetails?.features[0],
+    feat_2: propertiesDetails?.features[1],
+    feat_3: propertiesDetails?.features[2],
+    feat_4: propertiesDetails?.features[3],
+    feat_5: propertiesDetails?.features[4],
+    feat_6: propertiesDetails?.features[5],
+    image_1: propertiesDetails?.media?.imgs[0],
+    image_2: propertiesDetails?.media?.imgs[1],
+    image_3: propertiesDetails?.media?.imgs[2],
+    image_4: propertiesDetails?.media?.imgs[3],
+    video: propertiesDetails?.media?.video,
+    salesSupportName: propertiesDetails?.salesSupport?.name,
+    salesSupportNum: parseInt(propertiesDetails?.salesSupport?.phoneNumber),
+    avatar: propertiesDetails?.salesSupport?.avatar,
+    // images: propertiesDetails?.media?.imgs,
+  }
+
+  const { handleSubmit, register, reset } = useForm({
     defaultValues: defaultFormData,
   })
 
@@ -115,9 +119,13 @@ const AdminPropertiesDetailsPage = () => {
   const handleVideoUpload = (id) => {
     let fileInput = document.getElementById(id)
     fileInput.click()
+    fileInput.onchange = () => {
+      const [file] = fileInput.files
+      setImgPreview((prevState) => {
+        return { ...prevState, [id]: URL.createObjectURL(file) }
+      })
+    }
   }
-
-  // console.log(defaultFormData)
 
   const getPropertiesDetails = useCallback(async () => {
     await getPropertyByID(propertyID).unwrap()
@@ -133,10 +141,18 @@ const AdminPropertiesDetailsPage = () => {
     const formData = new FormData()
     const tags = data.tags.split(' ')
     const images = [
-      ...data.image_1,
-      ...data.image_2,
-      ...data.image_3,
-      ...data.image_4,
+      ...(typeof data.image_1 === 'string'
+        ? [data.image_1]
+        : [...data.image_1]),
+      ...(typeof data.image_2 === 'string'
+        ? [data.image_2]
+        : [...data.image_2]),
+      ...(typeof data.image_3 === 'string'
+        ? [data.image_3]
+        : [...data.image_3]),
+      ...(typeof data.image_4 === 'string'
+        ? [data.image_4]
+        : [...data.image_4]),
     ]
     const features = [
       data.feat_1,
@@ -147,7 +163,10 @@ const AdminPropertiesDetailsPage = () => {
       data.feat_6,
     ]
 
+    console.log(typeof images[0])
+
     const video = [...data.video]
+    const avatar = [...data.avatar]
 
     formData.append(`title`, data.title)
     formData.append(`location`, data.location)
@@ -156,12 +175,14 @@ const AdminPropertiesDetailsPage = () => {
     formData.append(`description`, data.description)
     tags.forEach((tag) => formData.append(`tags[]`, tag))
     features.forEach((feature) => formData.append(`features[]`, feature))
-    images.forEach((img) => {
-      typeof img === `object` ? formData.append(`images`, img) : null
-    })
+    images.forEach((img) => formData.append(`images`, img))
+    // images.forEach((img) => {
+    //   typeof img === `object` ? formData.append(`images`, img) : null
+    // })
     typeof video[0] === `object` ? formData.append(`video`, video[0]) : null
-
-    console.log(typeof video[0])
+    formData.append(`salesSupportName`, data.salesSupportName)
+    formData.append(`salesSupportNum`, parseInt(data.salesSupportNum))
+    typeof avatar[0] === `object` ? formData.append(`avatar`, avatar[0]) : null
 
     for (var pair of formData.entries()) {
       console.log(pair[0] + ', ' + pair[1])
@@ -189,7 +210,7 @@ const AdminPropertiesDetailsPage = () => {
       </Box>
       <Flex
         p={5}
-        flexDir={{ base: `column`, lg: `row` }}
+        flexDir={{ base: `column`, sm: `row` }}
         justifyContent={`space-between`}
         alignItems={`center`}
         bgColor={`dashboardBG`}
@@ -200,13 +221,23 @@ const AdminPropertiesDetailsPage = () => {
           <Text fontSize={{ lg: `xl` }}>Residential Land</Text>
           <Text fontSize={{ lg: `xl` }} color={`textGrey`}>
             <Text color={`primary`} as={`span`}>
-              {isListed ? `Listed Property` : `Unlisted Property`} /
+              {propertiesDetails?.status === `listed`
+                ? `Listed Property`
+                : `Unlisted Property`}{' '}
+              /
             </Text>{' '}
-            3 Ogunlesi Street, Onipanu
+            {propertiesDetails?.title}
           </Text>
         </Box>
         <Flex gap={5}>
+          <FeedbackModal
+            handleSubmit={handleSubmit(submitEditedProperty)}
+            action={action}
+            onClose={handleClose}
+            isOpen={isOpen}
+          />
           <Button
+            // onClick={() => handleOpen(`addProperty`)}
             onClick={handleSubmit(submitEditedProperty)}
             isLoading={isLoading}
             loadingText='Saving...'
@@ -266,9 +297,8 @@ const AdminPropertiesDetailsPage = () => {
             <Image
               className='cc-img-fluid'
               src={null}
-              fallbackSrc={
-                imgPreview.img1 || propertiesDetails?.property?.media?.imgs[0]
-              }
+              // fallbackSrc={imgPreview.img2 || propertiesDetails?.media?.imgs[0]}
+              fallbackSrc={imgPreview.img1}
             />
           </GridItem>
           <GridItem
@@ -306,9 +336,8 @@ const AdminPropertiesDetailsPage = () => {
             <Image
               className='cc-img-fluid'
               src={null}
-              fallbackSrc={
-                imgPreview.img2 || propertiesDetails?.property?.media?.imgs[1]
-              }
+              // fallbackSrc={imgPreview.img2 || propertiesDetails?.media?.imgs[1]}
+              fallbackSrc={imgPreview.img2}
             />
           </GridItem>
           <GridItem
@@ -345,9 +374,8 @@ const AdminPropertiesDetailsPage = () => {
             <Image
               className='cc-img-fluid'
               src={null}
-              fallbackSrc={
-                imgPreview.img3 || propertiesDetails?.property?.media?.imgs[2]
-              }
+              // fallbackSrc={imgPreview.img3 || propertiesDetails?.media?.imgs[2]}
+              fallbackSrc={imgPreview.img3}
             />
           </GridItem>
           <GridItem
@@ -384,9 +412,8 @@ const AdminPropertiesDetailsPage = () => {
             <Image
               className='cc-img-fluid'
               src={null}
-              fallbackSrc={
-                imgPreview.img4 || propertiesDetails?.property?.media?.imgs[3]
-              }
+              // fallbackSrc={imgPreview.img4 || propertiesDetails?.media?.imgs[3]}
+              fallbackSrc={imgPreview.img4}
             />
           </GridItem>
         </Grid>
@@ -421,13 +448,13 @@ const AdminPropertiesDetailsPage = () => {
                     Property type
                   </FormLabel>
                   <Select
-                    // defaultValue={propertiesDetails?.property?.propertyType}
+                    defaultValue={propertiesDetails?.type}
                     borderColor={`textGrey`}
                     fontSize={`xl`}
                     borderRadius={15}
                     h={`62px`}
                     {...register(`propertyType`)}
-                    // placeholder={propertiesDetails?.propery?.propertyType}
+                    placeholder={propertiesDetails?.type}
                   >
                     <option>Land</option>
                     <option>House</option>
@@ -678,8 +705,8 @@ const AdminPropertiesDetailsPage = () => {
                   <ReactPlayer
                     width={`100%`}
                     url={
-                      // imgPreview.property_video ||
-                      propertiesDetails?.property?.media?.video
+                      imgPreview.property_video ||
+                      propertiesDetails?.media?.video
                     }
                   />
                 </Center>
@@ -690,7 +717,87 @@ const AdminPropertiesDetailsPage = () => {
           <GridItem colSpan={{ base: 1, lg: 4 }}>
             <Box>
               {/* sales person card */}
-              <SalePersonEditForm />
+              {/* <SalePersonEditForm /> */}
+              <Card
+                bgColor={`transparent`}
+                color={`white`}
+                border={`1px solid #343434`}
+                borderRadius={7}
+                mb={10}
+              >
+                <CardBody p={10}>
+                  <Flex
+                    flexDir={`column`}
+                    flex='1'
+                    gap={10}
+                    alignItems='center'
+                    flexWrap='wrap'
+                  >
+                    <Avatar
+                      name='Segun Adebayo'
+                      src={imgPreview.avatar}
+                      size={`2xl`}
+                      overflow={`hidden`}
+                      pos={`relative`}
+                    >
+                      <Center
+                        w={`100%`}
+                        h={`100%`}
+                        pos={`absolute`}
+                        top={`50%`}
+                        left={`50%`}
+                        transform={`translate(-50%, -50%)`}
+                        fontSize={`2rem`}
+                        bgColor={`#00000090`}
+                      >
+                        <Center
+                          onClick={() => handleImageUpload(`avatar`)}
+                          flexDir={`column`}
+                        >
+                          <Input
+                            hidden
+                            id={`avatar`}
+                            type={`file`}
+                            accept='image/*'
+                            {...register(`avatar`)}
+                          />
+                          <Icon
+                            icon={`material-symbols:photo-camera-outline`}
+                          />
+                        </Center>
+                      </Center>
+                    </Avatar>
+
+                    <FormControl display={`flex`} flexDir={`column`} gap={5}>
+                      <Box>
+                        <FormLabel color={`textGrey`}>
+                          Support In-Charge
+                        </FormLabel>
+                        <Input
+                          borderRadius={15}
+                          size={`lg`}
+                          placeholder='Ezra Aduramigba'
+                          _placeholder={{ fontSize: `xl` }}
+                          {...register(`salesSupportName`)}
+                        />
+                      </Box>
+                      <Box>
+                        <FormLabel color={`textGrey`}>
+                          Contact Details
+                          {/* WhatsApp Contact Details */}
+                        </FormLabel>
+                        <Input
+                          borderRadius={15}
+                          size={`lg`}
+                          placeholder='08118951879'
+                          _placeholder={{ fontSize: `xl` }}
+                          {...register(`salesSupportNum`)}
+                        />
+                      </Box>
+                    </FormControl>
+                  </Flex>
+                </CardBody>
+              </Card>
             </Box>
           </GridItem>
         </TwoColumnLayout>

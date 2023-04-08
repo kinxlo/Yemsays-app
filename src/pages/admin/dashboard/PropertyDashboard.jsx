@@ -146,7 +146,7 @@ const PropertyDashboard = () => {
               </Tab>
             </TabList>
             <Flex
-              flexDir={{ base: `column`, lg: `row` }}
+              flexDir={{ base: `column`, sm: `row` }}
               alignItems={`center`}
               gap={10}
             >

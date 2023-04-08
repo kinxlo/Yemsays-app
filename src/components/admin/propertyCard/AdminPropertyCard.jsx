@@ -61,7 +61,7 @@ const AdminPropertyCard = ({ listed, sold, propertyDescription }) => {
             alt='img'
           />
         </Box>
-        <Stack spacing='3' flex={1}>
+        <Stack spacing={3} flex={1}>
           <Box height={`1.5rem`}>
             <Text color={`lightgreen`} display={listed ? `block` : `none`}>
               {/* Posted on 1/3/2023 */}
@@ -149,7 +149,7 @@ const AdminPropertyCard = ({ listed, sold, propertyDescription }) => {
             </Box>
             <Box paddingTop={4}>
               <FeedbackModal
-                propertyID={propertyDescription?.id}
+                id={propertyDescription?.id}
                 action={action}
                 onClose={handleClose}
                 isOpen={isOpen}

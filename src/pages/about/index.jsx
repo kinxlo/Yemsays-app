@@ -46,7 +46,7 @@ const index = () => {
       >
         <Container>
           <Box pos={`relative`} zIndex={1}>
-            <Box mt={32} width={{ md: `50%` }}>
+            <Box mt={32} width={{ lg: `50%` }}>
               <Heading
                 fontSize={{ base: `5xl`, md: `6xl` }}
                 fontWeight={`bold`}
@@ -96,14 +96,19 @@ const index = () => {
               </Flex>
             </Box>
             <Box flex={1}>
-              <Box maxW={`405px`} ml={`auto`}>
+              <Box margin={{ base: `auto`, lg: `0 0 0 auto` }} maxW={`405px`}>
                 <Image
                   //   className='cc-img-fluid'
                   src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1678009576/project-yemsays/Rectangle_36_mlzg4i.png`}
                 />
                 <Image
                   //   className='cc-img-fluid'
-                  display={{ base: `none`, lg: `block` }}
+                  display={{
+                    base: `none`,
+                    md: `block`,
+                    lg: `none`,
+                    xl: `block`,
+                  }}
                   transform={`translate(-40%, -70%)`}
                   src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1678009554/project-yemsays/Rectangle_37_ke6cv9.png`}
                 />
@@ -142,7 +147,7 @@ const index = () => {
         className='page_alignment'
       >
         <Container paddingBlock={0}>
-          <Flex flexDir={{ base: `column`, lg: `row` }} gap={10}>
+          <Flex flexDir={{ base: `column`, xl: `row` }} gap={10}>
             <Box flex={1}>
               <Heading fontSize={`lg`} color={`primary`}>
                 {sectionFour.title}

@@ -24,14 +24,11 @@ import { Icon } from '@iconify/react'
 
 import TwoColumnLayout from '../../../layout/TwoColumnLayout'
 import BreadCrumbHeader from '../../../components/breadcrumbHeader/BreadCrumbHeader'
-import SalePersonEditForm from '../../../components/admin/salePersonEditForm/SalePersonEditForm'
 import { useForm } from 'react-hook-form'
 import { useSelector } from 'react-redux'
 import { selectCurrentToken } from '../auth/api/authSlice'
 import axios from 'axios'
 import ReactPlayer from 'react-player'
-import EditImgOverlay from '../../../components/editImgOverlay/EditImgOverlay'
-import FeedbackModal from '../../../components/modals/Modal'
 
 const links = [
   { name: `Home`, ref: `admin/dashboard` },
@@ -40,8 +37,6 @@ const links = [
 
 const AdminPropertiesDetailsPage = () => {
   const [isListed] = useState(false)
-  const [action, setAction] = useState(null)
-  const [isOpen, setIsOpen] = useState(false)
   const [isLoading, setLoading] = useState(false)
   const [imgPreview, setImgPreview] = useState({
     img1: null,
@@ -59,16 +54,6 @@ const AdminPropertiesDetailsPage = () => {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'multipart/form-data',
     },
-  }
-  // const { features, location, id, media, price, status, tags, title, type } =
-  //   propertyDescription
-  const handleOpen = (action) => {
-    setAction(action)
-    setIsOpen(true)
-  }
-
-  const handleClose = () => {
-    setIsOpen(false)
   }
 
   const handleImageUpload = (id) => {
@@ -158,7 +143,7 @@ const AdminPropertiesDetailsPage = () => {
       </Box>
       <Flex
         p={5}
-        flexDir={{ base: `column`, lg: `row` }}
+        flexDir={{ base: `column`, sm: `row` }}
         justifyContent={`space-between`}
         alignItems={`center`}
         bgColor={`dashboardBG`}
@@ -175,17 +160,10 @@ const AdminPropertiesDetailsPage = () => {
           </Text>
         </Box>
         <Flex gap={5}>
-          <FeedbackModal
-            handleSubmit={handleSubmit(submitNewProperty)}
-            action={action}
-            onClose={handleClose}
-            isOpen={isOpen}
-          />
           <Button
             isLoading={isLoading}
             loadingText={`saving...`}
-            onClick={() => handleOpen(`addProperty`)}
-            // onClick={handleSubmit(submitNewProperty)}
+            onClick={handleSubmit(submitNewProperty)}
             borderRadius={10}
             p={6}
             colorScheme={`orange`}
@@ -613,7 +591,7 @@ const AdminPropertiesDetailsPage = () => {
                           hidden
                           id={`property_video`}
                           type={`file`}
-                          accept='video/*'
+                          accept='video/mp4'
                           {...register(`video`)}
                         />
                         <Icon icon={`material-symbols:photo-camera-outline`} />

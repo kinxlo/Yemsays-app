@@ -26,6 +26,7 @@ const reactPlayer = {
 
 const Home = () => {
   const { hero, sectionTwo, sectionThree, Testimonials } = HOME_CONTENT
+  const [isSearch, setSearch] = useState(false)
   const [play, setPlay] = useState(false)
   const recentProps = useSelector(selectRecentProperties)
   const [recentProperties, { isLoading }] = useRecentPropertiesMutation()
@@ -155,7 +156,7 @@ const Home = () => {
           display={{ base: `none`, lg: `block` }}
           transform={`translateY(3rem)`}
         >
-          <SearchForm />
+          <SearchForm setSearch={setSearch} />
         </Box>
       </Box>
       {/* section two */}
@@ -215,13 +216,13 @@ const Home = () => {
           {/* section two B */}
           <Box
             display={`flex`}
-            flexDir={{ base: `column`, md: `row` }}
+            flexDir={{ base: `column`, lg: `row` }}
             marginTop={44}
             gap={20}
           >
             {/* article Picture */}
             <Box className='page_alignment' flex={1}>
-              <Box maxW={444}>
+              <Box margin={`auto`} maxW={444}>
                 <Image
                   className='cc-img-fluid'
                   src='https://res.cloudinary.com/kingsleysolomon/image/upload/v1677762969/project-yemsays/unsplash_o_9YmCY0bag_ipyuwz.png'
