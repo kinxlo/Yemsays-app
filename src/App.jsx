@@ -14,8 +14,8 @@ import {
   SignIn,
   SignUp,
 } from './pages'
-
 import AdminLayout from './layout/AdminLayout'
+import RequireAuth from './hooks/RequireAuth'
 
 function App() {
   return (
@@ -33,18 +33,20 @@ function App() {
           path='/properties/:slug/details'
           element={<PropertiesDetailsPage />}
         />
-        <Route path='/admin' element={<AdminLayout />}>
-          <Route path='dashboard' element={<MainDashboard />} />
-          <Route path='properties' element={<PropertyDashboard />} />
-          <Route
-            path='properties/:slug/details'
-            element={<AdminPropertyDetailePage />}
-          />
-          <Route
-            path='properties/:slug/details/edit'
-            element={<EditPropertyDetailsPage />}
-          />
-          <Route path='property/new' element={<AddNewPropertyPage />} />
+        <Route element={<RequireAuth />}>
+          <Route path='/admin' element={<AdminLayout />}>
+            <Route path='dashboard' element={<MainDashboard />} />
+            <Route path='properties' element={<PropertyDashboard />} />
+            <Route
+              path='properties/:slug/details'
+              element={<AdminPropertyDetailePage />}
+            />
+            <Route
+              path='properties/:slug/details/edit'
+              element={<EditPropertyDetailsPage />}
+            />
+            <Route path='property/new' element={<AddNewPropertyPage />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

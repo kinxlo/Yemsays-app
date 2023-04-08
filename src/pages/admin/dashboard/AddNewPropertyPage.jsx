@@ -31,8 +31,8 @@ import axios from 'axios'
 import ReactPlayer from 'react-player'
 
 const links = [
-  { name: `Home`, ref: `admin/dashboard` },
-  { name: `Add new Property`, ref: `admin/properties/new` },
+  { name: `Home`, ref: `/admin/dashboard` },
+  { name: `Add new Property`, ref: `/admin/property/new` },
 ]
 
 const AdminPropertiesDetailsPage = () => {
@@ -180,8 +180,8 @@ const AdminPropertiesDetailsPage = () => {
           templateRows='repeat(3, 1fr)'
           templateColumns='repeat(3, 1fr)'
           gap={4}
-          borderRadius={10}
-          overflow={`hidden`}
+          // overflow={`hidden`}
+          // borderRadius={10}
         >
           <GridItem
             rowSpan={{ base: 2, lg: 3 }}
@@ -218,7 +218,7 @@ const AdminPropertiesDetailsPage = () => {
             </Center>
 
             <Image
-              className='cc-img-fluid'
+              className={`cc-img-fluid`}
               src={null}
               fallbackSrc={imgPreview.img1}
             />

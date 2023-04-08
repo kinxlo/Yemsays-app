@@ -8,12 +8,15 @@ import {
   Heading,
 } from '@chakra-ui/react'
 import React from 'react'
+import { Link as ReactLink } from 'react-router-dom'
 
 const BreadCrumbHeader = ({ title, links }) => {
   const breadCrumbItems = links.map((link, index) => {
     return (
       <BreadcrumbItem key={index}>
-        <BreadcrumbLink href='#'>{link.name}</BreadcrumbLink>
+        <BreadcrumbLink as={ReactLink} to={link.ref}>
+          {link.name}
+        </BreadcrumbLink>
       </BreadcrumbItem>
     )
   })

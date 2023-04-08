@@ -107,10 +107,17 @@ const FeedbackModal = ({ isOpen, onClose, action, id, handleSubmit }) => {
     <>
       <Modal isOpen={isOpen} size={{ base: `full`, md: `xl` }} isCentered>
         <ModalOverlay />
-        <ModalContent borderRadius={20} overflow={`hidden`}>
+        <ModalContent
+          bgColor={`transparent`}
+          borderRadius={20}
+          overflow={`hidden`}
+        >
           <ModalBody
+            display={`flex`}
+            flexDir={`column`}
             textAlign={`center`}
-            padding={16}
+            justifyContent={`center`}
+            padding={{ md: 16 }}
             bgColor={`bgBlack`}
             color={`white`}
           >
@@ -128,6 +135,7 @@ const FeedbackModal = ({ isOpen, onClose, action, id, handleSubmit }) => {
                 variant={`solid`}
                 colorScheme={`orange`}
                 hidden={isSuccess}
+                height={`50px`}
               >
                 Yes
               </Button>
@@ -136,6 +144,7 @@ const FeedbackModal = ({ isOpen, onClose, action, id, handleSubmit }) => {
                 variant={`outline`}
                 colorScheme={`orange`}
                 hidden={isSuccess}
+                height={`50px`}
               >
                 No
               </Button>
@@ -144,6 +153,7 @@ const FeedbackModal = ({ isOpen, onClose, action, id, handleSubmit }) => {
                 hidden={!isSuccess}
                 variant={`solid`}
                 colorScheme={`orange`}
+                height={`50px`}
               >
                 Continue
               </Button>

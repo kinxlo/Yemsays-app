@@ -65,7 +65,7 @@ const AdminPropertyCard = ({ listed, sold, propertyDescription }) => {
           <Box height={`1.5rem`}>
             <Text color={`lightgreen`} display={listed ? `block` : `none`}>
               {/* Posted on 1/3/2023 */}
-              {propertyDescription?.createdAt}
+              {new Date(propertyDescription?.createdAt).toLocaleString()}
             </Text>
           </Box>
           <Box display={`flex`} gap={5} mb={3}>

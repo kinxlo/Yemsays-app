@@ -114,8 +114,6 @@ const PropertiesDetailsPage = () => {
   }
 
   const handleSubmitReview = async (data) => {
-    console.log(data)
-
     const formDataII = {
       property: reviewRatings.property,
       valueForMoney: reviewRatings.valueForMoney,
@@ -337,6 +335,7 @@ const PropertiesDetailsPage = () => {
                             <Text>{propertyDetails?.propertyRating}</Text>
                           </Flex>
                           <Progress
+                            max={5}
                             value={propertyDetails?.propertyRating}
                             size='xs'
                             colorScheme='orange'
@@ -351,6 +350,7 @@ const PropertiesDetailsPage = () => {
                             <Text>{propertyDetails?.valueForMoneyRating}</Text>
                           </Flex>
                           <Progress
+                            max={5}
                             value={propertyDetails?.valueForMoneyRating}
                             size='xs'
                             colorScheme='orange'
@@ -365,6 +365,7 @@ const PropertiesDetailsPage = () => {
                             <Text>{propertyDetails?.locationRating}</Text>
                           </Flex>
                           <Progress
+                            max={5}
                             value={propertyDetails?.locationRating}
                             size='xs'
                             colorScheme='orange'
@@ -379,6 +380,7 @@ const PropertiesDetailsPage = () => {
                             <Text>{propertyDetails?.supportRating}</Text>
                           </Flex>
                           <Progress
+                            max={5}
                             value={propertyDetails?.supportRating}
                             size='xs'
                             colorScheme='orange'

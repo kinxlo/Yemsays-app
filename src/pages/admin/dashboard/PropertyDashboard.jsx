@@ -30,8 +30,8 @@ import {
 import SpinnerComponent from '../../../components/feedback/SpinnerComponent'
 
 const links = [
-  { name: `Home`, ref: `/` },
-  { name: `properties`, ref: `/properties` },
+  { name: `Home`, ref: `/admin/dashboard` },
+  { name: `properties`, ref: `/admin/properties` },
 ]
 
 const PropertyDashboard = () => {

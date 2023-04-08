@@ -35,13 +35,6 @@ import axios from 'axios'
 import ReactPlayer from 'react-player'
 import FeedbackModal from '../../../components/modals/Modal'
 
-const links = [
-  { name: `Home`, ref: `/` },
-  { name: `properties`, ref: `/properties` },
-  { name: `propertiesDetails`, ref: `/properties Details` },
-  { name: `Edit`, ref: `/Edit` },
-]
-
 // eslint-disable-next-line react/prop-types
 const AdminPropertiesDetailsPage = () => {
   const [action, setAction] = useState(null)
@@ -52,6 +45,15 @@ const AdminPropertiesDetailsPage = () => {
   const [getPropertyByID] = useGetPropertyByIDMutation()
   const propertiesDetails = useSelector(selectPropertyDetails)
   const token = useSelector(selectCurrentToken)
+  const links = [
+    { name: `Home`, ref: `/admin/dashboard` },
+    { name: `properties`, ref: `/admin/properties` },
+    {
+      name: `propertiesDetails`,
+      ref: `/admin/properties/${propertyID}/Details`,
+    },
+    { name: `Edit`, ref: `/Edit` },
+  ]
   const [imgPreview, setImgPreview] = useState({
     img1: propertiesDetails?.media?.imgs?.[0],
     img2: propertiesDetails?.media?.imgs?.[1],

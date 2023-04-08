@@ -20,8 +20,8 @@ import { useGetDashboardDataMutation } from './api/propertiesApiSlice'
 import { selectDashboardData } from './api/propertiesSlice'
 
 const links = [
-  { name: `Home`, ref: `/` },
-  { name: `dashboard`, ref: `/dashboard` },
+  { name: `Home`, ref: `/admin/dashboard` },
+  { name: `dashboard`, ref: `/admin/dashboard` },
 ]
 
 const Dashboard = () => {
@@ -158,7 +158,7 @@ const Dashboard = () => {
             <Box borderRadius={10} bgColor={`dashboardBG`} p={5}>
               <Flex justifyContent={`space-between`} alignItems={`center`}>
                 <Heading fontSize={`3xl`}>Reviews</Heading>
-                <Text color={`primary`}>See All</Text>
+                {/* <Text color={`primary`}>See All</Text> */}
               </Flex>
               <SimpleGrid mt={10} columns={1} gap={3}>
                 {isLoading ? <SpinnerComponent size={`xl`} /> : reviews}

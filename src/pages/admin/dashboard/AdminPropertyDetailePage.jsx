@@ -31,12 +31,6 @@ import ReactPlayer from 'react-player'
 import SpinnerComponent from '../../../components/feedback/SpinnerComponent'
 import FeedbackModal from '../../../components/modals/Modal'
 
-const links = [
-  { name: `Home`, ref: `/` },
-  { name: `properties`, ref: `/properties` },
-  { name: `propertiesDetails`, ref: `/properties Details` },
-]
-
 // eslint-disable-next-line react/prop-types
 const AdminPropertiesDetailsPage = () => {
   const [action, setAction] = useState(null)
@@ -46,6 +40,14 @@ const AdminPropertiesDetailsPage = () => {
   const location = useLocation()
   const propertyID = location.pathname.split(`/`)[3]
   const propertiesDetails = useSelector(selectPropertyDetails)
+  const links = [
+    { name: `Home`, ref: `/admin/dashboard` },
+    { name: `properties`, ref: `/admin/properties` },
+    {
+      name: `propertiesDetails`,
+      ref: `/admin/properties/${propertyID}/Details`,
+    },
+  ]
 
   const handleOpen = (action) => {
     setAction(action)
