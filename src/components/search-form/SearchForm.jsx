@@ -9,7 +9,7 @@ import {
   Input,
   SimpleGrid,
 } from '@chakra-ui/react'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback } from 'react'
 import { useForm } from 'react-hook-form'
 import { IoOptionsOutline } from 'react-icons/io5'
 import { useDispatch, useSelector } from 'react-redux'
@@ -27,8 +27,6 @@ const SearchForm = ({ setSearch }) => {
   const propertyState = useSelector(selectPropertyState)
   const { handleSubmit, register } = useForm()
   const dispatch = useDispatch()
-
-  // console.log(args_1, args_2)
 
   const showLandProperties = useCallback(async () => {
     await listLandProperties().unwrap()
@@ -55,7 +53,6 @@ const SearchForm = ({ setSearch }) => {
   }
 
   const handleSearchForm = async (data) => {
-    console.log(data)
     const formData = {
       location: data.location,
       property: propertyState.isLand ? `land` : `house`,
@@ -185,7 +182,7 @@ const SearchForm = ({ setSearch }) => {
               alignItems={`center`}
               gap={5}
             >
-              <Box>
+              <Box hidden>
                 <IoOptionsOutline size={`1.5rem`} />
               </Box>
               <Button

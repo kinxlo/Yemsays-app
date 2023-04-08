@@ -10,8 +10,7 @@ import {
   Text,
 } from '@chakra-ui/react'
 import React from 'react'
-import { MdLocationOn, MdOutlineFamilyRestroom } from 'react-icons/md'
-import { FaNetworkWired } from 'react-icons/fa'
+import { MdLocationOn } from 'react-icons/md'
 import Tag from '../tag/Tag'
 import LinkButton from '../buttons/link-button/LinkButton'
 
@@ -30,6 +29,7 @@ const PropertyCard = ({ featuredProperty }) => {
             height={`100%`}
             objectFit={`cover`}
             borderRadius={`30px`}
+            border={`1px solid lightGrey`}
             src={featuredProperty?.image}
             alt='Green double couch with wooden legs'
           />

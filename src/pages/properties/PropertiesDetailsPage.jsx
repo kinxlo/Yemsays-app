@@ -10,6 +10,7 @@ import {
   SimpleGrid,
   Text,
   Textarea,
+  useToast,
 } from '@chakra-ui/react'
 import ReactPlayer from 'react-player'
 import React, { useCallback, useEffect, useState } from 'react'
@@ -48,10 +49,20 @@ const PropertiesDetailsPage = () => {
   const propertyID = location.pathname.split(`/`)[2]
   const [getPropertyByIDClient, args1] = useGetPropertyByIDClientMutation()
   const [addReview, arg2] = useAddReviewMutation()
+  const toast = useToast({
+    status: 'success',
+    variant: 'left-accent',
+    position: 'top',
+    duration: 5000,
+    isClosable: false,
+    containerStyle: {
+      // width: '500px',
+      maxWidth: '100%',
+    },
+  })
 
   const showPropertiesDetails = useCallback(async () => {
     const res = await getPropertyByIDClient(propertyID).unwrap()
-    console.log(res)
     setPropertyDetails(res.data.property)
     setSimilarPropertyDetails(res.data.similarProperties)
   }, [getPropertyByIDClient, propertyID])
@@ -91,6 +102,17 @@ const PropertiesDetailsPage = () => {
     })
   }
 
+  const totalReviewRating = (ratings) => {
+    const sum = Object.values(ratings).reduce(
+      (total, rating) => total + rating,
+      0
+    )
+    const count = Object.values(ratings).length
+    const average = sum / count
+    return average
+    // return Math.floor(average)
+  }
+
   const handleSubmitReview = async (data) => {
     console.log(data)
 
@@ -109,7 +131,9 @@ const PropertiesDetailsPage = () => {
         propertyId: propertyID,
         body: formDataII,
       }).unwrap()
-      console.log(res)
+      if (res.success) {
+        toast({ description: `review sent successfully!` })
+      }
     } catch (err) {
       console.log(err)
     }
@@ -465,13 +489,13 @@ const PropertiesDetailsPage = () => {
                       borderRadius={7}
                     >
                       <Text fontSize={`4xl`} fontWeight={`bold`}>
-                        0.0
+                        {totalReviewRating(reviewRatings)}
                       </Text>
                       <Text color={`textGrey`}>out of 5.0</Text>
                       <Box mt={3}>
                         <StarRatings
                           starRatedColor='orange'
-                          rating={4.5}
+                          rating={totalReviewRating(reviewRatings)}
                           starDimension='20px'
                           starSpacing='5px'
                         />

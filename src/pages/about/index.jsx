@@ -118,7 +118,12 @@ const index = () => {
         </Container>
       </Box>
       {/* section three */}
-      <Box bgColor={`black`} color={`textLight`} className='page_alignment'>
+      <Box
+        id={`team`}
+        bgColor={`black`}
+        color={`textLight`}
+        className='page_alignment'
+      >
         <Container>
           <Heading
             textAlign={`center`}
@@ -141,6 +146,7 @@ const index = () => {
       </Box>
       {/* section four */}
       <Box
+        id={`company`}
         bgColor={`textDark`}
         color={`white`}
         py={24}
@@ -182,7 +188,12 @@ const index = () => {
       {/* banner stats */}
       <Banner />
       {/* section five */}
-      <Box bgColor={`bgBlack`} color={`white`} className='page_alignment'>
+      <Box
+        id={`testimonial`}
+        bgColor={`bgBlack`}
+        color={`white`}
+        className='page_alignment'
+      >
         <Container>
           <Box textAlign={`center`} pt={115} mb={14}>
             <Heading color={`primary`} fontSize={`xl`}>

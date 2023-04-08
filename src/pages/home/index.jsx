@@ -2,7 +2,6 @@ import { Box, Heading, Image, SimpleGrid, Text } from '@chakra-ui/react'
 import React, { useCallback, useEffect, useState } from 'react'
 import LinkButton from '../../components/buttons/link-button/LinkButton'
 import Container from '../../layout/Container'
-import { MdPlayArrow } from 'react-icons/md'
 import { HOME_CONTENT } from './content'
 import Banner from '../../components/banner/Banner'
 import PropertyCard from '../../components/property-card/PropertyCard'
@@ -303,7 +302,7 @@ const Home = () => {
       </Box>
       <Box bgColor={`bgBlack`} color={`white`} className='page_alignment'>
         <Container>
-          <Box id={`testimonials`} textAlign={`center`} pt={115} mb={14}>
+          <Box id={`testimonial`} textAlign={`center`} pt={115} mb={14}>
             <Heading color={`primary`} fontSize={`xl`}>
               {Testimonials.title}
             </Heading>

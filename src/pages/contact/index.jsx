@@ -27,7 +27,17 @@ const ContactUs = () => {
   const { sectionOne, contacts } = CONTACT_CONTENT
   const [isSafeToReset, setIsSafeToReset] = useState(false)
   const [contactUs, { isLoading }] = useContactUsMutation()
-  const toast = useToast()
+  const toast = useToast({
+    status: 'success',
+    variant: 'left-accent',
+    position: 'top',
+    duration: 5000,
+    isClosable: false,
+    containerStyle: {
+      // width: '500px',
+      maxWidth: '100%',
+    },
+  })
   const location = useLocation()
 
   const defaultData = {
@@ -39,7 +49,6 @@ const ContactUs = () => {
   })
 
   const handleSubmitContact = async (data) => {
-    console.log(parseInt(data.phoneNumber))
     const formData = {
       name: data.name,
       email: data.email,
@@ -51,14 +60,7 @@ const ContactUs = () => {
       const res = await contactUs(formData).unwrap()
       console.log(res)
       if (res.success) {
-        toast({
-          description: `${res.data.message}`,
-          status: 'success',
-          variant: 'left-accent',
-          position: 'top',
-          duration: 5000,
-          isClosable: false,
-        })
+        toast({ description: `${res.data.message} successfully!` })
         setIsSafeToReset(true)
       }
     } catch (err) {

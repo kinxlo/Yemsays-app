@@ -53,7 +53,6 @@ const PROPERTIES_SLICE = {
     },
 
     changePropertyState: (state, action) => {
-      console.log(action)
       state.propertyState = {
         isLand: action.payload,
         // isHouse: action.payload.houseBtn,

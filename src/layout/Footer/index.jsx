@@ -26,9 +26,9 @@ const Footer = () => {
           <Grid
             textAlign={{ base: `center`, md: `left` }}
             templateColumns={{ base: `repeat(1, 1fr)`, xl: `repeat(7, 1fr)` }}
-            gap={{ xl: 6 }}
+            gap={{ base: 6, xl: 6 }}
           >
-            <GridItem colSpan={3}>
+            <GridItem colSpan={{ lg: 3 }}>
               <Box
                 h={`3rem`}
                 m={{ base: `auto`, md: `initial` }}
@@ -52,7 +52,7 @@ const Footer = () => {
             </GridItem>
             <GridItem colSpan={{ base: 2, xl: 1 }}>
               <Box>
-                <Box h={`3rem`}>
+                <Box h={{ lg: `3rem` }}>
                   <Text fontWeight={`bold`}>About</Text>
                 </Box>
                 <List as={`div`}>
@@ -63,7 +63,9 @@ const Footer = () => {
                     textTransform={`capitalize`}
                     mb={`9px`}
                   >
-                    Company
+                    <Link display={`inline`} href={'#company'}>
+                      Company
+                    </Link>
                   </ListItem>
                   <ListItem
                     cursor={`pointer`}
@@ -72,7 +74,7 @@ const Footer = () => {
                     textTransform={`capitalize`}
                     mb={`9px`}
                   >
-                    <Link as={ReactLink} display={`inline`} to={'/about-us'}>
+                    <Link display={`inline`} href={'#team'}>
                       Team
                     </Link>
                   </ListItem>
@@ -83,11 +85,7 @@ const Footer = () => {
                     textTransform={`capitalize`}
                     mb={`9px`}
                   >
-                    <Link
-                      as={ReactLink}
-                      display={`inline`}
-                      to={'#testimonials'}
-                    >
+                    <Link display={`inline`} href={'#testimonial'}>
                       Testimonial
                     </Link>
                   </ListItem>
@@ -107,7 +105,7 @@ const Footer = () => {
             </GridItem>
             <GridItem colSpan={{ base: 2, xl: 1 }}>
               <Box>
-                <Box h={`3rem`}>
+                <Box h={{ lg: `3rem` }}>
                   <Text fontWeight={`bold`}>Properties</Text>
                 </Box>
                 <List>
@@ -118,7 +116,9 @@ const Footer = () => {
                     textTransform={`capitalize`}
                     mb={`9px`}
                   >
-                    Listings
+                    <Link as={ReactLink} display={`inline`} to={'/properties'}>
+                      Listings
+                    </Link>
                   </ListItem>
                   <ListItem
                     cursor={`pointer`}
@@ -127,7 +127,9 @@ const Footer = () => {
                     textTransform={`capitalize`}
                     mb={`9px`}
                   >
-                    Lands
+                    <Link as={ReactLink} display={`inline`} to={'/properties'}>
+                      Lands
+                    </Link>
                   </ListItem>
                   <ListItem
                     cursor={`pointer`}
@@ -136,7 +138,9 @@ const Footer = () => {
                     textTransform={`capitalize`}
                     mb={`9px`}
                   >
-                    Houses
+                    <Link as={ReactLink} display={`inline`} to={'/properties'}>
+                      Houses
+                    </Link>
                   </ListItem>
                   <ListItem
                     cursor={`pointer`}
@@ -154,7 +158,7 @@ const Footer = () => {
             </GridItem>
             <GridItem colSpan={{ base: 2, xl: 2 }}>
               <Box>
-                <Box h={`3rem`}>
+                <Box h={{ lg: `3rem` }}>
                   <Text fontWeight={`bold`}>Contact</Text>
                 </Box>
                 <List>

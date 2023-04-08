@@ -95,14 +95,14 @@ const NavBar = ({ children, transparentBg }) => {
               }`}
             >
               <div className={styles.navItems}>
-                {/* <Link
+                <Link
                   className={styles.navLink}
                   to={'/'}
                   onClick={handleCloseNavBar}
                   color={activeRoute(`/`) ? `primary` : `white`}
                 >
                   <Text>Home</Text>
-                </Link> */}
+                </Link>
                 <Link
                   className={styles.navLink}
                   to='/about-us'

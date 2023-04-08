@@ -34,7 +34,7 @@ export const HOME_CONTENT = {
   },
 
   sectionThree: {
-    title: `Featured Properties`,
+    title: `Recent Properties`,
     subTitle: `Lörem ipsum mikrograf plusjobb i depäskama käde dihäs. Bemör kvasilig `,
   },
 

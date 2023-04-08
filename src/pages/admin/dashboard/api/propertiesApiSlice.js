@@ -28,7 +28,6 @@ export const authApiSlice = apiSlice.injectEndpoints({
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled
-          console.log(data)
           dispatch(
             setDashboardData({
               dashboardData: data.data,
@@ -67,7 +66,6 @@ export const authApiSlice = apiSlice.injectEndpoints({
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled
-          console.log(data)
           dispatch(
             setPropertyDetails({
               propertyDetails: data.data,
@@ -88,7 +86,6 @@ export const authApiSlice = apiSlice.injectEndpoints({
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled
-          console.log(data)
           dispatch(
             setPropertyDetails({
               propertyDetails: data.data.property,
@@ -118,7 +115,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled
-          console.log(data)
+
           dispatch(
             setUserLandProperties({
               user_land_properties: data.data,
@@ -138,7 +135,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled
-          console.log(data)
+
           dispatch(
             setUserHouseProperties({
               user_house_properties: data.data,
@@ -158,7 +155,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled
-          console.log(data)
+
           dispatch(
             setRecentProperties({
               recentProperties: data.data,
@@ -209,16 +206,14 @@ export const authApiSlice = apiSlice.injectEndpoints({
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled
-          console.log(data)
+
           if (arg.property === `land`) {
-            console.log(`land property`)
             dispatch(
               setUserLandProperties({
                 user_land_properties: data.data,
               })
             )
           } else {
-            console.log(`house property`)
             dispatch(
               setUserHouseProperties({
                 user_house_properties: data.data,
