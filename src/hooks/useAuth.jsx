@@ -16,8 +16,7 @@ const useAuth = () => {
     if (isAdmin) status = 'ADMIN'
 
     return { role, status, isAdmin }
-  } else {
-    return { role: `USER`, status, isAdmin }
   }
+  return { role: `USER`, status, isAdmin }
 }
 export default useAuth
