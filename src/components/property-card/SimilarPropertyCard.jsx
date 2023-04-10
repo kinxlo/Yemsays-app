@@ -33,7 +33,7 @@ const SimilarPropertyCard = ({ property }) => {
             height={`100%`}
             objectFit={`cover`}
             borderRadius={7}
-            src={property?.media?.imgs?.[0]}
+            src={property?.image}
             alt='Green double couch with wooden legs'
           />
         </Box>
@@ -56,7 +56,7 @@ const SimilarPropertyCard = ({ property }) => {
           <Text fontSize={`3xl`} fontWeight={`bold`} color={`#0FB7C1`}>
             ${property?.price}
           </Text>
-          <Link to={`/properties/${property?._id}/details`}>
+          <Link to={`/properties/${property?.id}/details`}>
             <Button w={`100%`} variant='outline' colorScheme={`orange`}>
               View Details
             </Button>

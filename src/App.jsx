@@ -12,7 +12,7 @@ import {
   PropertiesPage,
   PropertyDashboard,
   SignIn,
-  // SignUp,
+  SignUp,
 } from './pages'
 import AdminLayout from './layout/AdminLayout'
 import RequireAuth from './hooks/RequireAuth'
@@ -23,7 +23,6 @@ function App() {
   return (
     <Routes>
       <Route exact path='/' element={<HomePage />} />
-      {/* <Route exact path='/admin/signup' element={<SignUp />} /> */}
       <Route exact path='/admin/signin' element={<SignIn />} />
       <Route exact path='/about-us' element={<AboutPage />} />
       <Route exact path='/book-now' element={<Booknow />} />
@@ -35,6 +34,7 @@ function App() {
         element={<PropertiesDetailsPage />}
       />
       <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
+        <Route exact path='/admin/signup' element={<SignUp />} />
         <Route path='/admin' element={<AdminLayout />}>
           <Route path='dashboard' element={<MainDashboard />} />
           <Route path='properties' element={<PropertyDashboard />} />

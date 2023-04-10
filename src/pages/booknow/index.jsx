@@ -10,13 +10,10 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
-  InputRightElement,
   SimpleGrid,
   Text,
   Textarea,
-  useToast,
 } from '@chakra-ui/react'
-import { Icon } from '@iconify/react'
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { FaEnvelope, FaPhoneAlt, FaUserAlt } from 'react-icons/fa'
@@ -25,18 +22,18 @@ import {
   MdLocationOn,
   MdOutlineAccessTimeFilled,
 } from 'react-icons/md'
+import AlertComponent from '../../components/feedback/Alert'
 import DefaultLayout from '../../layout/DefaultLayout'
 import { useBookApointmentMutation } from '../admin/dashboard/api/propertiesApiSlice'
 // import Container from '../../layout/Container'
 
 const BookApointment = () => {
+  const [isOpen, setOpen] = useState(false)
   const [isSafeToReset, setIsSafeToReset] = useState(false)
   const [bookApointment, { isLoading }] = useBookApointmentMutation()
-  const toast = useToast()
   const { handleSubmit, register, reset } = useForm()
 
   const handleBookNow = async (data) => {
-    console.log(data)
     const formData = {
       firstName: data.firstName,
       lastName: data.lastName,
@@ -50,16 +47,8 @@ const BookApointment = () => {
 
     try {
       const res = await bookApointment(formData).unwrap()
-      console.log(res)
       if (res.success) {
-        toast({
-          description: `${res.data.message}`,
-          status: 'success',
-          variant: 'left-accent',
-          position: 'top',
-          duration: 5000,
-          isClosable: false,
-        })
+        setOpen(true)
         setIsSafeToReset(true)
       }
     } catch (err) {
@@ -74,6 +63,15 @@ const BookApointment = () => {
 
   return (
     <DefaultLayout>
+      <AlertComponent
+        action={`message`}
+        message={{
+          title: `message sent successfully!`,
+          desc: `Our team would respond to you soon..thank you.`,
+        }}
+        isOpen={isOpen}
+        onClose={() => setOpen(!isOpen)}
+      />
       {/* hero section */}
       <Box
         className='page_alignment'
@@ -108,6 +106,7 @@ const BookApointment = () => {
                   </InputLeftElement>
                   <Input
                     type='text'
+                    required
                     placeholder='First Name'
                     {...register(`firstName`)}
                   />
@@ -121,6 +120,7 @@ const BookApointment = () => {
                   </InputLeftElement>
                   <Input
                     type='text'
+                    required
                     placeholder='Last Name'
                     {...register(`lastName`)}
                   />
@@ -134,6 +134,7 @@ const BookApointment = () => {
                   </InputLeftElement>
                   <Input
                     type='email'
+                    required
                     placeholder='Email Address'
                     {...register(`email`)}
                   />
@@ -147,6 +148,7 @@ const BookApointment = () => {
                   </InputLeftElement>
                   <Input
                     type='tel'
+                    required
                     placeholder='Phone number'
                     {...register(`phoneNumber`)}
                   />
@@ -160,6 +162,7 @@ const BookApointment = () => {
                   </InputLeftElement>
                   <Input
                     type='text'
+                    required
                     placeholder='Location'
                     {...register(`location`)}
                   />
@@ -175,6 +178,7 @@ const BookApointment = () => {
                     className='custom-date-input'
                     color={`white`}
                     type='date'
+                    required
                     placeholder='Inspection Date'
                     {...register(`inspectionDate`)}
                   />
@@ -189,6 +193,7 @@ const BookApointment = () => {
                   <Input
                     className='custom-date-input'
                     type='time'
+                    required
                     placeholder='Inspection Time'
                     {...register(`inspectionTime`)}
                   />
@@ -202,6 +207,7 @@ const BookApointment = () => {
                   </InputLeftElement> */}
                   <Textarea
                     h={`10rem`}
+                    required
                     placeholder='Additional Message...'
                     {...register(`message`)}
                   />

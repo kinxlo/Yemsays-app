@@ -159,6 +159,7 @@ const SearchForm = ({ setSearch }) => {
             <FormControl>
               <FormLabel color={`textLight`}>Location</FormLabel>
               <Input
+                required
                 color={`textDark`}
                 bgColor={`textLight`}
                 type='text'
@@ -171,6 +172,7 @@ const SearchForm = ({ setSearch }) => {
             <FormControl color={`textLight`}>
               <FormLabel>Land Type</FormLabel>
               <Input
+                // required
                 color={`textDark`}
                 bgColor={`textLight`}
                 type='text'
@@ -183,6 +185,7 @@ const SearchForm = ({ setSearch }) => {
             <FormControl color={`textLight`}>
               <FormLabel>Property Type</FormLabel>
               <Input
+                // required
                 color={`textDark`}
                 bgColor={`textLight`}
                 type='text'
@@ -195,6 +198,7 @@ const SearchForm = ({ setSearch }) => {
             <FormControl color={`textLight`}>
               <FormLabel>Average Price</FormLabel>
               <Input
+                required
                 color={`textDark`}
                 bgColor={`textLight`}
                 type='text'

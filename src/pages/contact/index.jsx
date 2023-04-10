@@ -18,26 +18,17 @@ import { AiFillPhone } from 'react-icons/ai'
 import { FaMapMarkerAlt } from 'react-icons/fa'
 import { MdEmail } from 'react-icons/md'
 import { useLocation } from 'react-router-dom'
+import AlertComponent from '../../components/feedback/Alert'
 import Container from '../../layout/Container'
 import DefaultLayout from '../../layout/DefaultLayout'
 import { useContactUsMutation } from '../admin/dashboard/api/propertiesApiSlice'
 import { CONTACT_CONTENT } from './content'
 
 const ContactUs = () => {
+  const [isOpen, setOpen] = useState(false)
   const { sectionOne, contacts } = CONTACT_CONTENT
   const [isSafeToReset, setIsSafeToReset] = useState(false)
   const [contactUs, { isLoading }] = useContactUsMutation()
-  const toast = useToast({
-    status: 'success',
-    variant: 'left-accent',
-    position: 'top',
-    duration: 5000,
-    isClosable: false,
-    containerStyle: {
-      // width: '500px',
-      maxWidth: '100%',
-    },
-  })
   const location = useLocation()
 
   const defaultData = {
@@ -60,7 +51,7 @@ const ContactUs = () => {
       const res = await contactUs(formData).unwrap()
       console.log(res)
       if (res.success) {
-        toast({ description: `${res.data.message} successfully!` })
+        setOpen(true)
         setIsSafeToReset(true)
       }
     } catch (err) {
@@ -75,6 +66,15 @@ const ContactUs = () => {
 
   return (
     <DefaultLayout>
+      <AlertComponent
+        action={`message`}
+        message={{
+          title: `message sent successfully!`,
+          desc: `Our team would respond to you soon..thank you.`,
+        }}
+        isOpen={isOpen}
+        onClose={() => setOpen(!isOpen)}
+      />
       <Box className='page_alignment' bgColor={`bgBlack`} color={`white`}>
         <Container>
           <Flex gap={10} mt={10} flexDir={{ base: `column`, lg: `row` }}>
@@ -173,6 +173,7 @@ const ContactUs = () => {
                 >
                   <Box mb={10}>
                     <Input
+                      required
                       size={`lg`}
                       placeholder='Your name'
                       {...register(`name`)}
@@ -180,6 +181,7 @@ const ContactUs = () => {
                   </Box>
                   <Box mb={10}>
                     <Input
+                      required
                       size={`lg`}
                       placeholder='Email'
                       {...register(`email`)}
@@ -187,6 +189,7 @@ const ContactUs = () => {
                   </Box>
                   <Box mb={10}>
                     <Input
+                      required
                       size={`lg`}
                       placeholder='Phone number'
                       {...register(`phoneNumber`)}
@@ -194,6 +197,7 @@ const ContactUs = () => {
                   </Box>
                   <Box mb={10}>
                     <Textarea
+                      required
                       h={`10rem`}
                       size={`lg`}
                       placeholder='Message'

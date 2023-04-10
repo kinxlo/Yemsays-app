@@ -30,7 +30,7 @@ const PropertyCard = ({ featuredProperty }) => {
             objectFit={`cover`}
             borderRadius={`30px`}
             border={`1px solid lightGrey`}
-            src={featuredProperty?.image}
+            src={featuredProperty?.image || featuredProperty?.media?.imgs[0]}
             alt='Green double couch with wooden legs'
           />
         </Box>

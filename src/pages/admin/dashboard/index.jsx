@@ -48,7 +48,7 @@ const Dashboard = () => {
       </Box>
       {/* card list */}
       <Box my={10}>
-        <SimpleGrid columns={{ base: 1, sm: 2, lg: 3 }} gap={`25px`}>
+        <SimpleGrid columns={{ base: 1, sm: 2, lg: 2, '2xl': 4 }} gap={`25px`}>
           <StatCard
             title={`All Properties`}
             total={dashboardData?.allProperties}
@@ -62,6 +62,14 @@ const Dashboard = () => {
           <StatCard
             title={`Unlisted Properties`}
             total={dashboardData?.unlisted}
+            isLoading={isLoading}
+          />
+          <StatCard
+            title={`Sold Properties`}
+            total={
+              dashboardData?.allProperties -
+              (dashboardData?.unlisted + dashboardData?.listed)
+            }
             isLoading={isLoading}
           />
         </SimpleGrid>

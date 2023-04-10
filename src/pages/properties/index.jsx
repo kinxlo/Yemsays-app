@@ -89,7 +89,16 @@ const Properties = () => {
             <Heading fontSize={{ base: `3xl`, lg: `5xl` }} color={`textLight`}>
               Property Listings - {propertyState.isLand ? `land` : `House`}
             </Heading>
-            <Text hidden={!isSearch} color={`textGrey`} fontSize={`lg`}>
+            <Text
+              hidden={
+                !isSearch
+                // ||
+                // propertyState.isLandListingLoading ||
+                // propertyState.isHouseListingLoading
+              }
+              color={`textGrey`}
+              fontSize={`lg`}
+            >
               Search Results For:{' '}
               {propertyState.isLand ? `land properties` : `House properties`}
             </Text>

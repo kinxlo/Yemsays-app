@@ -9,6 +9,7 @@ import {
   MenuItem,
   MenuList,
 } from '@chakra-ui/react'
+import { Icon } from '@iconify/react'
 import React from 'react'
 import { useDispatch } from 'react-redux'
 import { SidebarResponsive } from '../../components/sidebar/Sidebar'
@@ -55,12 +56,24 @@ const AdminNavbar = (props) => {
                     />
                   </MenuButton>
                   <MenuList
-                    borderColor={`primary`}
-                    bgColor={`bgBlack`}
+                    // borderColor={`primary`}
+                    bgColor={`white`}
                     color={`primary`}
                   >
-                    <MenuItem onClick={handleLogout} bgColor={`transparent`}>
-                      Log out
+                    <MenuItem
+                      onClick={handleLogout}
+                      bgColor={`transparent`}
+                      color={`red`}
+                      display={`flex`}
+                      alignItems={`center`}
+                      gap={3}
+                    >
+                      <Box>
+                        <Icon icon={`ri:logout-circle-line`} width={`1.3rem`} />
+                      </Box>
+                      <Text fontWeight={`bold`} mt={1}>
+                        Log out
+                      </Text>
                     </MenuItem>
                   </MenuList>
                 </Menu>

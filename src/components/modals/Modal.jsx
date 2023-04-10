@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import {
-  Box,
   Button,
   Heading,
   Modal,
@@ -33,11 +32,6 @@ const FeedbackModal = ({ isOpen, onClose, action, id, handleSubmit }) => {
     }
   }, [id, location.pathname])
 
-  const showSuccessMessage = () => {
-    setSuccess(true)
-    setTimeout(() => setSuccess(false), 10000) //use the close function on the modal
-  }
-
   const getPropertiesDetails = useCallback(async () => {
     await getPropertyByID(propertyID).unwrap()
   }, [getPropertyByID, propertyID])
@@ -50,7 +44,7 @@ const FeedbackModal = ({ isOpen, onClose, action, id, handleSubmit }) => {
       }).unwrap()
       if (res.success) {
         getPropertiesDetails()
-        showSuccessMessage()
+        setSuccess(true)
       }
     },
     [getPropertiesDetails, listProperty, propertyID]
@@ -58,6 +52,11 @@ const FeedbackModal = ({ isOpen, onClose, action, id, handleSubmit }) => {
 
   const handleClick = () => {
     action === `addProperty` ? handleSubmit() : setListedStatus(action)
+  }
+
+  const onCloseModal = () => {
+    onClose()
+    setSuccess(false)
   }
 
   useEffect(() => {
@@ -149,7 +148,7 @@ const FeedbackModal = ({ isOpen, onClose, action, id, handleSubmit }) => {
                 No
               </Button>
               <Button
-                onClick={onClose}
+                onClick={onCloseModal}
                 hidden={!isSuccess}
                 variant={`solid`}
                 colorScheme={`orange`}

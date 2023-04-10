@@ -57,7 +57,7 @@ const StatCard = ({ total, title, isLoading }) => {
         ) : (
           <>
             <Flex flex={1} flexDir={`column`} justifyContent={`space-between`}>
-              <Text>{title}</Text>
+              <Text fontSize={`2xl`}>{title}</Text>
               <Heading fontSize={`5xl`}>{total}</Heading>
             </Flex>
             <Box flex={1} width={`10rem`} height={`10rem`}>

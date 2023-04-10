@@ -10,7 +10,6 @@ import {
   SimpleGrid,
   Text,
   Textarea,
-  useToast,
 } from '@chakra-ui/react'
 import ReactPlayer from 'react-player'
 import React, { useCallback, useEffect, useState } from 'react'
@@ -35,8 +34,10 @@ import {
 } from '../admin/dashboard/api/propertiesApiSlice'
 import { useForm } from 'react-hook-form'
 import SpinnerComponent from '../../components/feedback/SpinnerComponent'
+import AlertComponent from '../../components/feedback/Alert'
 
 const PropertiesDetailsPage = () => {
+  const [isOpen, setOpen] = useState(false)
   const [propertyDetails, setPropertyDetails] = useState({})
   const [reviewRatings, setReviewRatings] = useState({
     property: 0,
@@ -49,17 +50,6 @@ const PropertiesDetailsPage = () => {
   const propertyID = location.pathname.split(`/`)[2]
   const [getPropertyByIDClient, args1] = useGetPropertyByIDClientMutation()
   const [addReview, arg2] = useAddReviewMutation()
-  const toast = useToast({
-    status: 'success',
-    variant: 'left-accent',
-    position: 'top',
-    duration: 5000,
-    isClosable: false,
-    containerStyle: {
-      // width: '500px',
-      maxWidth: '100%',
-    },
-  })
 
   const showPropertiesDetails = useCallback(async () => {
     const res = await getPropertyByIDClient(propertyID).unwrap()
@@ -81,7 +71,9 @@ const PropertiesDetailsPage = () => {
               ({review.email})
             </Text>
           </Text>
-          <Text color={`#0FB7C1`}>{review.createdAt}</Text>
+          <Text color={`#0FB7C1`}>
+            {new Date(review.createdAt).toLocaleString()}
+          </Text>
         </Box>
         <Box>
           <Text color={`textGrey`}>{review.review}</Text>
@@ -130,7 +122,7 @@ const PropertiesDetailsPage = () => {
         body: formDataII,
       }).unwrap()
       if (res.success) {
-        toast({ description: `review sent successfully!` })
+        setOpen(true)
       }
     } catch (err) {
       console.log(err)
@@ -139,6 +131,15 @@ const PropertiesDetailsPage = () => {
 
   return (
     <DefaultLayout>
+      <AlertComponent
+        action={`message`}
+        message={{
+          title: `message sent successfully!`,
+          desc: `Your review has been added to the property reviews.`,
+        }}
+        isOpen={isOpen}
+        onClose={() => setOpen(!isOpen)}
+      />
       <Box className='page_alignment' bgColor={`black`}>
         <Container paddingBlock={0}>
           <GridImageLayout
@@ -393,13 +394,19 @@ const PropertiesDetailsPage = () => {
               </Box>
               {/* reviews */}
               <Box border={`1px solid #343434`} p={8} borderRadius={7} my={10}>
-                <Box mb={5}>
-                  <Heading fontSize={`xl`}>Reviews</Heading>
-                  <Text color={`textGrey`}>
-                    {propertyDetails?.reviewers?.length} review
-                  </Text>
-                </Box>
-                {reviews}
+                {args1.isLoading ? (
+                  <SpinnerComponent size={`lg`} />
+                ) : (
+                  <>
+                    <Box mb={5}>
+                      <Heading fontSize={`xl`}>Reviews</Heading>
+                      <Text color={`textGrey`}>
+                        {propertyDetails?.reviewers?.length} review
+                      </Text>
+                    </Box>
+                    {reviews}
+                  </>
+                )}
               </Box>
               {/* Comment a review */}
               <Box border={`1px solid #343434`} p={8} borderRadius={7} my={10}>

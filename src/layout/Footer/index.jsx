@@ -17,8 +17,24 @@ import {
   Text,
 } from '@chakra-ui/react'
 import { Link as ReactLink } from 'react-router-dom'
+import { useState } from 'react'
+import AlertComponent from '../../components/feedback/Alert'
 
 const Footer = () => {
+  const [clickCount, setClickCount] = useState(1)
+  const [isOpen, setOpen] = useState(false)
+
+  const handleClick = () => {
+    console.log(clickCount)
+    if (clickCount === 5) {
+      setOpen(true)
+      setClickCount(0)
+    }
+    setClickCount((prevState) => {
+      return (prevState += 1)
+    })
+  }
+
   return (
     <Box bgColor={`bgBlack`} className='page_alignment'>
       <Container noPaddingBlock={'0'}>
@@ -230,8 +246,17 @@ const Footer = () => {
               </Flex>
             </Box>
             <Divider my={5} />
-            <Box textAlign={`center`} color={`primary`}>
+            <Box onClick={handleClick} textAlign={`center`} color={`primary`}>
               &copy;{new Date().getFullYear()} Yemsays All Rights Reserved
+              <AlertComponent
+                action={`message`}
+                message={{
+                  title: `Developed by Binary Art.inc`,
+                  desc: `you can contact us via our email Address:`,
+                }}
+                isOpen={isOpen}
+                onClose={() => setOpen(!isOpen)}
+              />
             </Box>
           </Box>
         </Box>

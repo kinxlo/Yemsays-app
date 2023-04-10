@@ -1,4 +1,6 @@
 import {
+  Alert,
+  AlertIcon,
   Avatar,
   Box,
   Button,
@@ -29,14 +31,17 @@ import { useSelector } from 'react-redux'
 import { selectCurrentToken } from '../auth/api/authSlice'
 import axios from 'axios'
 import ReactPlayer from 'react-player'
+import AlertComponent from '../../../components/feedback/Alert'
 
 const links = [
   { name: `Home`, ref: `/admin/dashboard` },
   { name: `Add new Property`, ref: `/admin/property/new` },
 ]
 
+// const base_URL =
+
 const AdminPropertiesDetailsPage = () => {
-  const [isListed] = useState(false)
+  const [isOpen, setOpen] = useState(false)
   const [isLoading, setLoading] = useState(false)
   const [imgPreview, setImgPreview] = useState({
     img1: null,
@@ -62,7 +67,7 @@ const AdminPropertiesDetailsPage = () => {
     fileInput.onchange = () => {
       const [file] = fileInput.files
       setImgPreview((prevState) => {
-        return { ...prevState, [id]: URL.createObjectURL(file) }
+        return { ...prevState, [id]: file ? URL.createObjectURL(file) : {} }
       })
     }
   }
@@ -73,7 +78,7 @@ const AdminPropertiesDetailsPage = () => {
     fileInput.onchange = () => {
       const [file] = fileInput.files
       setImgPreview((prevState) => {
-        return { ...prevState, [id]: URL.createObjectURL(file) }
+        return { ...prevState, [id]: file ? URL.createObjectURL(file) : {} }
       })
     }
   }
@@ -116,9 +121,6 @@ const AdminPropertiesDetailsPage = () => {
     formData.append(`salesSupportNum`, parseInt(data.salesSupportNumber))
     formData.append(`avatar`, avatar[0])
 
-    for (var pair of formData.entries()) {
-      console.log(pair[0] + ', ' + pair[1])
-    }
     try {
       // const res = await addProperty(DATA).unwrap()
       const res = await axios.post(
@@ -126,18 +128,27 @@ const AdminPropertiesDetailsPage = () => {
         formData,
         credentials
       )
-      console.log(res)
+
       if (res.data.success) {
         setLoading(false)
+        setOpen(true)
       }
     } catch (err) {
       setLoading(false)
-      console.log(err)
+      // setOpen(true)
     }
   }
 
   return (
-    <>
+    <FormControl as={`form`} onSubmit={handleSubmit(submitNewProperty)}>
+      <AlertComponent
+        message={{
+          title: `Property added succefully!`,
+          desc: `A new property has been added to the dashboard, continue to view it`,
+        }}
+        isOpen={isOpen}
+        onClose={() => setOpen(!isOpen)}
+      />
       <Box id='top' mb={12}>
         <BreadCrumbHeader title={`Add New Property`} links={links} />
       </Box>
@@ -163,7 +174,7 @@ const AdminPropertiesDetailsPage = () => {
           <Button
             isLoading={isLoading}
             loadingText={`saving...`}
-            onClick={handleSubmit(submitNewProperty)}
+            type={`submit`}
             borderRadius={10}
             p={6}
             colorScheme={`orange`}
@@ -206,6 +217,7 @@ const AdminPropertiesDetailsPage = () => {
                 flexDir={`column`}
               >
                 <Input
+                  required
                   hidden
                   id={`img1`}
                   type={`file`}
@@ -244,6 +256,7 @@ const AdminPropertiesDetailsPage = () => {
                 flexDir={`column`}
               >
                 <Input
+                  required
                   hidden
                   id={`img2`}
                   type={`file`}
@@ -282,6 +295,7 @@ const AdminPropertiesDetailsPage = () => {
                 flexDir={`column`}
               >
                 <Input
+                  required
                   hidden
                   id={`img3`}
                   type={`file`}
@@ -319,6 +333,7 @@ const AdminPropertiesDetailsPage = () => {
                 flexDir={`column`}
               >
                 <Input
+                  required
                   hidden
                   id={`img4`}
                   type={`file`}
@@ -351,6 +366,7 @@ const AdminPropertiesDetailsPage = () => {
                     Tags
                   </FormLabel>
                   <Input
+                    required
                     borderColor={`textGrey`}
                     fontSize={`xl`}
                     borderRadius={15}
@@ -366,6 +382,7 @@ const AdminPropertiesDetailsPage = () => {
                     Property type
                   </FormLabel>
                   <Select
+                    required
                     styles={{ option: { color: 'red' } }}
                     variant='outline'
                     borderColor={`textGrey`}
@@ -388,6 +405,7 @@ const AdminPropertiesDetailsPage = () => {
                     Title
                   </FormLabel>
                   <Input
+                    required
                     borderColor={`textGrey`}
                     fontSize={`xl`}
                     borderRadius={15}
@@ -403,6 +421,7 @@ const AdminPropertiesDetailsPage = () => {
                     Sales Price
                   </FormLabel>
                   <Input
+                    required
                     borderColor={`textGrey`}
                     fontSize={`xl`}
                     borderRadius={15}
@@ -420,18 +439,20 @@ const AdminPropertiesDetailsPage = () => {
                   Location
                 </FormLabel>
                 <InputGroup>
-                  {/* <InputLeftElement
+                  <InputLeftElement
                     pointerEvents='none'
-                    color='gray.300'
+                    color='primary'
                     h={`100%`}
                   >
-                <Box fontSize={`2xl`}>
-                  <Icon icon={`material-symbols:location-on`} />
-                </Box>
-                </InputLeftElement> */}
+                    <Box fontSize={`2xl`}>
+                      <Icon icon={`material-symbols:location-on`} />
+                    </Box>
+                  </InputLeftElement>
 
                   <Input
+                    required
                     px={20}
+                    pt={1}
                     borderColor={`textGrey`}
                     fontSize={`xl`}
                     borderRadius={15}
@@ -448,6 +469,7 @@ const AdminPropertiesDetailsPage = () => {
                 Description
               </Heading>
               <Textarea
+                required
                 border={`1px solid #343434`}
                 p={8}
                 borderRadius={7}
@@ -471,11 +493,12 @@ const AdminPropertiesDetailsPage = () => {
                 <FormControl w={`200px`}>
                   <InputGroup>
                     <InputLeftElement h={`100%`}>
-                      <Box fontSize={`3xl`}>
+                      <Box color={`primary`} fontSize={`3xl`}>
                         <Icon icon={`mdi:bedroom-outline`} />
                       </Box>
                     </InputLeftElement>
                     <Input
+                      required
                       size={`lg`}
                       borderColor={`textGrey`}
                       borderRadius={10}
@@ -487,11 +510,12 @@ const AdminPropertiesDetailsPage = () => {
                 <FormControl w={`200px`}>
                   <InputGroup>
                     <InputLeftElement h={`100%`}>
-                      <Box fontSize={`xl`}>
+                      <Box color={`primary`} fontSize={`xl`}>
                         <Icon icon={`cil:bathroom`} />
                       </Box>
                     </InputLeftElement>
                     <Input
+                      required
                       size={`lg`}
                       borderColor={`textGrey`}
                       borderRadius={10}
@@ -503,11 +527,12 @@ const AdminPropertiesDetailsPage = () => {
                 <FormControl w={`200px`}>
                   <InputGroup>
                     <InputLeftElement h={`100%`}>
-                      <Box fontSize={`3xl`}>
+                      <Box color={`primary`} fontSize={`3xl`}>
                         <Icon icon={`mdi:bedroom-outline`} />
                       </Box>
                     </InputLeftElement>
                     <Input
+                      required
                       size={`lg`}
                       borderColor={`textGrey`}
                       borderRadius={10}
@@ -519,11 +544,12 @@ const AdminPropertiesDetailsPage = () => {
                 <FormControl w={`200px`}>
                   <InputGroup>
                     <InputLeftElement h={`100%`}>
-                      <Box fontSize={`xl`}>
+                      <Box color={`primary`} fontSize={`xl`}>
                         <Icon icon={`cil:garage`} />
                       </Box>
                     </InputLeftElement>
                     <Input
+                      required
                       size={`lg`}
                       borderColor={`textGrey`}
                       borderRadius={10}
@@ -535,11 +561,12 @@ const AdminPropertiesDetailsPage = () => {
                 <FormControl w={`200px`}>
                   <InputGroup>
                     <InputLeftElement h={`100%`}>
-                      <Box fontSize={`xl`}>
+                      <Box color={`primary`} fontSize={`xl`}>
                         <Icon icon={`material-symbols:location-on`} />
                       </Box>
                     </InputLeftElement>
                     <Input
+                      required
                       size={`lg`}
                       borderColor={`textGrey`}
                       borderRadius={10}
@@ -551,11 +578,12 @@ const AdminPropertiesDetailsPage = () => {
                 <FormControl w={`200px`}>
                   <InputGroup>
                     <InputLeftElement h={`100%`}>
-                      <Box fontSize={`xl`}>
+                      <Box color={`primary`} fontSize={`xl`}>
                         <Icon icon={`cil:garage`} />
                       </Box>
                     </InputLeftElement>
                     <Input
+                      required
                       size={`lg`}
                       borderColor={`textGrey`}
                       borderRadius={10}
@@ -589,6 +617,7 @@ const AdminPropertiesDetailsPage = () => {
                         flexDir={`column`}
                       >
                         <Input
+                          required
                           hidden
                           id={`property_video`}
                           type={`file`}
@@ -647,6 +676,7 @@ const AdminPropertiesDetailsPage = () => {
                           flexDir={`column`}
                         >
                           <Input
+                            required
                             hidden
                             id={`avatar`}
                             type={`file`}
@@ -666,6 +696,7 @@ const AdminPropertiesDetailsPage = () => {
                           Support In-Charge
                         </FormLabel>
                         <Input
+                          required
                           borderRadius={15}
                           size={`lg`}
                           placeholder='Ezra Aduramigba'
@@ -679,6 +710,7 @@ const AdminPropertiesDetailsPage = () => {
                           {/* WhatsApp Contact Details */}
                         </FormLabel>
                         <Input
+                          required
                           borderRadius={15}
                           size={`lg`}
                           placeholder='08118951879'
@@ -694,7 +726,7 @@ const AdminPropertiesDetailsPage = () => {
           </GridItem>
         </TwoColumnLayout>
       </Box>
-    </>
+    </FormControl>
   )
 }
 
