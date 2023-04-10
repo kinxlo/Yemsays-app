@@ -13,6 +13,7 @@ import React, { useCallback } from 'react'
 import { useForm } from 'react-hook-form'
 import { IoOptionsOutline } from 'react-icons/io5'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import {
   useListHousePropertiesMutation,
   useListLandPropertiesMutation,
@@ -21,20 +22,33 @@ import {
 import { selectPropertyState } from '../../pages/admin/dashboard/api/propertiesSlice'
 
 const SearchForm = ({ setSearch }) => {
-  const [listLandProperties] = useListLandPropertiesMutation()
-  const [listHouseProperties] = useListHousePropertiesMutation()
-  const [searchProperty, { isLoading }] = useSearchPropertyMutation()
+  const [listLandProperties, listLandArgs] = useListLandPropertiesMutation()
+  const [listHouseProperties, listHouseArgs] = useListHousePropertiesMutation()
+  const [searchProperty, searchArgs] = useSearchPropertyMutation()
   const propertyState = useSelector(selectPropertyState)
   const { handleSubmit, register } = useForm()
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const showLandProperties = useCallback(async () => {
-    await listLandProperties().unwrap()
-  }, [listLandProperties])
+    const res = await listLandProperties().unwrap()
+    if (res.success) {
+      dispatch({
+        type: `properties/changePropertyState`,
+        payload: { isLand: true, isLandLoading: false },
+      })
+    }
+  }, [dispatch, listLandProperties])
 
   const showHouseProperties = useCallback(async () => {
-    await listHouseProperties().unwrap()
-  }, [listHouseProperties])
+    const res = await listHouseProperties().unwrap()
+    if (res.success) {
+      dispatch({
+        type: `properties/changePropertyState`,
+        payload: { isLand: false, isHouseLoading: false },
+      })
+    }
+  }, [dispatch, listHouseProperties])
 
   const handleLandBtnClick = () => {
     setSearch(false)
@@ -42,17 +56,25 @@ const SearchForm = ({ setSearch }) => {
     showLandProperties()
     dispatch({
       type: `properties/changePropertyState`,
-      payload: true,
+      payload: { isLand: true, isLandLoading: true },
     })
   }
   const handleHouseBtnClick = () => {
     setSearch(false)
     // setBtnState({ houseBtn: true, landBtn: false })
     showHouseProperties()
-    dispatch({ type: `properties/changePropertyState`, payload: false })
+    dispatch({
+      type: `properties/changePropertyState`,
+      payload: { isLand: false, isHouseLoading: true },
+    })
   }
 
   const handleSearchForm = async (data) => {
+    navigate(`/properties`)
+    dispatch({
+      type: `properties/changePropertyState`,
+      payload: { isLand: propertyState.isLand, isLandLoading: true },
+    })
     const formData = {
       location: data.location,
       property: propertyState.isLand ? `land` : `house`,
@@ -64,7 +86,14 @@ const SearchForm = ({ setSearch }) => {
 
     try {
       setSearch(true)
-      await searchProperty(formData).unwrap()
+      const res = await searchProperty(formData).unwrap()
+      console.log(res)
+      if (res.success) {
+        dispatch({
+          type: `properties/changePropertyState`,
+          payload: { isLand: propertyState.isLand, isLandLoading: false },
+        })
+      }
     } catch (err) {
       console.log(err)
     }
@@ -186,7 +215,7 @@ const SearchForm = ({ setSearch }) => {
                 <IoOptionsOutline size={`1.5rem`} />
               </Box>
               <Button
-                isLoading={isLoading}
+                isLoading={searchArgs.isLoading}
                 loadingText='Searching...'
                 type={`submit`}
                 w={`180px`}

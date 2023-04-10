@@ -10,6 +10,8 @@ const STATE = {
   userHouseProperties: null,
   propertyState: {
     isLand: true,
+    isLandListingLoading: false,
+    isHouseListingLoading: false,
     // isHouse: false,
   },
   recentProperties: null,
@@ -38,8 +40,9 @@ const PROPERTIES_SLICE = {
 
     // ======= external API ===================
     setUserLandProperties: (state, action) => {
-      const land = action.payload.user_land_properties
-      state.userLandProperties = land
+      const { user_land_properties, isLandLoading } = action.payload
+      state.userLandProperties = user_land_properties
+      state.propertyState.isLandListingLoading = isLandLoading
     },
 
     setRecentProperties: (state, action) => {
@@ -48,13 +51,15 @@ const PROPERTIES_SLICE = {
     },
 
     setUserHouseProperties: (state, action) => {
-      const house = action.payload.user_house_properties
-      state.userHouseProperties = house
+      const { user_house_properties } = action.payload
+      state.userHouseProperties = user_house_properties
     },
 
     changePropertyState: (state, action) => {
       state.propertyState = {
-        isLand: action.payload,
+        isLand: action.payload.isLand,
+        isLandListingLoading: action.payload.isLandLoading,
+        isHouseListingLoading: action.payload.isHouseLoading,
         // isHouse: action.payload.houseBtn,
       }
     },

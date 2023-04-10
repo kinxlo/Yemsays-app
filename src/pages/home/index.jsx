@@ -25,7 +25,7 @@ const reactPlayer = {
 
 const Home = () => {
   const { hero, sectionTwo, sectionThree, Testimonials } = HOME_CONTENT
-  const [isSearch, setSearch] = useState(false)
+  const [isSearch, setSearch] = useState(true)
   const [play, setPlay] = useState(false)
   const recentProps = useSelector(selectRecentProperties)
   const [recentProperties, { isLoading }] = useRecentPropertiesMutation()

@@ -366,6 +366,7 @@ const AdminPropertiesDetailsPage = () => {
                     Property type
                   </FormLabel>
                   <Select
+                    styles={{ option: { color: 'red' } }}
                     variant='outline'
                     borderColor={`textGrey`}
                     fontSize={`xl`}

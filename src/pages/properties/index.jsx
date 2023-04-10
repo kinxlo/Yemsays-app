@@ -8,10 +8,10 @@ import SearchForm from '../../components/search-form/SearchForm'
 import Container from '../../layout/Container'
 import DefaultLayout from '../../layout/DefaultLayout'
 import SpinnerComponent from '../../components/feedback/SpinnerComponent'
-import {
-  useListHousePropertiesMutation,
-  useListLandPropertiesMutation,
-} from '../admin/dashboard/api/propertiesApiSlice'
+// import {
+//   useListHousePropertiesMutation,
+//   useListLandPropertiesMutation,
+// } from '../admin/dashboard/api/propertiesApiSlice'
 import {
   selectPropertyState,
   selectUserHouseProperties,
@@ -20,24 +20,24 @@ import {
 
 const Properties = () => {
   const [isSearch, setSearch] = useState(false)
-  const [listLandProperties, { isLoading }] = useListLandPropertiesMutation()
-  const [listHouseProperties] = useListHousePropertiesMutation()
+  // const [listLandProperties, { isLoading }] = useListLandPropertiesMutation()
+  // const [listHouseProperties] = useListHousePropertiesMutation()
   const userLandProperties = useSelector(selectUserLandProperties)
   const userHouseProperties = useSelector(selectUserHouseProperties)
   const propertyState = useSelector(selectPropertyState)
 
-  const showLandProperties = useCallback(async () => {
-    await listLandProperties().unwrap()
-  }, [listLandProperties])
+  // const showLandProperties = useCallback(async () => {
+  //   await listLandProperties().unwrap()
+  // }, [listLandProperties])
 
-  const showHouseProperties = useCallback(async () => {
-    await listHouseProperties().unwrap()
-  }, [listHouseProperties])
+  // const showHouseProperties = useCallback(async () => {
+  //   await listHouseProperties().unwrap()
+  // }, [listHouseProperties])
 
-  useEffect(() => {
-    showLandProperties()
-    showHouseProperties()
-  }, [showHouseProperties, showLandProperties])
+  // useEffect(() => {
+  //   showLandProperties()
+  //   showHouseProperties()
+  // }, [showHouseProperties, showLandProperties])
 
   const properties = propertyState.isLand ? (
     userLandProperties?.length ? (
@@ -95,7 +95,8 @@ const Properties = () => {
             </Text>
           </Box>
           <Box>
-            {isLoading ? (
+            {propertyState.isLandListingLoading ||
+            propertyState.isHouseListingLoading ? (
               <SpinnerComponent size={`xl`} />
             ) : (
               <SimpleGrid columns={{ base: 1, lg: 2 }} gap={10}>
