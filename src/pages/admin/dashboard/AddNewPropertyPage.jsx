@@ -383,16 +383,27 @@ const AdminPropertiesDetailsPage = () => {
                   </FormLabel>
                   <Select
                     required
-                    styles={{ option: { color: 'red' } }}
                     variant='outline'
-                    borderColor={`textGrey`}
+                    // border={`1px solid grey`}
+                    // background={`bgBlack`}
+                    // color={`red`}
                     fontSize={`xl`}
                     borderRadius={15}
                     h={`62px`}
                     {...register(`propertyType`)}
                   >
-                    <option value={`land`}>Land</option>
-                    <option value={`house`}>House</option>
+                    <option
+                      style={{ color: `black`, fontWeight: `bold` }}
+                      value={`land`}
+                    >
+                      Land
+                    </option>
+                    <option
+                      style={{ color: `black`, fontWeight: `bold` }}
+                      value={`house`}
+                    >
+                      House
+                    </option>
                   </Select>
                 </FormControl>
               </Box>

@@ -99,6 +99,8 @@ const AdminPropertiesDetailsPage = () => {
             <Text color={`primary`} as={`span`}>
               {propertiesDetails?.status === `listed`
                 ? `Listed Property`
+                : propertiesDetails?.status === `sold`
+                ? `Sold Property`
                 : `Unlisted Property`}{' '}
               /
             </Text>{' '}
@@ -331,13 +333,28 @@ const AdminPropertiesDetailsPage = () => {
                   <Flex flexDir={`column`} gap={5} mt={10}>
                     <Button
                       onClick={() => handleOpen(`sold`)}
+                      display={
+                        propertiesDetails?.status !== `sold` ? `block` : `none`
+                      }
                       size={`lg`}
                       bgColor={`primary`}
                       color={`white`}
                     >
-                      Mark as Sold
+                      Mark as sold
                     </Button>
                     <Button
+                      onClick={() => handleOpen(`unlisted`)}
+                      display={
+                        propertiesDetails?.status === `sold` ? `block` : `none`
+                      }
+                      size={`lg`}
+                      bgColor={`primary`}
+                      color={`white`}
+                    >
+                      Mark as unsold
+                    </Button>
+                    <Button
+                      onClick={() => handleOpen(`deleteProperty`)}
                       variant={`outline`}
                       size={`lg`}
                       colorScheme={`orange`}

@@ -7,7 +7,7 @@ import {
   SimpleGrid,
   Text,
 } from '@chakra-ui/react'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Link as ReactLink } from 'react-router-dom'
 import AdminPropertyCard from '../../../components/admin/propertyCard/AdminPropertyCard'

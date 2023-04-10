@@ -79,7 +79,12 @@ const Properties = () => {
           </Text>
         </Container>
       </Box>
-      <Box bgColor={`bgBlack`} py={10} display={{ base: `none`, lg: `block` }}>
+      <Box
+        className='page_alignment'
+        bgColor={`bgBlack`}
+        py={10}
+        display={{ base: `block` }}
+      >
         <SearchForm setSearch={setSearch} />
       </Box>
       {/* section two */}

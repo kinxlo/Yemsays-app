@@ -10,8 +10,9 @@ import {
   Text,
 } from '@chakra-ui/react'
 import React, { useCallback, useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import {
+  useDeletePropertyMutation,
   useGetPropertyByIDMutation,
   useListPropertyMutation,
 } from '../../pages/admin/dashboard/api/propertiesApiSlice'
@@ -22,7 +23,9 @@ const FeedbackModal = ({ isOpen, onClose, action, id, handleSubmit }) => {
   const [isSuccess, setSuccess] = useState(false)
   const [getPropertyByID] = useGetPropertyByIDMutation()
   const [listProperty, { isLoading }] = useListPropertyMutation()
+  const [deleteProperty, delArg] = useDeletePropertyMutation()
   const location = useLocation()
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (!id) {
@@ -50,11 +53,26 @@ const FeedbackModal = ({ isOpen, onClose, action, id, handleSubmit }) => {
     [getPropertiesDetails, listProperty, propertyID]
   )
 
+  const handleDeleteProperty = async () => {
+    const res = await deleteProperty(propertyID).unwrap()
+    if (res.success) {
+      setSuccess(true)
+    }
+    console.log(res)
+  }
+
   const handleClick = () => {
-    action === `addProperty` ? handleSubmit() : setListedStatus(action)
+    action === `addProperty`
+      ? handleSubmit()
+      : action === `deleteProperty`
+      ? handleDeleteProperty()
+      : setListedStatus(action)
   }
 
   const onCloseModal = () => {
+    if (action === `deleteProperty`) {
+      navigate(`/admin/dashboard`)
+    }
     onClose()
     setSuccess(false)
   }
@@ -96,6 +114,13 @@ const FeedbackModal = ({ isOpen, onClose, action, id, handleSubmit }) => {
           description: `The new property has been added and moved to the Unlisted folder. To list property, go to Unlisted folder.`,
         })
         break
+      case `deleteProperty`:
+        setContent({
+          title1: `Are you sure you want to delete this Property?`,
+          title2: `Property deleted Successfully!`,
+          description: `The new property has been deleted permanently. To see property, continue.`,
+        })
+        break
 
       default:
         break
@@ -129,7 +154,7 @@ const FeedbackModal = ({ isOpen, onClose, action, id, handleSubmit }) => {
             <Stack mt={5} p={10} gap={5}>
               <Button
                 onClick={handleClick}
-                isLoading={isLoading}
+                isLoading={isLoading || delArg.isLoading}
                 loadingText={`hold on...`}
                 variant={`solid`}
                 colorScheme={`orange`}

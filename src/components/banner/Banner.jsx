@@ -1,8 +1,20 @@
 import { Box, SimpleGrid, Text } from '@chakra-ui/react'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useGetBannerMutation } from '../../pages/admin/dashboard/api/propertiesApiSlice'
+import SpinnerComponent from '../feedback/SpinnerComponent'
 
 const Banner = () => {
   // the values displayed on the bannner would be coming from the database , showing a summary of the sales of properties
+  const [bannerDetails, setBannerDetails] = useState({})
+  const [getBanner, { isLoading }] = useGetBannerMutation()
+
+  useEffect(() => {
+    async function BannerDetails() {
+      const res = await getBanner()
+      setBannerDetails(res.data.data)
+    }
+    BannerDetails()
+  }, [getBanner])
   return (
     <SimpleGrid
       color={`black`}
@@ -17,33 +29,50 @@ const Banner = () => {
       columns={{ base: 2, md: 4 }}
     >
       <Box textAlign={`center`}>
-        <Text fontWeight={`bold`} fontSize={`5xl`} color={`primary`}>
-          2349
-        </Text>
+        {isLoading ? (
+          <SpinnerComponent size={`md`} />
+        ) : (
+          <Text fontWeight={`bold`} fontSize={`5xl`} color={`primary`}>
+            {bannerDetails?.homeForSale}
+          </Text>
+        )}
         <Text fontSize={`xl`} fontWeight={`bold`}>
           Homes for sale
         </Text>
       </Box>
       <Box textAlign={`center`}>
-        <Text fontWeight={`bold`} fontSize={`5xl`} color={`primary`}>
-          33
-        </Text>
+        {isLoading ? (
+          <SpinnerComponent size={`md`} />
+        ) : (
+          <Text fontWeight={`bold`} fontSize={`5xl`} color={`primary`}>
+            {bannerDetails?.landForSale}
+          </Text>
+        )}
         <Text fontSize={`xl`} fontWeight={`bold`}>
-          Open Houses
+          Lands for sale
         </Text>
       </Box>
       <Box textAlign={`center`}>
-        <Text fontWeight={`bold`} fontSize={`5xl`} color={`primary`}>
-          400
-        </Text>
+        {isLoading ? (
+          <SpinnerComponent size={`md`} />
+        ) : (
+          <Text fontWeight={`bold`} fontSize={`5xl`} color={`primary`}>
+            {bannerDetails?.sold}
+          </Text>
+        )}
         <Text fontSize={`xl`} fontWeight={`bold`}>
           Recently sold
         </Text>
       </Box>
       <Box textAlign={`center`}>
-        <Text fontWeight={`bold`} fontSize={`5xl`} color={`primary`}>
-          9.5/10
-        </Text>
+        {isLoading ? (
+          <SpinnerComponent size={`md`} />
+        ) : (
+          <Text fontWeight={`bold`} fontSize={`5xl`} color={`primary`}>
+            9.5/10
+          </Text>
+        )}
+
         <Text fontSize={`xl`} fontWeight={`bold`}>
           User Satisfaction
         </Text>

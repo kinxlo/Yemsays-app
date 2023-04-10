@@ -9,10 +9,17 @@ const Reviews = ({ review }) => {
       <Flex justifyContent={`space-between`} alignItems={`center`}>
         <Text fontSize={`lg`}>{review?.name}</Text>
         <Text fontSize={`sm`} color={`textGrey`}>
-          5 mins ago
+          {new Date(review?.createdAt).toLocaleString()}
         </Text>
       </Flex>
-      <Box>{/* <StarRatings starDimension='20px' starSpacing='1px' /> */}</Box>
+      <Box>
+        <StarRatings
+          starRatedColor='orange'
+          starDimension='20px'
+          starSpacing='1px'
+          rating={review?.score}
+        />
+      </Box>
       <Box mt={5}>
         <Text fontSize={`sm`} color={`textGrey`}>
           {review?.review}

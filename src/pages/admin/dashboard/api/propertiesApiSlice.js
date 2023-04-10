@@ -105,6 +105,13 @@ export const authApiSlice = apiSlice.injectEndpoints({
       }),
     }),
 
+    deleteProperty: builder.mutation({
+      query: (propertyID) => ({
+        url: `property/${propertyID}`,
+        method: 'DELETE',
+      }),
+    }),
+
     // ========== External API ==================
 
     listLandProperties: builder.mutation({
@@ -226,6 +233,21 @@ export const authApiSlice = apiSlice.injectEndpoints({
       },
     }),
 
+    getBanner: builder.mutation({
+      query: () => ({
+        url: `/property/banner`,
+        method: 'GET',
+      }),
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled
+          // console.log(data)
+        } catch (err) {
+          console.log(err)
+        }
+      },
+    }),
+
     // ========== External API ==================
   }),
 })
@@ -247,5 +269,7 @@ export const {
   useBookApointmentMutation,
   useSearchPropertyMutation,
   useRecentPropertiesMutation,
+  useGetBannerMutation,
+  useDeletePropertyMutation,
   // useRefreshMutation,
 } = authApiSlice

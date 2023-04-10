@@ -153,9 +153,10 @@ const SearchForm = ({ setSearch }) => {
         color={`white`}
         p={5}
         borderRadius={15}
+        width={`100%`}
       >
-        <SimpleGrid columns={12} gap={5}>
-          <GridItem colSpan={3}>
+        <SimpleGrid columns={{ base: 6, lg: 12 }} gap={5}>
+          <GridItem colSpan={{ base: 6, lg: 3 }}>
             <FormControl>
               <FormLabel color={`textLight`}>Location</FormLabel>
               <Input
@@ -168,7 +169,7 @@ const SearchForm = ({ setSearch }) => {
               />
             </FormControl>
           </GridItem>
-          <GridItem hidden={!propertyState.isLand} colSpan={3}>
+          <GridItem hidden={!propertyState.isLand} colSpan={{ base: 6, lg: 3 }}>
             <FormControl color={`textLight`}>
               <FormLabel>Land Type</FormLabel>
               <Input
@@ -181,7 +182,7 @@ const SearchForm = ({ setSearch }) => {
               />
             </FormControl>
           </GridItem>
-          <GridItem hidden={propertyState.isLand} colSpan={3}>
+          <GridItem hidden={propertyState.isLand} colSpan={{ base: 6, lg: 3 }}>
             <FormControl color={`textLight`}>
               <FormLabel>Property Type</FormLabel>
               <Input
@@ -194,7 +195,7 @@ const SearchForm = ({ setSearch }) => {
               />
             </FormControl>
           </GridItem>
-          <GridItem colSpan={3}>
+          <GridItem colSpan={{ base: 6, lg: 3 }}>
             <FormControl color={`textLight`}>
               <FormLabel>Average Price</FormLabel>
               <Input
@@ -207,7 +208,7 @@ const SearchForm = ({ setSearch }) => {
               />
             </FormControl>
           </GridItem>
-          <GridItem colSpan={3}>
+          <GridItem colSpan={{ base: 6, lg: 3 }}>
             <Flex
               w={`100%`}
               h={`100%`}

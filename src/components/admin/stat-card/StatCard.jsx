@@ -58,7 +58,7 @@ const StatCard = ({ total, title, isLoading }) => {
           <>
             <Flex flex={1} flexDir={`column`} justifyContent={`space-between`}>
               <Text fontSize={`2xl`}>{title}</Text>
-              <Heading fontSize={`5xl`}>{total}</Heading>
+              <Heading fontSize={`5xl`}>{total?.toString()}</Heading>
             </Flex>
             <Box flex={1} width={`10rem`} height={`10rem`}>
               <canvas ref={chartRef} />
