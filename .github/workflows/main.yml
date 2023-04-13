@@ -24,4 +24,3 @@ jobs:
     - run: git config --global url."git@github.com:".insteadOf git://github.com/ && npm install
     - run: |
         CI=false npm run build --if-present
-    # - run: pm2 reload 2
