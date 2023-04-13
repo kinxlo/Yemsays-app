@@ -22,6 +22,6 @@ jobs:
     # - run: cp -rf /var/www/config/* /var/www/config/.* /var/www/techstudio-server/_work/Techtudio-site-server/Techtudio-site-server
     # - run: git config --global url."git@github.com:".insteadOf git://github.com/ && npm install
     - run: npm install
-     - run: |
+    - run: |
         export NODE_OPTIONS="--max_old_space_size=4096"
         CI=false npm run build --if-present
