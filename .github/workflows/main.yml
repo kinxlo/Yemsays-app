@@ -11,7 +11,7 @@ jobs:
     runs-on: self-hosted
     strategy:
       matrix:
-        node-version: [14.x, 16.x, 18.x]
+        node-version: [16.x]
     steps:
     - uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
@@ -20,7 +20,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     # - run: cp -rf /var/www/config/* /var/www/config/.* /var/www/techstudio-server/_work/Techtudio-site-server/Techtudio-site-server
-    - run: npm install
     - run: git config --global url."git@github.com:".insteadOf git://github.com/ && npm install
     - run: |
         CI=false npm run build --if-present
+    #-
