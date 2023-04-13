@@ -62,6 +62,7 @@ const AdminPropertiesDetailsPage = () => {
     avatar: `data:image/png;base64,${propertiesDetails?.salesSupport?.avatar}`,
     property_video: propertiesDetails?.media?.video,
   })
+  const [previousImage, setPreviousImage] = useState([])
 
   const handleOpen = (action) => {
     setAction(action)
@@ -93,7 +94,7 @@ const AdminPropertiesDetailsPage = () => {
     salesSupportName: propertiesDetails?.salesSupport?.name,
     salesSupportNum: parseInt(propertiesDetails?.salesSupport?.phoneNumber),
     avatar: propertiesDetails?.salesSupport?.avatar,
-    // images: propertiesDetails?.media?.imgs,
+    images: propertiesDetails?.media?.imgs,
   }
 
   const { handleSubmit, register, reset } = useForm({
@@ -112,6 +113,9 @@ const AdminPropertiesDetailsPage = () => {
     fileInput.click()
     fileInput.onchange = () => {
       const [file] = fileInput.files
+      setPreviousImage((prevState) => {
+        return [...prevState, defaultFormData[fileInput.name]]
+      })
       setImgPreview((prevState) => {
         return { ...prevState, [id]: URL.createObjectURL(file) }
       })
@@ -140,8 +144,7 @@ const AdminPropertiesDetailsPage = () => {
   const submitEditedProperty = async (data) => {
     setLoading(true)
     console.log(data)
-    const formData = new FormData()
-    const tags = data.tags.split(' ')
+
     const images = [
       ...(typeof data.image_1 === 'string'
         ? [data.image_1]
@@ -156,6 +159,9 @@ const AdminPropertiesDetailsPage = () => {
         ? [data.image_4]
         : [...data.image_4]),
     ]
+
+    const formData = new FormData()
+    const tags = data.tags.split(' ')
     const features = [
       data.feat_1,
       data.feat_2,
@@ -164,9 +170,6 @@ const AdminPropertiesDetailsPage = () => {
       data.feat_5,
       data.feat_6,
     ]
-
-    console.log(typeof images[0])
-
     const video = [...data.video]
     const avatar = [...data.avatar]
 
@@ -178,9 +181,9 @@ const AdminPropertiesDetailsPage = () => {
     tags.forEach((tag) => formData.append(`tags[]`, tag))
     features.forEach((feature) => formData.append(`features[]`, feature))
     images.forEach((img) => formData.append(`images`, img))
-    // images.forEach((img) => {
-    //   typeof img === `object` ? formData.append(`images`, img) : null
-    // })
+    previousImage.forEach((img, index) => {
+      formData.append(`imgs[${index}]`, img)
+    })
     typeof video[0] === `object` ? formData.append(`video`, video[0]) : null
     formData.append(`salesSupportName`, data.salesSupportName)
     formData.append(`salesSupportNum`, parseInt(data.salesSupportNum))
@@ -287,6 +290,7 @@ const AdminPropertiesDetailsPage = () => {
                 <Input
                   hidden
                   id={`img1`}
+                  name={`image_1`}
                   type={`file`}
                   accept='image/*'
                   {...register(`image_1`)}
@@ -326,6 +330,7 @@ const AdminPropertiesDetailsPage = () => {
                 <Input
                   hidden
                   id={`img2`}
+                  name={`image_2`}
                   type={`file`}
                   accept='image/*'
                   {...register(`image_2`)}
@@ -365,6 +370,7 @@ const AdminPropertiesDetailsPage = () => {
                 <Input
                   hidden
                   id={`img3`}
+                  name={`image_3`}
                   type={`file`}
                   accept='image/*'
                   {...register(`image_3`)}
@@ -403,6 +409,7 @@ const AdminPropertiesDetailsPage = () => {
                 <Input
                   hidden
                   id={`img4`}
+                  name={`image_4`}
                   type={`file`}
                   accept='image/*'
                   {...register(`image_4`)}
@@ -508,15 +515,15 @@ const AdminPropertiesDetailsPage = () => {
                   Location
                 </FormLabel>
                 <InputGroup>
-                  {/* <InputLeftElement
+                  <InputLeftElement
                     pointerEvents='none'
                     color='gray.300'
                     h={`100%`}
                   >
-                <Box fontSize={`2xl`}>
-                  <Icon icon={`material-symbols:location-on`} />
-                </Box>
-                </InputLeftElement> */}
+                    <Box mt={-1} fontSize={`xl`}>
+                      <Icon icon={`material-symbols:location-on`} />
+                    </Box>
+                  </InputLeftElement>
 
                   <Input
                     // defaultValue={propertiesDetails?.property?.location}

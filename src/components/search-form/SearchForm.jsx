@@ -87,7 +87,7 @@ const SearchForm = ({ setSearch }) => {
     try {
       setSearch(true)
       const res = await searchProperty(formData).unwrap()
-      console.log(res)
+      // console.log(res)
       if (res.success) {
         dispatch({
           type: `properties/changePropertyState`,
@@ -199,7 +199,7 @@ const SearchForm = ({ setSearch }) => {
             <FormControl color={`textLight`}>
               <FormLabel>Average Price</FormLabel>
               <Input
-                required
+                // required
                 color={`textDark`}
                 bgColor={`textLight`}
                 type='text'

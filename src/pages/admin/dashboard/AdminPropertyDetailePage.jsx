@@ -312,7 +312,10 @@ const AdminPropertiesDetailsPage = () => {
           <GridItem colSpan={{ base: 2, lg: 4 }}>
             <Box>
               {/* sales person card */}
-              <SalesPersonCard salePerson={propertiesDetails?.salesSupport} />
+              <SalesPersonCard
+                isLoading={isLoading}
+                salePerson={propertiesDetails?.salesSupport}
+              />
             </Box>
             {/* old properties action */}
             <Box>

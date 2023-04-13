@@ -409,7 +409,14 @@ const PropertiesDetailsPage = () => {
                 )}
               </Box>
               {/* Comment a review */}
-              <Box border={`1px solid #343434`} p={8} borderRadius={7} my={10}>
+              <Box
+                as='form'
+                onSubmit={handleSubmit(handleSubmitReview)}
+                border={`1px solid #343434`}
+                p={8}
+                borderRadius={7}
+                my={10}
+              >
                 <Heading
                   textAlign={{ base: `center`, lg: `left` }}
                   fontSize={`xl`}
@@ -516,6 +523,7 @@ const PropertiesDetailsPage = () => {
                 <FormControl mt={5}>
                   <SimpleGrid columns={2} gap={5}>
                     <Input
+                      required
                       fontSize={`lg`}
                       size={`lg`}
                       border={`1px solid #343434`}
@@ -524,6 +532,7 @@ const PropertiesDetailsPage = () => {
                       {...register(`name`)}
                     />
                     <Input
+                      required
                       fontSize={`lg`}
                       size={`lg`}
                       border={`1px solid #343434`}
@@ -533,6 +542,7 @@ const PropertiesDetailsPage = () => {
                     />
                     <GridItem colSpan={2}>
                       <Textarea
+                        required
                         height={`10rem`}
                         fontSize={`lg`}
                         border={`1px solid #343434`}
@@ -542,9 +552,9 @@ const PropertiesDetailsPage = () => {
                     </GridItem>
                   </SimpleGrid>
                   <Button
+                    type='submit'
                     isLoading={arg2.isLoading}
                     loadingText='Sending review...'
-                    onClick={handleSubmit(handleSubmitReview)}
                     mt={5}
                     colorScheme={`orange`}
                   >

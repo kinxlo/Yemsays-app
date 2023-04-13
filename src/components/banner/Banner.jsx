@@ -65,14 +65,15 @@ const Banner = () => {
         </Text>
       </Box>
       <Box textAlign={`center`}>
-        {isLoading ? (
-          <SpinnerComponent size={`md`} />
-        ) : (
-          <Text fontWeight={`bold`} fontSize={`5xl`} color={`primary`}>
-            9.5/10
-          </Text>
-        )}
-
+        <Text fontWeight={`bold`} fontSize={`5xl`} color={`primary`}>
+          {isLoading ? (
+            <SpinnerComponent size={`md`} />
+          ) : (
+            <Text fontWeight={`bold`} fontSize={`5xl`} color={`primary`}>
+              9.5/10
+            </Text>
+          )}
+        </Text>
         <Text fontSize={`xl`} fontWeight={`bold`}>
           User Satisfaction
         </Text>

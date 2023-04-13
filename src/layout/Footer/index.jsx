@@ -3,7 +3,7 @@
 // COMPONENTS
 import Container from '../Container'
 // import Logo_dark from '../../assets/images/ticked_logo_light.png'
-import { FaFacebookF, FaTwitter, FaLinkedin } from 'react-icons/fa'
+import { FaFacebookF, FaTwitter, FaLinkedin, FaInstagram } from 'react-icons/fa'
 import {
   Box,
   Divider,
@@ -220,13 +220,26 @@ const Footer = () => {
               justifyContent={{ base: `center`, md: `initial` }}
               gap={3}
             >
-              <Flex
+              {/* <Flex
                 p={2}
                 borderRadius={`100%`}
                 bgColor={`white`}
                 color={`primary`}
               >
                 <FaLinkedin />
+              </Flex> */}
+              <Flex
+                p={2}
+                borderRadius={`100%`}
+                bgColor={`white`}
+                color={`primary`}
+              >
+                <Link
+                  isExternal
+                  href='https://instagram.com/yemsays_properties'
+                >
+                  <FaInstagram />
+                </Link>
               </Flex>
               <Flex
                 p={2}
@@ -234,16 +247,18 @@ const Footer = () => {
                 bgColor={`white`}
                 color={`primary`}
               >
-                <FaFacebookF />
+                <Link isExternal href='https://facebook.com/Ayodeji Oladimeji'>
+                  <FaFacebookF />
+                </Link>
               </Flex>
-              <Flex
+              {/* <Flex
                 p={2}
                 borderRadius={`100%`}
                 bgColor={`white`}
                 color={`primary`}
               >
                 <FaTwitter />
-              </Flex>
+              </Flex> */}
             </Box>
             <Divider my={5} />
             <Box onClick={handleClick} textAlign={`center`} color={`primary`}>
@@ -258,6 +273,14 @@ const Footer = () => {
                 onClose={() => setOpen(!isOpen)}
               />
             </Box>
+            <Text
+              fontSize={`10px`}
+              letterSpacing={`2px`}
+              fontWeight={`thin`}
+              textAlign={`center`}
+            >
+              Powered BinaryArt.inc
+            </Text>
           </Box>
         </Box>
       </Container>

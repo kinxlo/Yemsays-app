@@ -12,12 +12,11 @@ import styles from './NavBar.module.scss'
 import LinkButton from '../../components/buttons/link-button/LinkButton'
 import { Text } from '@chakra-ui/react'
 
-const NavBar = ({ children, transparentBg }) => {
+const NavBar = ({ transparentBg }) => {
   const [isNavOpen, setIsNavOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [windowPosition, setWindowPosition] = useState(0)
   const location = useLocation()
-  const routePath = useLocation()
 
   // verifies if routeName is the one active (in browser input)
   const activeRoute = (routeName) => {
@@ -53,18 +52,6 @@ const NavBar = ({ children, transparentBg }) => {
       setIsScrolled(false)
     }
   }, [windowPosition])
-
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: 'smooth',
-    })
-  }
-
-  useEffect(() => {
-    scrollToTop()
-  }, [routePath])
 
   return (
     <nav
@@ -139,27 +126,7 @@ const NavBar = ({ children, transparentBg }) => {
                   height={`40px`}
                   to={`/book-now`}
                 />
-                {children}
               </div>
-
-              {/* <div className={styles.navItems}>
-                <Button
-                  onClick={handleCloseNavBar}
-                  linkHref={'/login'}
-                  navBtn={true}
-                  solidBtn={false}
-                  linkText={'LOGIN'}
-                />
-
-                <Button
-                  onClick={handleCloseNavBar}
-                  linkHref={'/signup'}
-                  navBtn={true}
-                  solidBtn={true}
-                  linkText={'SIGN UP'}
-                />
-                {children}
-              </div> */}
             </div>
           }
         </div>

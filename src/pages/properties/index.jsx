@@ -8,6 +8,7 @@ import SearchForm from '../../components/search-form/SearchForm'
 import Container from '../../layout/Container'
 import DefaultLayout from '../../layout/DefaultLayout'
 import SpinnerComponent from '../../components/feedback/SpinnerComponent'
+import emptyState from '../../assets/emptyState.svg'
 // import {
 //   useListHousePropertiesMutation,
 //   useListLandPropertiesMutation,
@@ -17,6 +18,7 @@ import {
   selectUserHouseProperties,
   selectUserLandProperties,
 } from '../admin/dashboard/api/propertiesSlice'
+import EmptyState from '../../components/feedback/EmptyState'
 
 const Properties = () => {
   const [isSearch, setSearch] = useState(false)
@@ -46,7 +48,12 @@ const Properties = () => {
       })
     ) : (
       <Text textAlign={`center`} width={{ xl: `1091px` }}>
-        No Land Property found!
+        <EmptyState
+          img={emptyState}
+          size={`10rem`}
+          message={`no land property found!... \n
+        click on land to view all land properties`}
+        />
       </Text>
     )
   ) : userHouseProperties?.length ? (
@@ -55,7 +62,12 @@ const Properties = () => {
     })
   ) : (
     <Text textAlign={`center`} width={{ xl: `1091px` }}>
-      No house Property found!
+      <EmptyState
+        img={emptyState}
+        size={`10rem`}
+        message={`no house property found!... \n
+        click on house to view all house properties`}
+      />
     </Text>
   )
 

@@ -28,6 +28,8 @@ import {
   selectLandProperty,
 } from './api/propertiesSlice'
 import SpinnerComponent from '../../../components/feedback/SpinnerComponent'
+import EmptyState from '../../../components/feedback/EmptyState'
+import emptyState from '../../../assets/dashboardEmptyState.svg'
 
 const links = [
   { name: `Home`, ref: `/admin/dashboard` },
@@ -238,28 +240,64 @@ const PropertyDashboard = () => {
             <TabPanel p={0} my={5}>
               {isLoading ? (
                 <SpinnerComponent size={`xl`} />
-              ) : (
+              ) : propertyList_L?.length ? (
                 <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={6}>
                   {propertyList_L}
                 </SimpleGrid>
+              ) : (
+                <EmptyState
+                  img={emptyState}
+                  size={`10rem`}
+                  message={`We have no listed ${
+                    propertyType === `land` ? `land` : `house`
+                  } properties at the moment...`}
+                >
+                  <Link as={ReactLink} to={`/admin/property/new`}>
+                    <Button colorScheme={`orange`}>Add a new property</Button>
+                  </Link>
+                </EmptyState>
               )}
             </TabPanel>
             <TabPanel p={0} my={5}>
               {isLoading ? (
                 <SpinnerComponent size={`xl`} />
-              ) : (
+              ) : propertyList_U?.length ? (
                 <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={6}>
                   {propertyList_U}
                 </SimpleGrid>
+              ) : (
+                <EmptyState
+                  img={emptyState}
+                  size={`10rem`}
+                  message={`We have no unlisted ${
+                    propertyType === `land` ? `land` : `house`
+                  } properties at the moment...`}
+                >
+                  <Link as={ReactLink} to={`/admin/property/new`}>
+                    <Button colorScheme={`orange`}>Add a new property</Button>
+                  </Link>
+                </EmptyState>
               )}
             </TabPanel>
             <TabPanel p={0} my={5}>
               {isLoading ? (
                 <SpinnerComponent size={`xl`} />
-              ) : (
+              ) : propertyList_S?.length ? (
                 <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={6}>
                   {propertyList_S}
                 </SimpleGrid>
+              ) : (
+                <EmptyState
+                  img={emptyState}
+                  size={`10rem`}
+                  message={`We have no sold ${
+                    propertyType === `land` ? `land` : `house`
+                  } properties at the moment...`}
+                >
+                  <Link as={ReactLink} to={`/admin/property/new`}>
+                    <Button colorScheme={`orange`}>Add a new property</Button>
+                  </Link>
+                </EmptyState>
               )}
             </TabPanel>
           </TabPanels>

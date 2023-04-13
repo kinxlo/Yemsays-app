@@ -1,4 +1,12 @@
-import { Box, Flex, Heading, Image, SimpleGrid, Text } from '@chakra-ui/react'
+import {
+  Box,
+  Flex,
+  Heading,
+  Image,
+  Link,
+  SimpleGrid,
+  Text,
+} from '@chakra-ui/react'
 import React from 'react'
 import { AiOutlineInstagram, AiOutlineTwitter } from 'react-icons/ai'
 import { FaFacebookF, FaLinkedinIn } from 'react-icons/fa'
@@ -88,10 +96,20 @@ const index = () => {
               <Flex alignItems={`center`} gap={3} mt={10}>
                 <Text>Follow us on:</Text>
                 <Flex gap={3}>
-                  <FaFacebookF color='orange' />
-                  <AiOutlineInstagram color='orange' />
-                  <AiOutlineTwitter color='orange' />
-                  <FaLinkedinIn color='orange' />
+                  <Link
+                    isExternal
+                    href='https://facebook.com/yemsays_properties'
+                  >
+                    <FaFacebookF color='orange' />
+                  </Link>
+                  <Link
+                    isExternal
+                    href='https://instagram.com/yemsays_properties'
+                  >
+                    <AiOutlineInstagram color='orange' />
+                  </Link>
+                  {/* <AiOutlineTwitter color='orange' /> */}
+                  {/* <FaLinkedinIn color='orange' /> */}
                 </Flex>
               </Flex>
             </Box>

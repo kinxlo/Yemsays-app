@@ -16,6 +16,8 @@ import { selectRecentProperties } from '../admin/dashboard/api/propertiesSlice'
 import ReactPlayer from 'react-player'
 import { Icon } from '@iconify/react'
 import SpinnerComponent from '../../components/feedback/SpinnerComponent'
+import EmptyState from '../../components/feedback/EmptyState'
+import emptyState from '../../assets/emptyState.svg'
 
 const reactPlayer = {
   // width: `100%`,
@@ -276,7 +278,7 @@ const Home = () => {
         bgPos={`bottom`}
       >
         <Container paddingBlock={0}>
-          <Box textAlign={`center`} pt={115} mb={14}>
+          <Box textAlign={`center`} pt={115}>
             <Heading fontSize={{ base: `3xl`, md: `5xl` }}>
               {sectionThree.title}
             </Heading>
@@ -287,8 +289,9 @@ const Home = () => {
           <Box>
             {isLoading ? (
               <SpinnerComponent size={`xl`} />
-            ) : (
+            ) : recentProps?.length ? (
               <SimpleGrid
+                mt={14}
                 columns={{ base: 1, xl: 2 }}
                 gap={`32px`}
                 justifyItems={`center`}
@@ -296,6 +299,12 @@ const Home = () => {
               >
                 {recentPropertyList}
               </SimpleGrid>
+            ) : (
+              <EmptyState
+                img={emptyState}
+                size={`10rem`}
+                message={`We have no recent properties at the moment... do come back later`}
+              />
             )}
           </Box>
         </Container>

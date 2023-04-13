@@ -128,7 +128,7 @@ const AdminPropertiesDetailsPage = () => {
         formData,
         credentials
       )
-
+      console.log(res)
       if (res.data.success) {
         setLoading(false)
         setOpen(true)
