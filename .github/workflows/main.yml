@@ -12,6 +12,7 @@ jobs:
     strategy:
       matrix:
         node-version: [16.x]
+    if: github.event.repository.full_name == 'kinxlo/yemsays-app'
     steps:
     - uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
