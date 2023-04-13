@@ -15,8 +15,8 @@ const theme = extendTheme({
     md: '768px', //768px
     lg: '992px', //960px
     xl: '1200px', //1200px
-    xxl: '1400px', //1400
-    '2xl': '1440px', //1440
+    xxl: '1440px', //1400
+    '2xl': '1900px', //1440
   },
 
   components: {

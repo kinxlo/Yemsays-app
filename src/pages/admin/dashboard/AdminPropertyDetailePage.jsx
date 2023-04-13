@@ -8,13 +8,10 @@ import {
   Heading,
   Text,
 } from '@chakra-ui/react'
-import React, { useState } from 'react'
+import './scss/dashboard.scss'
+import React, { useCallback, useEffect, useState } from 'react'
 import { FaNetworkWired } from 'react-icons/fa'
-import {
-  MdCropSquare,
-  MdOutlineBed,
-  MdOutlineFamilyRestroom,
-} from 'react-icons/md'
+import { MdOutlineBed, MdOutlineFamilyRestroom } from 'react-icons/md'
 import { BiBath } from 'react-icons/bi'
 import { GiHomeGarage } from 'react-icons/gi'
 import TwoColumnLayout from '../../../layout/TwoColumnLayout'
@@ -23,24 +20,73 @@ import LinkButton from '../../../components/buttons/link-button/LinkButton'
 import SalesPersonCard from '../../../components/saleperson-profile-card/SalesPersonCard'
 import GridImageLayout from '../../../layout/GridImageLayout/GridImageLayout'
 import BreadCrumbHeader from '../../../components/breadcrumbHeader/BreadCrumbHeader'
-
-const links = [
-  { name: `Home`, ref: `/` },
-  { name: `properties`, ref: `/properties` },
-  { name: `propertiesDetails`, ref: `/properties Details` },
-]
+import {
+  useGetPropertyByIDMutation,
+  useListPropertyMutation,
+} from './api/propertiesApiSlice'
+import { useLocation } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { selectPropertyDetails } from './api/propertiesSlice'
+import ReactPlayer from 'react-player'
+import SpinnerComponent from '../../../components/feedback/SpinnerComponent'
+import FeedbackModal from '../../../components/modals/Modal'
 
 // eslint-disable-next-line react/prop-types
 const AdminPropertiesDetailsPage = () => {
-  const [isListed, setListed] = useState(false)
+  const [action, setAction] = useState(null)
+  const [isOpen, setIsOpen] = useState(false)
+  const [getPropertyByID, { isLoading }] = useGetPropertyByIDMutation()
+  const [listProperty] = useListPropertyMutation()
+  const location = useLocation()
+  const propertyID = location.pathname.split(`/`)[3]
+  const propertiesDetails = useSelector(selectPropertyDetails)
+  const links = [
+    { name: `Home`, ref: `/admin/dashboard` },
+    { name: `properties`, ref: `/admin/properties` },
+    {
+      name: `propertiesDetails`,
+      ref: `/admin/properties/${propertyID}/Details`,
+    },
+  ]
+
+  const handleOpen = (action) => {
+    setAction(action)
+    setIsOpen(true)
+  }
+
+  const handleClose = () => {
+    setIsOpen(false)
+  }
+
+  const getPropertiesDetails = useCallback(async () => {
+    await getPropertyByID(propertyID).unwrap()
+  }, [getPropertyByID, propertyID])
+
+  const setListedStatus = useCallback(
+    async (status) => {
+      const res = await listProperty({
+        id: propertyID,
+        body: { status: status },
+      }).unwrap()
+      if (res.success) {
+        getPropertiesDetails()
+      }
+    },
+    [getPropertiesDetails, listProperty, propertyID]
+  )
+
+  useEffect(() => {
+    getPropertiesDetails()
+  }, [getPropertiesDetails, setListedStatus])
   return (
     <>
+      <FeedbackModal action={action} onClose={handleClose} isOpen={isOpen} />
       <Box id='top' mb={12}>
         <BreadCrumbHeader title={`Properties Details`} links={links} />
       </Box>
       <Flex
         p={5}
-        flexDir={{ base: `column`, lg: `row` }}
+        flexDir={{ base: `column`, sm: `row` }}
         justifyContent={`space-between`}
         alignItems={`center`}
         bgColor={`dashboardBG`}
@@ -51,55 +97,75 @@ const AdminPropertiesDetailsPage = () => {
           <Text fontSize={{ lg: `xl` }}>Residential Land</Text>
           <Text fontSize={{ lg: `xl` }} color={`textGrey`}>
             <Text color={`primary`} as={`span`}>
-              {isListed ? `Listed Property` : `Unlisted Property`} /
+              {propertiesDetails?.status === `listed`
+                ? `Listed Property`
+                : propertiesDetails?.status === `sold`
+                ? `Sold Property`
+                : `Unlisted Property`}{' '}
+              /
             </Text>{' '}
-            3 Ogunlesi Street, Onipanu
+            {propertiesDetails?.title}
           </Text>
         </Box>
         <Flex gap={5}>
           <LinkButton
-            to={`/admin/properties/1/details/edit`}
+            to={`/admin/properties/${propertyID}/details/edit`}
             text={`Edit`}
             height={`66px`}
             width={`115px`}
           />
           <Button
-            onClick={() => setListed(!isListed)}
-            display={isListed ? `block` : `none`}
+            onClick={() => handleOpen(`unlisted`)}
             borderRadius={10}
             p={6}
             variant={`outline`}
             colorScheme={`orange`}
+            display={propertiesDetails?.status === `listed` ? `block` : `none`}
           >
-            Unlisted Property
+            Unlist Property
           </Button>
           <Button
-            onClick={() => setListed(!isListed)}
-            display={isListed ? `none` : `block`}
+            // onClick={() => setListedStatus(`listed`)}
+            onClick={() => handleOpen(`listed`)}
+            display={
+              propertiesDetails?.status === `unlisted` ? `block` : `none`
+            }
             borderRadius={10}
             p={6}
             variant={`outline`}
             colorScheme={`orange`}
           >
-            Listed Property
+            List Property
           </Button>
         </Flex>
       </Flex>
       <Box my={10}>
-        <GridImageLayout />
+        <GridImageLayout
+          isLoading={isLoading}
+          isNotEditProperty
+          imageSet={propertiesDetails?.media?.imgs}
+        />
       </Box>
       {/* section two  with unique layer */}
       <Box>
         {/* section two  with unique layer */}
         <TwoColumnLayout>
           {/* grid one */}
-          <GridItem colSpan={{ base: 1, lg: 8 }} color={`white`}>
+          <GridItem colSpan={{ base: 2, lg: 8 }} color={`white`}>
             {/* tags */}
             <Flex gap={5}>
-              <Tag bgColor={`accentBlue`} color={`primary`} text={`Network`}>
+              <Tag
+                bgColor={`accentBlue`}
+                color={`primary`}
+                text={propertiesDetails?.tags[0]}
+              >
                 <FaNetworkWired />
               </Tag>
-              <Tag bgColor={`accentRed`} color={`red`} text={`Family`}>
+              <Tag
+                bgColor={`accentRed`}
+                color={`red`}
+                text={propertiesDetails?.tags[1]}
+              >
                 <MdOutlineFamilyRestroom />
               </Tag>
             </Flex>
@@ -113,16 +179,16 @@ const AdminPropertiesDetailsPage = () => {
             >
               <Box>
                 <Heading fontSize={{ base: `3xl`, lg: `40px` }}>
-                  Luxury Family House
+                  {propertiesDetails?.title}
                 </Heading>
                 <Text color={`textGrey`} fontSize={`xl`}>
-                  3, Ogunlesi Street, Lagos 100252
+                  {propertiesDetails?.location}
                 </Text>
               </Box>
               <Box>
                 <Text color={`textGrey`}>Sales Price</Text>
                 <Text fontSize={`4xl`} color={`#0FB7C1`} fontWeight={`bold`}>
-                  $29,630
+                  ${propertiesDetails?.price}
                 </Text>
               </Box>
             </Flex>
@@ -131,61 +197,73 @@ const AdminPropertiesDetailsPage = () => {
               <Heading fontSize={`xl`} mb={5}>
                 Description
               </Heading>
-              <Text color={`textGrey`}>
-                Lorem ipsum dolor sit amet consectetur. Id libero suspendisse eu
-                risus amet vel. Aliquet contur consectetur purus amet ultricies
-                facilisis a pelloique. Telus et cras urna vel vitae. Ornare
-                aliquam dolor enim consequat sapien odio cras integer. Conmentum
-                adipiscing duis morbi laoreet aliquet viverra est auctor.
-                Aliquam blandit adipiscing potenti enim non proin erat fringilla
-                amet. Congue sit ac vulputate scelerisque libero malesuada eget.
-                Nulla ultricies aenean tellus congue molestie molestie enim
-                porta quisque. Neque imperdiet magna maecenas gravida quisque
-                duis porta lacus. Consectetur enim.
-              </Text>
+              {isLoading ? (
+                <SpinnerComponent size={`xl`} />
+              ) : (
+                <Text color={`textGrey`}>{propertiesDetails?.description}</Text>
+              )}
             </Box>
             {/* features */}
             <Box border={`1px solid #343434`} p={8} borderRadius={7} my={10}>
               <Heading fontSize={`xl`} mb={5}>
                 Features
               </Heading>
-              <Flex
-                color={`textGrey`}
-                flexWrap={`wrap`}
-                justifyContent={`space-between`}
-                gap={3}
-              >
-                <Tag
+              {isLoading ? (
+                <SpinnerComponent size={`xl`} />
+              ) : (
+                <Flex
+                  color={`textGrey`}
+                  flexWrap={`wrap`}
+                  justifyContent={`space-between`}
+                  gap={3}
+                >
+                  <Tag
+                    fs={`lg`}
+                    text={propertiesDetails?.features[0]}
+                    bgColor={`transparent`}
+                    color={`textGrey`}
+                  >
+                    <MdOutlineBed size={`1.5rem`} />
+                  </Tag>
+                  <Tag
+                    fs={`lg`}
+                    text={propertiesDetails?.features[1]}
+                    bgColor={`transparent`}
+                    color={`textGrey`}
+                  >
+                    <BiBath size={`1.5rem`} />
+                  </Tag>
+                  <Tag
+                    fs={`lg`}
+                    text={propertiesDetails?.features[2]}
+                    bgColor={`transparent`}
+                    color={`textGrey`}
+                  >
+                    <MdOutlineBed size={`1.5rem`} />
+                  </Tag>
+                  <Tag
+                    fs={`lg`}
+                    text={propertiesDetails?.features[3]}
+                    bgColor={`transparent`}
+                    color={`textGrey`}
+                  >
+                    <BiBath size={`1.5rem`} />
+                  </Tag>
+                  <Tag
+                    fs={`lg`}
+                    text={propertiesDetails?.features[4]}
+                    bgColor={`transparent`}
+                    color={`textGrey`}
+                  >
+                    <GiHomeGarage size={`1.5rem`} />
+                  </Tag>
+                  {/* <Tag
                   fs={`lg`}
-                  text={`3 Bedroom`}
+                  text={propertiesDetails?.property?.features[5]}
                   bgColor={`transparent`}
                   color={`textGrey`}
                 >
-                  <MdOutlineBed size={`1.5rem`} />
-                </Tag>
-                <Tag
-                  fs={`lg`}
-                  text={`2 Bathroom`}
-                  bgColor={`transparent`}
-                  color={`textGrey`}
-                >
-                  <BiBath size={`1.5rem`} />
-                </Tag>
-                <Tag
-                  fs={`lg`}
-                  text={`3 Bedroom`}
-                  bgColor={`transparent`}
-                  color={`textGrey`}
-                >
-                  <MdOutlineBed size={`1.5rem`} />
-                </Tag>
-                <Tag
-                  fs={`lg`}
-                  text={`2 Bathroom`}
-                  bgColor={`transparent`}
-                  color={`textGrey`}
-                >
-                  <BiBath size={`1.5rem`} />
+                  <MdCropSquare size={`1.5rem`} />
                 </Tag>
                 <Tag
                   fs={`lg`}
@@ -197,57 +275,47 @@ const AdminPropertiesDetailsPage = () => {
                 </Tag>
                 <Tag
                   fs={`lg`}
-                  text={`3 Square Feet`}
+                  text={propertiesDetails?.property?.features[6]}
                   bgColor={`transparent`}
                   color={`textGrey`}
                 >
                   <MdCropSquare size={`1.5rem`} />
-                </Tag>
-                <Tag
-                  fs={`lg`}
-                  text={`Garage`}
-                  bgColor={`transparent`}
-                  color={`textGrey`}
-                >
-                  <GiHomeGarage size={`1.5rem`} />
-                </Tag>
-                <Tag
-                  fs={`lg`}
-                  text={`3 Square Feet`}
-                  bgColor={`transparent`}
-                  color={`textGrey`}
-                >
-                  <MdCropSquare size={`1.5rem`} />
-                </Tag>
-              </Flex>
+                </Tag> */}
+                </Flex>
+              )}
             </Box>
             {/* property video */}
-            <Box border={`1px solid #343434`} p={8} borderRadius={7} my={10}>
+            <Box
+              className='propertyVideo'
+              border={`1px solid #343434`}
+              p={8}
+              borderRadius={7}
+              my={10}
+            >
               <Heading fontSize={`xl`} mb={5}>
                 Property Video
               </Heading>
-              <Box borderRadius={7} overflow={`hidden`}>
-                <video width={`100%`} controls>
-                  <source
-                    src={`https://player.vimeo.com/external/392612459.sd.mp4?s=39589128d7c98ba18e262569fc7a5a6d31d89e22&profile_id=164&oauth2_token_id=57447761`}
-                    type='video/mp4'
+              {isLoading ? (
+                <SpinnerComponent size={`xl`} />
+              ) : (
+                <Box borderRadius={7} overflow={`hidden`}>
+                  <ReactPlayer
+                    width={`100%`}
+                    controls
+                    url={propertiesDetails?.media?.video}
                   />
-                  <track
-                    src='captions_en.vtt'
-                    kind='captions'
-                    srcLang='en'
-                    label='english_captions'
-                  ></track>
-                  Your browser does not support the video tag.
-                </video>
-              </Box>
+                </Box>
+              )}
             </Box>
           </GridItem>
           {/* grid two */}
-          <GridItem colSpan={{ base: 1, lg: 4 }}>
+          <GridItem colSpan={{ base: 2, lg: 4 }}>
             <Box>
               {/* sales person card */}
-              <SalesPersonCard />
+              <SalesPersonCard
+                isLoading={isLoading}
+                salePerson={propertiesDetails?.salesSupport}
+              />
             </Box>
             {/* old properties action */}
             <Box>
@@ -266,10 +334,30 @@ const AdminPropertiesDetailsPage = () => {
                     </Text>
                   </Flex>
                   <Flex flexDir={`column`} gap={5} mt={10}>
-                    <Button size={`lg`} bgColor={`primary`} color={`white`}>
-                      Mark as Sold
+                    <Button
+                      onClick={() => handleOpen(`sold`)}
+                      display={
+                        propertiesDetails?.status !== `sold` ? `block` : `none`
+                      }
+                      size={`lg`}
+                      bgColor={`primary`}
+                      color={`white`}
+                    >
+                      Mark as sold
                     </Button>
                     <Button
+                      onClick={() => handleOpen(`unlisted`)}
+                      display={
+                        propertiesDetails?.status === `sold` ? `block` : `none`
+                      }
+                      size={`lg`}
+                      bgColor={`primary`}
+                      color={`white`}
+                    >
+                      Mark as unsold
+                    </Button>
+                    <Button
+                      onClick={() => handleOpen(`deleteProperty`)}
                       variant={`outline`}
                       size={`lg`}
                       colorScheme={`orange`}

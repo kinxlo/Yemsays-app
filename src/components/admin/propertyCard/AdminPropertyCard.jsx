@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import {
   Box,
   Button,
@@ -9,14 +10,27 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react'
-import React from 'react'
+import React, { useState } from 'react'
 import { FaNetworkWired } from 'react-icons/fa'
 import { MdLocationOn, MdOutlineFamilyRestroom } from 'react-icons/md'
 import LinkButton from '../../buttons/link-button/LinkButton'
+import FeedbackModal from '../../modals/Modal'
 import Tag from '../../tag/Tag'
 
-// eslint-disable-next-line react/prop-types
-const AdminPropertyCard = ({ listed, sold }) => {
+const AdminPropertyCard = ({ listed, sold, propertyDescription }) => {
+  const [action, setAction] = useState(null)
+  const [isOpen, setIsOpen] = useState(false)
+  // const { features, location, id, media, price, status, tags, title, type } =
+  //   propertyDescription
+  const handleOpen = (action) => {
+    setAction(action)
+    setIsOpen(true)
+  }
+
+  const handleClose = () => {
+    setIsOpen(false)
+  }
+
   return (
     <Card
       bgColor={`transparent`}
@@ -39,28 +53,38 @@ const AdminPropertyCard = ({ listed, sold }) => {
           height={`277px`}
         >
           <Image
+            width={`100%`}
             height={`100%`}
             objectFit={`cover`}
             borderRadius={10}
-            src='https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'
+            src={propertyDescription?.image}
             alt='img'
           />
         </Box>
-        <Stack spacing='3' flex={1}>
+        <Stack spacing={3} flex={1}>
           <Box height={`1.5rem`}>
             <Text color={`lightgreen`} display={listed ? `block` : `none`}>
-              Posted on 1/3/2023
+              {/* Posted on 1/3/2023 */}
+              {new Date(propertyDescription?.createdAt).toLocaleString()}
             </Text>
           </Box>
           <Box display={`flex`} gap={5} mb={3}>
-            <Tag bgColor={`accentBlue`} color={`primary`} text={`Network`}>
+            <Tag
+              bgColor={`accentBlue`}
+              color={`primary`}
+              text={propertyDescription?.tags[0]}
+            >
               <FaNetworkWired />
             </Tag>
-            <Tag bgColor={`accentRed`} color={`red`} text={`Family`}>
+            <Tag
+              bgColor={`accentRed`}
+              color={`red`}
+              text={propertyDescription?.tags[1]}
+            >
               <MdOutlineFamilyRestroom />
             </Tag>
           </Box>
-          <Heading fontSize={`xl`}>Prime Commercial Land</Heading>
+          <Heading fontSize={`xl`}>{propertyDescription?.title}</Heading>
           <Box
             color='blue.600'
             fontSize='md'
@@ -72,11 +96,11 @@ const AdminPropertyCard = ({ listed, sold }) => {
               <MdLocationOn size={`16px`} color={`grey`} />
             </Box>
             <Text fontSize={`sm`} color={`GrayText`}>
-              3, Ogunlesi Street, Lagos 100252
+              {propertyDescription?.location}
             </Text>
           </Box>
           <Text fontSize={`3xl`} fontWeight={`bold`} color={`#0FB7C1`}>
-            $29,630
+            ${propertyDescription?.price}
           </Text>
           <Box>
             <SimpleGrid columns={2} gap={2}>
@@ -85,7 +109,7 @@ const AdminPropertyCard = ({ listed, sold }) => {
                   src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1677923020/project-yemsays/Vector_pgjluh.png`}
                 />
                 <Text fontSize={`sm`} verticalAlign={`text-bottom`}>
-                  3 Bedroom
+                  {propertyDescription?.features[1]}
                 </Text>
               </Box>
               <Box display={`flex`} alignItems={`center`} gap={2}>
@@ -93,7 +117,7 @@ const AdminPropertyCard = ({ listed, sold }) => {
                   src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1677923106/project-yemsays/Vector_1_tittna.png`}
                 />
                 <Text fontSize={`sm`} verticalAlign={`text-bottom`}>
-                  2 Bathroom
+                  {propertyDescription?.features[2]}
                 </Text>
               </Box>
               <Box display={`flex`} alignItems={`center`} gap={2}>
@@ -101,7 +125,7 @@ const AdminPropertyCard = ({ listed, sold }) => {
                   src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1677923199/project-yemsays/Group_33_q7dpvf.png`}
                 />
                 <Text fontSize={`sm`} verticalAlign={`text-bottom`}>
-                  Garage
+                  {propertyDescription?.features[3]}
                 </Text>
               </Box>
               <Box display={`flex`} alignItems={`center`} gap={2}>
@@ -109,7 +133,7 @@ const AdminPropertyCard = ({ listed, sold }) => {
                   src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1677923214/project-yemsays/Rectangle_13_v9y4bt.png`}
                 />
                 <Text fontSize={`sm`} verticalAlign={`text-bottom`}>
-                  3 Square Feet
+                  {propertyDescription?.features[4]}
                 </Text>
               </Box>
             </SimpleGrid>
@@ -117,14 +141,21 @@ const AdminPropertyCard = ({ listed, sold }) => {
           <Stack>
             <Box display={sold ? `none` : null} paddingTop={4}>
               <LinkButton
-                to={`/admin/properties/${1}/details`}
+                to={`/admin/properties/${propertyDescription?.id}/details`}
                 text={`View Details`}
                 width={`100%`}
                 height={`32px`}
               />
             </Box>
             <Box paddingTop={4}>
+              <FeedbackModal
+                id={propertyDescription?.id}
+                action={action}
+                onClose={handleClose}
+                isOpen={isOpen}
+              />
               <Button
+                onClick={() => handleOpen(`listed`)}
                 display={!sold ? `none` : null}
                 variant={`outline`}
                 colorScheme={`orange`}

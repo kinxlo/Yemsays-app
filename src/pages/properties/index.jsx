@@ -1,18 +1,82 @@
 import { Box, Heading, SimpleGrid, Text } from '@chakra-ui/react'
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import Banner from '../../components/banner/Banner'
 import QuestionBanner from '../../components/banner/QuestionBanner'
 import PropertyCard from '../../components/property-card/PropertyCard'
+import SearchForm from '../../components/search-form/SearchForm'
 import Container from '../../layout/Container'
 import DefaultLayout from '../../layout/DefaultLayout'
+import SpinnerComponent from '../../components/feedback/SpinnerComponent'
+import emptyState from '../../assets/emptyState.svg'
+// import {
+//   useListHousePropertiesMutation,
+//   useListLandPropertiesMutation,
+// } from '../admin/dashboard/api/propertiesApiSlice'
+import {
+  selectPropertyState,
+  selectUserHouseProperties,
+  selectUserLandProperties,
+} from '../admin/dashboard/api/propertiesSlice'
+import EmptyState from '../../components/feedback/EmptyState'
 
-const index = () => {
+const Properties = () => {
+  const [isSearch, setSearch] = useState(false)
+  // const [listLandProperties, { isLoading }] = useListLandPropertiesMutation()
+  // const [listHouseProperties] = useListHousePropertiesMutation()
+  const userLandProperties = useSelector(selectUserLandProperties)
+  const userHouseProperties = useSelector(selectUserHouseProperties)
+  const propertyState = useSelector(selectPropertyState)
+
+  // const showLandProperties = useCallback(async () => {
+  //   await listLandProperties().unwrap()
+  // }, [listLandProperties])
+
+  // const showHouseProperties = useCallback(async () => {
+  //   await listHouseProperties().unwrap()
+  // }, [listHouseProperties])
+
+  // useEffect(() => {
+  //   showLandProperties()
+  //   showHouseProperties()
+  // }, [showHouseProperties, showLandProperties])
+
+  const properties = propertyState.isLand ? (
+    userLandProperties?.length ? (
+      userLandProperties?.map((property) => {
+        return <PropertyCard key={property.id} featuredProperty={property} />
+      })
+    ) : (
+      <Text textAlign={`center`} width={{ xl: `1091px` }}>
+        <EmptyState
+          img={emptyState}
+          size={`10rem`}
+          message={`no land property found!... \n
+        click on land to view all land properties`}
+        />
+      </Text>
+    )
+  ) : userHouseProperties?.length ? (
+    userHouseProperties?.map((property) => {
+      return <PropertyCard key={property.id} featuredProperty={property} />
+    })
+  ) : (
+    <Text textAlign={`center`} width={{ xl: `1091px` }}>
+      <EmptyState
+        img={emptyState}
+        size={`10rem`}
+        message={`no house property found!... \n
+        click on house to view all house properties`}
+      />
+    </Text>
+  )
+
   return (
     <DefaultLayout>
       {/* hero section */}
       <Box
         className='page_alignment'
-        bgColor={`black`}
+        bgColor={`bgBlack`}
         color={`white`}
         textAlign={`center`}
         py={10}
@@ -27,53 +91,62 @@ const index = () => {
           </Text>
         </Container>
       </Box>
+      <Box
+        className='page_alignment'
+        bgColor={`bgBlack`}
+        py={10}
+        display={{ base: `block` }}
+      >
+        <SearchForm setSearch={setSearch} />
+      </Box>
       {/* section two */}
-      <Box bgColor={`black`} color={`white`} className='page_alignment'>
+      <Box bgColor={`bgBlack`} color={`white`} className='page_alignment'>
         <Container>
           <Box textAlign={`center`} mb={10}>
             <Heading fontSize={{ base: `3xl`, lg: `5xl` }} color={`textLight`}>
-              Property Listings - {`land` || `House`}
+              Property Listings - {propertyState.isLand ? `land` : `House`}
             </Heading>
-            <Text color={`textGrey`} fontSize={`lg`}>
-              Search Results For: Deluxe
+            <Text
+              hidden={
+                !isSearch
+                // ||
+                // propertyState.isLandListingLoading ||
+                // propertyState.isHouseListingLoading
+              }
+              color={`textGrey`}
+              fontSize={`lg`}
+            >
+              Search Results For:{' '}
+              {propertyState.isLand ? `land properties` : `House properties`}
             </Text>
           </Box>
           <Box>
-            <SimpleGrid columns={{ base: 1, lg: 2 }} gap={10}>
-              <PropertyCard />
-              <PropertyCard />
-              <PropertyCard />
-              <PropertyCard />
-              <PropertyCard />
-              <PropertyCard />
-              <PropertyCard />
-              <PropertyCard />
-            </SimpleGrid>
+            {propertyState.isLandListingLoading ||
+            propertyState.isHouseListingLoading ? (
+              <SpinnerComponent size={`xl`} />
+            ) : (
+              <SimpleGrid columns={{ base: 1, lg: 2 }} gap={10}>
+                {properties}
+              </SimpleGrid>
+            )}
           </Box>
         </Container>
       </Box>
       {/* banner */}
-      <Box bgColor={`black`} py={10}>
+      <Box bgColor={`bgBlack`} py={10}>
         <Banner />
       </Box>
-      <Box bgColor={`black`} className='page_alignment'>
+      <Box bgColor={`bgBlack`} className='page_alignment'>
         <Container>
           <Box>
             <SimpleGrid columns={{ base: 1, lg: 2 }} gap={10}>
-              <PropertyCard />
-              <PropertyCard />
-              <PropertyCard />
-              <PropertyCard />
-              <PropertyCard />
-              <PropertyCard />
-              <PropertyCard />
-              <PropertyCard />
+              {properties}
             </SimpleGrid>
           </Box>
         </Container>
       </Box>
       {/* question banner */}
-      <Box bgColor={`black`} color={`white`} className='page_alignment'>
+      <Box bgColor={`bgBlack`} color={`white`} className='page_alignment'>
         <Container>
           <QuestionBanner />
         </Container>
@@ -82,4 +155,4 @@ const index = () => {
   )
 }
 
-export default index
+export default Properties

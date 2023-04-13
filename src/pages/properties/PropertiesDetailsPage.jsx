@@ -3,29 +3,22 @@ import {
   Button,
   Flex,
   FormControl,
-  Grid,
   GridItem,
   Heading,
-  Image,
   Input,
   Progress,
   SimpleGrid,
   Text,
   Textarea,
 } from '@chakra-ui/react'
-import React from 'react'
-import { FaNetworkWired } from 'react-icons/fa'
-import {
-  MdCropSquare,
-  MdOutlineBed,
-  MdOutlineFamilyRestroom,
-} from 'react-icons/md'
+import ReactPlayer from 'react-player'
+import React, { useCallback, useEffect, useState } from 'react'
+import { MdCropSquare, MdOutlineBed } from 'react-icons/md'
 import { BiBath } from 'react-icons/bi'
 import { GiHomeGarage } from 'react-icons/gi'
 import LinkButton from '../../components/buttons/link-button/LinkButton'
 import Tag from '../../components/tag/Tag'
 import Container from '../../layout/Container'
-// import video from '../../assets/video/video.mp4'
 import StarRatings from 'react-star-ratings'
 import SalesPersonCard from '../../components/saleperson-profile-card/SalesPersonCard'
 import SimilarPropertyCard from '../../components/property-card/SimilarPropertyCard'
@@ -34,13 +27,126 @@ import QuestionBanner from '../../components/banner/QuestionBanner'
 import DefaultLayout from '../../layout/DefaultLayout'
 import TwoColumnLayout from '../../layout/TwoColumnLayout'
 import GridImageLayout from '../../layout/GridImageLayout/GridImageLayout'
+import { useLocation } from 'react-router-dom'
+import {
+  useAddReviewMutation,
+  useGetPropertyByIDClientMutation,
+} from '../admin/dashboard/api/propertiesApiSlice'
+import { useForm } from 'react-hook-form'
+import SpinnerComponent from '../../components/feedback/SpinnerComponent'
+import AlertComponent from '../../components/feedback/Alert'
 
 const PropertiesDetailsPage = () => {
+  const [isOpen, setOpen] = useState(false)
+  const [propertyDetails, setPropertyDetails] = useState({})
+  const [reviewRatings, setReviewRatings] = useState({
+    property: 0,
+    valueForMoney: 0,
+    location: 0,
+    support: 0,
+  })
+  const [similarPropertyDetails, setSimilarPropertyDetails] = useState([])
+  const location = useLocation()
+  const propertyID = location.pathname.split(`/`)[2]
+  const [getPropertyByIDClient, args1] = useGetPropertyByIDClientMutation()
+  const [addReview, arg2] = useAddReviewMutation()
+
+  const showPropertiesDetails = useCallback(async () => {
+    const res = await getPropertyByIDClient(propertyID).unwrap()
+    setPropertyDetails(res.data.property)
+    setSimilarPropertyDetails(res.data.similarProperties)
+  }, [getPropertyByIDClient, propertyID])
+
+  useEffect(() => {
+    showPropertiesDetails()
+  }, [showPropertiesDetails])
+
+  const reviews = propertyDetails?.reviewers?.map((review) => {
+    return (
+      <Box mb={6} key={review._id}>
+        <Box mb={2}>
+          <Text fontSize={`xl`}>
+            {review.name}{' '}
+            <Text fontSize={`md`} color={`primary`} as={`span`}>
+              ({review.email})
+            </Text>
+          </Text>
+          <Text color={`#0FB7C1`}>
+            {new Date(review.createdAt).toLocaleString()}
+          </Text>
+        </Box>
+        <Box>
+          <Text color={`textGrey`}>{review.review}</Text>
+        </Box>
+      </Box>
+    )
+  })
+
+  const similarProperties = similarPropertyDetails?.map((property) => {
+    return <SimilarPropertyCard key={property?.id} property={property} />
+  })
+
+  const { handleSubmit, register } = useForm()
+
+  const changeRating = (newRating, name) => {
+    setReviewRatings((prevState) => {
+      return { ...prevState, [name]: newRating }
+    })
+  }
+
+  const totalReviewRating = (ratings) => {
+    const sum = Object.values(ratings).reduce(
+      (total, rating) => total + rating,
+      0
+    )
+    const count = Object.values(ratings).length
+    const average = sum / count
+    return average
+    // return Math.floor(average)
+  }
+
+  const handleSubmitReview = async (data) => {
+    const formDataII = {
+      property: reviewRatings.property,
+      valueForMoney: reviewRatings.valueForMoney,
+      location: reviewRatings.location,
+      support: reviewRatings.support,
+      name: data.name,
+      email: data.email,
+      review: data.review,
+    }
+
+    try {
+      const res = await addReview({
+        propertyId: propertyID,
+        body: formDataII,
+      }).unwrap()
+      if (res.success) {
+        setOpen(true)
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   return (
     <DefaultLayout>
+      <AlertComponent
+        action={`message`}
+        message={{
+          title: `message sent successfully!`,
+          desc: `Your review has been added to the property reviews.`,
+        }}
+        isOpen={isOpen}
+        onClose={() => setOpen(!isOpen)}
+      />
       <Box className='page_alignment' bgColor={`black`}>
         <Container paddingBlock={0}>
-          <GridImageLayout />
+          <GridImageLayout
+            isLoading={args1.isLoading}
+            isNotEditProperty
+            imageSet={propertyDetails?.media?.imgs}
+          />
         </Container>
       </Box>
       {/* section two  with unique layer */}
@@ -49,14 +155,22 @@ const PropertiesDetailsPage = () => {
           {/* section two  with unique layer */}
           <TwoColumnLayout>
             {/* grid one */}
-            <GridItem colSpan={{ base: 1, lg: 8 }} color={`white`}>
+            <GridItem colSpan={{ base: 2, lg: 8 }} color={`white`}>
               {/* tags */}
               <Flex gap={5}>
-                <Tag bgColor={`accentBlue`} color={`primary`} text={`Network`}>
-                  <FaNetworkWired />
+                <Tag
+                  bgColor={`accentBlue`}
+                  color={`primary`}
+                  text={propertyDetails?.tags?.[0]}
+                >
+                  {/* <FaNetworkWired /> */}
                 </Tag>
-                <Tag bgColor={`accentRed`} color={`red`} text={`Family`}>
-                  <MdOutlineFamilyRestroom />
+                <Tag
+                  bgColor={`accentRed`}
+                  color={`red`}
+                  text={propertyDetails?.tags?.[1]}
+                >
+                  {/* <MdOutlineFamilyRestroom /> */}
                 </Tag>
               </Flex>
               {/* title */}
@@ -68,17 +182,18 @@ const PropertiesDetailsPage = () => {
               >
                 <Box>
                   <Heading fontSize={{ base: `3xl`, lg: `40px` }}>
-                    Luxury Family House
+                    {propertyDetails?.title}
                   </Heading>
                   <Text color={`textGrey`} fontSize={`xl`}>
-                    3, Ogunlesi Street, Lagos 100252
+                    {propertyDetails?.location}
                   </Text>
                   <Text fontSize={`4xl`} color={`#0FB7C1`} fontWeight={`bold`}>
-                    $29,630
+                    ${propertyDetails?.price}
                   </Text>
                 </Box>
                 <Box>
                   <LinkButton
+                    to={`/book-now`}
                     text={`Book Now`}
                     width={`158px`}
                     height={`42px`}
@@ -90,95 +205,76 @@ const PropertiesDetailsPage = () => {
                 <Heading fontSize={`xl`} mb={5}>
                   Description
                 </Heading>
-                <Text color={`textGrey`}>
-                  Lorem ipsum dolor sit amet consectetur. Id libero suspendisse
-                  eu risus amet vel. Aliquet contur consectetur purus amet
-                  ultricies facilisis a pelloique. Telus et cras urna vel vitae.
-                  Ornare aliquam dolor enim consequat sapien odio cras integer.
-                  Conmentum adipiscing duis morbi laoreet aliquet viverra est
-                  auctor. Aliquam blandit adipiscing potenti enim non proin erat
-                  fringilla amet. Congue sit ac vulputate scelerisque libero
-                  malesuada eget. Nulla ultricies aenean tellus congue molestie
-                  molestie enim porta quisque. Neque imperdiet magna maecenas
-                  gravida quisque duis porta lacus. Consectetur enim.
-                </Text>
+                {args1.isLoading ? (
+                  <SpinnerComponent size={`lg`} />
+                ) : (
+                  <Text color={`textGrey`}>{propertyDetails?.description}</Text>
+                )}
               </Box>
               {/* features */}
               <Box border={`1px solid #343434`} p={8} borderRadius={7} my={10}>
                 <Heading fontSize={`xl`} mb={5}>
                   Features
                 </Heading>
-                <Flex
-                  color={`textGrey`}
-                  flexWrap={`wrap`}
-                  justifyContent={`space-between`}
-                  gap={3}
-                >
-                  <Tag
-                    fs={`lg`}
-                    text={`3 Bedroom`}
-                    bgColor={`transparent`}
+                {args1.isLoading ? (
+                  <SpinnerComponent size={`lg`} />
+                ) : (
+                  <Flex
                     color={`textGrey`}
+                    flexWrap={`wrap`}
+                    justifyContent={`space-between`}
+                    gap={3}
                   >
-                    <MdOutlineBed size={`1.5rem`} />
-                  </Tag>
-                  <Tag
-                    fs={`lg`}
-                    text={`2 Bathroom`}
-                    bgColor={`transparent`}
-                    color={`textGrey`}
-                  >
-                    <BiBath size={`1.5rem`} />
-                  </Tag>
-                  <Tag
-                    fs={`lg`}
-                    text={`3 Bedroom`}
-                    bgColor={`transparent`}
-                    color={`textGrey`}
-                  >
-                    <MdOutlineBed size={`1.5rem`} />
-                  </Tag>
-                  <Tag
-                    fs={`lg`}
-                    text={`2 Bathroom`}
-                    bgColor={`transparent`}
-                    color={`textGrey`}
-                  >
-                    <BiBath size={`1.5rem`} />
-                  </Tag>
-                  <Tag
-                    fs={`lg`}
-                    text={`Garage`}
-                    bgColor={`transparent`}
-                    color={`textGrey`}
-                  >
-                    <GiHomeGarage size={`1.5rem`} />
-                  </Tag>
-                  <Tag
-                    fs={`lg`}
-                    text={`3 Square Feet`}
-                    bgColor={`transparent`}
-                    color={`textGrey`}
-                  >
-                    <MdCropSquare size={`1.5rem`} />
-                  </Tag>
-                  <Tag
-                    fs={`lg`}
-                    text={`Garage`}
-                    bgColor={`transparent`}
-                    color={`textGrey`}
-                  >
-                    <GiHomeGarage size={`1.5rem`} />
-                  </Tag>
-                  <Tag
-                    fs={`lg`}
-                    text={`3 Square Feet`}
-                    bgColor={`transparent`}
-                    color={`textGrey`}
-                  >
-                    <MdCropSquare size={`1.5rem`} />
-                  </Tag>
-                </Flex>
+                    <Tag
+                      fs={`lg`}
+                      text={propertyDetails?.features?.[0]}
+                      bgColor={`transparent`}
+                      color={`textGrey`}
+                    >
+                      <MdOutlineBed size={`1.5rem`} />
+                    </Tag>
+                    <Tag
+                      fs={`lg`}
+                      text={propertyDetails?.features?.[1]}
+                      bgColor={`transparent`}
+                      color={`textGrey`}
+                    >
+                      <BiBath size={`1.5rem`} />
+                    </Tag>
+                    <Tag
+                      fs={`lg`}
+                      text={propertyDetails?.features?.[2]}
+                      bgColor={`transparent`}
+                      color={`textGrey`}
+                    >
+                      <MdOutlineBed size={`1.5rem`} />
+                    </Tag>
+                    <Tag
+                      fs={`lg`}
+                      text={propertyDetails?.features?.[3]}
+                      bgColor={`transparent`}
+                      color={`textGrey`}
+                    >
+                      <BiBath size={`1.5rem`} />
+                    </Tag>
+                    <Tag
+                      fs={`lg`}
+                      text={propertyDetails?.features?.[4]}
+                      bgColor={`transparent`}
+                      color={`textGrey`}
+                    >
+                      <GiHomeGarage size={`1.5rem`} />
+                    </Tag>
+                    <Tag
+                      fs={`lg`}
+                      text={propertyDetails?.features?.[5]}
+                      bgColor={`transparent`}
+                      color={`textGrey`}
+                    >
+                      <MdCropSquare size={`1.5rem`} />
+                    </Tag>
+                  </Flex>
+                )}
               </Box>
               {/* property video */}
               <Box border={`1px solid #343434`} p={8} borderRadius={7} my={10}>
@@ -186,19 +282,15 @@ const PropertiesDetailsPage = () => {
                   Property Video
                 </Heading>
                 <Box borderRadius={7} overflow={`hidden`}>
-                  <video controls>
-                    <source
-                      src={`https://player.vimeo.com/external/392612459.sd.mp4?s=39589128d7c98ba18e262569fc7a5a6d31d89e22&profile_id=164&oauth2_token_id=57447761`}
-                      type='video/mp4'
+                  {args1.isLoading ? (
+                    <SpinnerComponent size={`lg`} />
+                  ) : (
+                    <ReactPlayer
+                      width={`100%`}
+                      controls
+                      url={propertyDetails?.media?.video}
                     />
-                    <track
-                      src='captions_en.vtt'
-                      kind='captions'
-                      srcLang='en'
-                      label='english_captions'
-                    ></track>
-                    Your browser does not support the video tag.
-                  </video>
+                  )}
                 </Box>
               </Box>
               {/* Ratings */}
@@ -206,103 +298,125 @@ const PropertiesDetailsPage = () => {
                 <Heading fontSize={`xl`} mb={5}>
                   Visitor Ratings
                 </Heading>
-                <Flex
-                  flexDir={{ base: `column`, lg: `row` }}
-                  borderRadius={7}
-                  bgColor={`bgBlack`}
-                  p={5}
-                >
-                  <Box
-                    textAlign={`center`}
-                    borderRight={{ lg: `1px solid grey` }}
+                {args1.isLoading ? (
+                  <SpinnerComponent size={`lg`} />
+                ) : (
+                  <Flex
+                    flexDir={{ base: `column`, lg: `row` }}
+                    borderRadius={7}
+                    bgColor={`bgBlack`}
                     p={5}
                   >
-                    <Text fontSize={`4xl`} fontWeight={`bold`}>
-                      4.5
-                    </Text>
-                    <Text>out of 5.0</Text>
-                    <Box mt={3}>
-                      <StarRatings
-                        starRatedColor='orange'
-                        rating={4.5}
-                        starDimension='20px'
-                        starSpacing='5px'
-                      />
+                    <Box
+                      textAlign={`center`}
+                      borderRight={{ lg: `1px solid grey` }}
+                      p={5}
+                    >
+                      <Text fontSize={`4xl`} fontWeight={`bold`}>
+                        {propertyDetails?.totalRating}
+                      </Text>
+                      <Text>out of 5.0</Text>
+                      <Box mt={3}>
+                        <StarRatings
+                          starRatedColor='orange'
+                          rating={propertyDetails?.totalRating}
+                          starDimension='20px'
+                          starSpacing='5px'
+                        />
+                      </Box>
                     </Box>
-                  </Box>
-                  <Box flex={1} p={5}>
-                    <SimpleGrid columns={{ base: 1, lg: 2 }} gap={10}>
-                      <Box>
-                        <Flex
-                          justifyContent={`space-between`}
-                          alignItems={`flex-start`}
-                        >
-                          <Text mb={2}>Property</Text>
-                          <Text>4</Text>
-                        </Flex>
-                        <Progress value={80} size='xs' colorScheme='orange' />
-                      </Box>
-                      <Box>
-                        <Flex
-                          justifyContent={`space-between`}
-                          alignItems={`flex-start`}
-                        >
-                          <Text mb={2}>Value for Money</Text>
-                          <Text>5</Text>
-                        </Flex>
-                        <Progress value={100} size='xs' colorScheme='orange' />
-                      </Box>
-                      <Box>
-                        <Flex
-                          justifyContent={`space-between`}
-                          alignItems={`flex-start`}
-                        >
-                          <Text mb={2}>Location</Text>
-                          <Text>5</Text>
-                        </Flex>
-                        <Progress value={100} size='xs' colorScheme='orange' />
-                      </Box>
-                      <Box>
-                        <Flex
-                          justifyContent={`space-between`}
-                          alignItems={`flex-start`}
-                        >
-                          <Text mb={2}>Support</Text>
-                          <Text>5</Text>
-                        </Flex>
-                        <Progress value={100} size='xs' colorScheme='orange' />
-                      </Box>
-                    </SimpleGrid>
-                  </Box>
-                </Flex>
+                    <Box flex={1} p={5}>
+                      <SimpleGrid columns={{ base: 1, lg: 2 }} gap={10}>
+                        <Box>
+                          <Flex
+                            justifyContent={`space-between`}
+                            alignItems={`flex-start`}
+                          >
+                            <Text mb={2}>Property</Text>
+                            <Text>{propertyDetails?.propertyRating}</Text>
+                          </Flex>
+                          <Progress
+                            max={5}
+                            value={propertyDetails?.propertyRating}
+                            size='xs'
+                            colorScheme='orange'
+                          />
+                        </Box>
+                        <Box>
+                          <Flex
+                            justifyContent={`space-between`}
+                            alignItems={`flex-start`}
+                          >
+                            <Text mb={2}>Value for Money</Text>
+                            <Text>{propertyDetails?.valueForMoneyRating}</Text>
+                          </Flex>
+                          <Progress
+                            max={5}
+                            value={propertyDetails?.valueForMoneyRating}
+                            size='xs'
+                            colorScheme='orange'
+                          />
+                        </Box>
+                        <Box>
+                          <Flex
+                            justifyContent={`space-between`}
+                            alignItems={`flex-start`}
+                          >
+                            <Text mb={2}>Location</Text>
+                            <Text>{propertyDetails?.locationRating}</Text>
+                          </Flex>
+                          <Progress
+                            max={5}
+                            value={propertyDetails?.locationRating}
+                            size='xs'
+                            colorScheme='orange'
+                          />
+                        </Box>
+                        <Box>
+                          <Flex
+                            justifyContent={`space-between`}
+                            alignItems={`flex-start`}
+                          >
+                            <Text mb={2}>Support</Text>
+                            <Text>{propertyDetails?.supportRating}</Text>
+                          </Flex>
+                          <Progress
+                            max={5}
+                            value={propertyDetails?.supportRating}
+                            size='xs'
+                            colorScheme='orange'
+                          />
+                        </Box>
+                      </SimpleGrid>
+                    </Box>
+                  </Flex>
+                )}
               </Box>
               {/* reviews */}
               <Box border={`1px solid #343434`} p={8} borderRadius={7} my={10}>
-                <Box mb={5}>
-                  <Heading fontSize={`xl`}>Reviews</Heading>
-                  <Text color={`textGrey`}>1 review</Text>
-                </Box>
-                <Box mb={5}>
-                  <Text fontSize={`xl`}>
-                    Aisha Akinwumi{' '}
-                    <Text fontSize={`md`} color={`primary`} as={`span`}>
-                      (oyelolaifeoluwa@gmail.com)
-                    </Text>
-                  </Text>
-                  <Text color={`#0FB7C1`}>22-03-2023 09:30:20am</Text>
-                </Box>
-                <Box>
-                  <Text color={`textGrey`}>
-                    Lorem ipsum dolor sit amet consectetur. Id libero
-                    suspendisse eu risus amet vel. Aliquet contur consectetur
-                    purus amet ultricies facilisis a pelloique. Telus et cras
-                    urna vel vitae. Ornare aliquam dolor enim consequat sapien
-                    odio cras integer.
-                  </Text>
-                </Box>
+                {args1.isLoading ? (
+                  <SpinnerComponent size={`lg`} />
+                ) : (
+                  <>
+                    <Box mb={5}>
+                      <Heading fontSize={`xl`}>Reviews</Heading>
+                      <Text color={`textGrey`}>
+                        {propertyDetails?.reviewers?.length} review
+                      </Text>
+                    </Box>
+                    {reviews}
+                  </>
+                )}
               </Box>
               {/* Comment a review */}
-              <Box border={`1px solid #343434`} p={8} borderRadius={7} my={10}>
+              <Box
+                as='form'
+                onSubmit={handleSubmit(handleSubmitReview)}
+                border={`1px solid #343434`}
+                p={8}
+                borderRadius={7}
+                my={10}
+              >
                 <Heading
                   textAlign={{ base: `center`, lg: `left` }}
                   fontSize={`xl`}
@@ -327,6 +441,9 @@ const PropertiesDetailsPage = () => {
                         </Text>
                         <Box>
                           <StarRatings
+                            rating={reviewRatings.property}
+                            changeRating={changeRating}
+                            name='property'
                             starRatedColor='orange'
                             starDimension='20px'
                             starSpacing='5px'
@@ -339,6 +456,9 @@ const PropertiesDetailsPage = () => {
                         </Text>
                         <Box>
                           <StarRatings
+                            rating={reviewRatings.valueForMoney}
+                            changeRating={changeRating}
+                            name='valueForMoney'
                             starRatedColor='orange'
                             starDimension='20px'
                             starSpacing='5px'
@@ -351,6 +471,9 @@ const PropertiesDetailsPage = () => {
                         </Text>
                         <Box>
                           <StarRatings
+                            rating={reviewRatings.location}
+                            changeRating={changeRating}
+                            name='location'
                             starRatedColor='orange'
                             starDimension='20px'
                             starSpacing='5px'
@@ -363,6 +486,9 @@ const PropertiesDetailsPage = () => {
                         </Text>
                         <Box>
                           <StarRatings
+                            rating={reviewRatings.support}
+                            changeRating={changeRating}
+                            name='support'
                             starRatedColor='orange'
                             starDimension='20px'
                             starSpacing='5px'
@@ -379,13 +505,13 @@ const PropertiesDetailsPage = () => {
                       borderRadius={7}
                     >
                       <Text fontSize={`4xl`} fontWeight={`bold`}>
-                        0.0
+                        {totalReviewRating(reviewRatings)}
                       </Text>
                       <Text color={`textGrey`}>out of 5.0</Text>
                       <Box mt={3}>
                         <StarRatings
                           starRatedColor='orange'
-                          rating={4.5}
+                          rating={totalReviewRating(reviewRatings)}
                           starDimension='20px'
                           starSpacing='5px'
                         />
@@ -397,53 +523,67 @@ const PropertiesDetailsPage = () => {
                 <FormControl mt={5}>
                   <SimpleGrid columns={2} gap={5}>
                     <Input
+                      required
                       fontSize={`lg`}
                       size={`lg`}
                       border={`1px solid #343434`}
                       type='text'
                       placeholder='Your Name'
+                      {...register(`name`)}
                     />
                     <Input
+                      required
                       fontSize={`lg`}
                       size={`lg`}
                       border={`1px solid #343434`}
                       type='email'
                       placeholder='Email'
+                      {...register(`email`)}
                     />
                     <GridItem colSpan={2}>
                       <Textarea
+                        required
                         height={`10rem`}
                         fontSize={`lg`}
                         border={`1px solid #343434`}
                         placeholder='Compose your review'
+                        {...register(`review`)}
                       />
                     </GridItem>
                   </SimpleGrid>
-                  <Button mt={5} colorScheme={`orange`}>
+                  <Button
+                    type='submit'
+                    isLoading={arg2.isLoading}
+                    loadingText='Sending review...'
+                    mt={5}
+                    colorScheme={`orange`}
+                  >
                     Submit Review
                   </Button>
                 </FormControl>
               </Box>
             </GridItem>
             {/* grid two */}
-            <GridItem colSpan={{ base: 1, lg: 4 }}>
+            <GridItem colSpan={{ base: 2, lg: 4 }}>
               <Box>
                 {/* sales person card */}
-                <SalesPersonCard />
+                <SalesPersonCard
+                  isLoading={args1.isLoading}
+                  salePerson={propertyDetails?.salesSupport}
+                />
               </Box>
               {/* similar properties */}
               <Box>
                 <Heading fontSize={`3xl`} color={`textLight`} mb={5}>
                   Similar Properties
                 </Heading>
-                <SimpleGrid columns={1} gap={5}>
-                  <SimilarPropertyCard />
-                  <SimilarPropertyCard />
-                  <SimilarPropertyCard />
-                  <SimilarPropertyCard />
-                  <SimilarPropertyCard />
-                  <SimilarPropertyCard />
-                </SimpleGrid>
+                {args1.isLoading ? (
+                  <SpinnerComponent size={`xl`} />
+                ) : (
+                  <SimpleGrid columns={1} gap={5}>
+                    {similarProperties}
+                  </SimpleGrid>
+                )}
               </Box>
             </GridItem>
           </TwoColumnLayout>

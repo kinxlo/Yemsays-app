@@ -3,7 +3,7 @@
 // COMPONENTS
 import Container from '../Container'
 // import Logo_dark from '../../assets/images/ticked_logo_light.png'
-import { FaFacebookF, FaTwitter, FaLinkedin } from 'react-icons/fa'
+import { FaFacebookF, FaTwitter, FaLinkedin, FaInstagram } from 'react-icons/fa'
 import {
   Box,
   Divider,
@@ -17,18 +17,34 @@ import {
   Text,
 } from '@chakra-ui/react'
 import { Link as ReactLink } from 'react-router-dom'
+import { useState } from 'react'
+import AlertComponent from '../../components/feedback/Alert'
 
 const Footer = () => {
+  const [clickCount, setClickCount] = useState(1)
+  const [isOpen, setOpen] = useState(false)
+
+  const handleClick = () => {
+    console.log(clickCount)
+    if (clickCount === 5) {
+      setOpen(true)
+      setClickCount(0)
+    }
+    setClickCount((prevState) => {
+      return (prevState += 1)
+    })
+  }
+
   return (
-    <Box bgColor={`black`} className='page_alignment'>
+    <Box bgColor={`bgBlack`} className='page_alignment'>
       <Container noPaddingBlock={'0'}>
         <Box color={`white`}>
           <Grid
             textAlign={{ base: `center`, md: `left` }}
             templateColumns={{ base: `repeat(1, 1fr)`, xl: `repeat(7, 1fr)` }}
-            gap={{ xl: 6 }}
+            gap={{ base: 6, xl: 6 }}
           >
-            <GridItem colSpan={3}>
+            <GridItem colSpan={{ lg: 3 }}>
               <Box
                 h={`3rem`}
                 m={{ base: `auto`, md: `initial` }}
@@ -36,7 +52,7 @@ const Footer = () => {
               >
                 <Link as={ReactLink} to={`/`}>
                   <Image
-                    src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1677576945/project-yemsays/Group_86_btjv9i.png`}
+                    src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1680856120/project-yemsays/Group_87_qudnxl.png`}
                   />
                 </Link>
               </Box>
@@ -52,85 +68,118 @@ const Footer = () => {
             </GridItem>
             <GridItem colSpan={{ base: 2, xl: 1 }}>
               <Box>
-                <Box h={`3rem`}>
+                <Box h={{ lg: `3rem` }}>
                   <Text fontWeight={`bold`}>About</Text>
                 </Box>
-                <List>
+                <List as={`div`}>
                   <ListItem
+                    cursor={`pointer`}
+                    _hover={{ color: `primary` }}
                     color={`textGrey`}
                     textTransform={`capitalize`}
                     mb={`9px`}
                   >
-                    Company
+                    <Link display={`inline`} href={'#company'}>
+                      Company
+                    </Link>
                   </ListItem>
                   <ListItem
+                    cursor={`pointer`}
+                    _hover={{ color: `primary` }}
                     color={`textGrey`}
                     textTransform={`capitalize`}
                     mb={`9px`}
                   >
-                    Team
+                    <Link display={`inline`} href={'#team'}>
+                      Team
+                    </Link>
                   </ListItem>
                   <ListItem
+                    cursor={`pointer`}
+                    _hover={{ color: `primary` }}
                     color={`textGrey`}
                     textTransform={`capitalize`}
                     mb={`9px`}
                   >
-                    Testimonial
+                    <Link display={`inline`} href={'#testimonial'}>
+                      Testimonial
+                    </Link>
                   </ListItem>
                   <ListItem
+                    cursor={`pointer`}
+                    _hover={{ color: `primary` }}
                     color={`textGrey`}
                     textTransform={`capitalize`}
                     mb={`9px`}
                   >
-                    Contact
+                    <Link as={ReactLink} display={`inline`} to={'/contact'}>
+                      Contact
+                    </Link>
                   </ListItem>
                 </List>
               </Box>
             </GridItem>
             <GridItem colSpan={{ base: 2, xl: 1 }}>
               <Box>
-                <Box h={`3rem`}>
+                <Box h={{ lg: `3rem` }}>
                   <Text fontWeight={`bold`}>Properties</Text>
                 </Box>
                 <List>
                   <ListItem
+                    cursor={`pointer`}
+                    _hover={{ color: `primary` }}
                     color={`textGrey`}
                     textTransform={`capitalize`}
                     mb={`9px`}
                   >
-                    Listings
+                    <Link as={ReactLink} display={`inline`} to={'/properties'}>
+                      Listings
+                    </Link>
                   </ListItem>
                   <ListItem
+                    cursor={`pointer`}
+                    _hover={{ color: `primary` }}
                     color={`textGrey`}
                     textTransform={`capitalize`}
                     mb={`9px`}
                   >
-                    Lands
+                    <Link as={ReactLink} display={`inline`} to={'/properties'}>
+                      Lands
+                    </Link>
                   </ListItem>
                   <ListItem
+                    cursor={`pointer`}
+                    _hover={{ color: `primary` }}
                     color={`textGrey`}
                     textTransform={`capitalize`}
                     mb={`9px`}
                   >
-                    Houses
+                    <Link as={ReactLink} display={`inline`} to={'/properties'}>
+                      Houses
+                    </Link>
                   </ListItem>
                   <ListItem
+                    cursor={`pointer`}
+                    _hover={{ color: `primary` }}
                     color={`textGrey`}
                     textTransform={`capitalize`}
                     mb={`9px`}
                   >
-                    Book Now
+                    <Link as={ReactLink} display={`inline`} to={'/book-now'}>
+                      Book Now
+                    </Link>
                   </ListItem>
                 </List>
               </Box>
             </GridItem>
             <GridItem colSpan={{ base: 2, xl: 2 }}>
               <Box>
-                <Box h={`3rem`}>
+                <Box h={{ lg: `3rem` }}>
                   <Text fontWeight={`bold`}>Contact</Text>
                 </Box>
                 <List>
                   <ListItem
+                    cursor={`pointer`}
                     color={`textGrey`}
                     textTransform={`capitalize`}
                     mb={`9px`}
@@ -138,6 +187,7 @@ const Footer = () => {
                     35a, Lörem ipsum birade fanas.
                   </ListItem>
                   <ListItem
+                    cursor={`pointer`}
                     color={`textGrey`}
                     textTransform={`capitalize`}
                     mb={`9px`}
@@ -145,6 +195,7 @@ const Footer = () => {
                     www.realestate.com
                   </ListItem>
                   <ListItem
+                    cursor={`pointer`}
                     color={`textGrey`}
                     textTransform={`capitalize`}
                     mb={`9px`}
@@ -152,6 +203,7 @@ const Footer = () => {
                     Support@realestate.com
                   </ListItem>
                   <ListItem
+                    cursor={`pointer`}
                     color={`textGrey`}
                     textTransform={`capitalize`}
                     mb={`9px`}
@@ -168,13 +220,26 @@ const Footer = () => {
               justifyContent={{ base: `center`, md: `initial` }}
               gap={3}
             >
-              <Flex
+              {/* <Flex
                 p={2}
                 borderRadius={`100%`}
                 bgColor={`white`}
                 color={`primary`}
               >
                 <FaLinkedin />
+              </Flex> */}
+              <Flex
+                p={2}
+                borderRadius={`100%`}
+                bgColor={`white`}
+                color={`primary`}
+              >
+                <Link
+                  isExternal
+                  href='https://instagram.com/yemsays_properties'
+                >
+                  <FaInstagram />
+                </Link>
               </Flex>
               <Flex
                 p={2}
@@ -182,21 +247,40 @@ const Footer = () => {
                 bgColor={`white`}
                 color={`primary`}
               >
-                <FaFacebookF />
+                <Link isExternal href='https://facebook.com/Ayodeji Oladimeji'>
+                  <FaFacebookF />
+                </Link>
               </Flex>
-              <Flex
+              {/* <Flex
                 p={2}
                 borderRadius={`100%`}
                 bgColor={`white`}
                 color={`primary`}
               >
                 <FaTwitter />
-              </Flex>
+              </Flex> */}
             </Box>
             <Divider my={5} />
-            <Box textAlign={`center`} color={`primary`}>
+            <Box onClick={handleClick} textAlign={`center`} color={`primary`}>
               &copy;{new Date().getFullYear()} Yemsays All Rights Reserved
+              <AlertComponent
+                action={`message`}
+                message={{
+                  title: `Developed by Binary Art.inc`,
+                  desc: `you can contact us via our email Address:`,
+                }}
+                isOpen={isOpen}
+                onClose={() => setOpen(!isOpen)}
+              />
             </Box>
+            <Text
+              fontSize={`10px`}
+              letterSpacing={`2px`}
+              fontWeight={`thin`}
+              textAlign={`center`}
+            >
+              Powered BinaryArt.inc
+            </Text>
           </Box>
         </Box>
       </Container>

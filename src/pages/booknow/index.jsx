@@ -1,5 +1,8 @@
+/* eslint-disable react/no-children-prop */
 import {
   Box,
+  Button,
+  Center,
   Container,
   FormControl,
   GridItem,
@@ -11,23 +14,68 @@ import {
   Text,
   Textarea,
 } from '@chakra-ui/react'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { FaEnvelope, FaPhoneAlt, FaUserAlt } from 'react-icons/fa'
 import {
   MdDateRange,
   MdLocationOn,
   MdOutlineAccessTimeFilled,
 } from 'react-icons/md'
+import AlertComponent from '../../components/feedback/Alert'
 import DefaultLayout from '../../layout/DefaultLayout'
+import { useBookApointmentMutation } from '../admin/dashboard/api/propertiesApiSlice'
 // import Container from '../../layout/Container'
 
-const index = () => {
+const BookApointment = () => {
+  const [isOpen, setOpen] = useState(false)
+  const [isSafeToReset, setIsSafeToReset] = useState(false)
+  const [bookApointment, { isLoading }] = useBookApointmentMutation()
+  const { handleSubmit, register, reset } = useForm()
+
+  const handleBookNow = async (data) => {
+    const formData = {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      phoneNumber: data.phoneNumber,
+      location: data.location,
+      inspectionDate: data.inspectionDate,
+      inspectionTime: data.inspectionTime,
+      message: data.message,
+    }
+
+    try {
+      const res = await bookApointment(formData).unwrap()
+      if (res.success) {
+        setOpen(true)
+        setIsSafeToReset(true)
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  useEffect(() => {
+    if (!isSafeToReset) return
+    reset()
+  }, [isSafeToReset, reset])
+
   return (
     <DefaultLayout>
+      <AlertComponent
+        action={`message`}
+        message={{
+          title: `message sent successfully!`,
+          desc: `Our team would respond to you soon..thank you.`,
+        }}
+        isOpen={isOpen}
+        onClose={() => setOpen(!isOpen)}
+      />
       {/* hero section */}
       <Box
         className='page_alignment'
-        bgColor={`black`}
+        bgColor={`bgBlack`}
         color={`white`}
         textAlign={`center`}
         py={10}
@@ -47,16 +95,21 @@ const index = () => {
         </Container>
       </Box>
       {/* form */}
-      <Box bgColor={`black`} color={`white`}>
+      <Box bgColor={`bgBlack`} color={`white`}>
         <Container maxW={`768px`}>
-          <FormControl>
+          <FormControl as={`form`} onSubmit={handleSubmit(handleBookNow)}>
             <SimpleGrid columns={2} gap={10}>
               <GridItem colSpan={{ base: 2, lg: 1 }}>
                 <InputGroup size={`lg`}>
                   <InputLeftElement pointerEvents='none'>
                     <FaUserAlt color='orange' size={`1.5rem`} />
                   </InputLeftElement>
-                  <Input type='text' placeholder='First Name' />
+                  <Input
+                    type='text'
+                    required
+                    placeholder='First Name'
+                    {...register(`firstName`)}
+                  />
                 </InputGroup>
               </GridItem>
               {/* input 2 */}
@@ -65,7 +118,12 @@ const index = () => {
                   <InputLeftElement pointerEvents='none'>
                     <FaUserAlt color='orange' size={`1.5rem`} />
                   </InputLeftElement>
-                  <Input type='text' placeholder='Last Name' />
+                  <Input
+                    type='text'
+                    required
+                    placeholder='Last Name'
+                    {...register(`lastName`)}
+                  />
                 </InputGroup>
               </GridItem>
               {/* input 3 */}
@@ -74,7 +132,12 @@ const index = () => {
                   <InputLeftElement pointerEvents='none'>
                     <FaEnvelope color='orange' size={`1.5rem`} />
                   </InputLeftElement>
-                  <Input type='email' placeholder='Email Address' />
+                  <Input
+                    type='email'
+                    required
+                    placeholder='Email Address'
+                    {...register(`email`)}
+                  />
                 </InputGroup>
               </GridItem>
               {/* input 4 */}
@@ -83,7 +146,12 @@ const index = () => {
                   <InputLeftElement pointerEvents='none'>
                     <FaPhoneAlt color='orange' size={`1.5rem`} />
                   </InputLeftElement>
-                  <Input type='tel' placeholder='Phone number' />
+                  <Input
+                    type='tel'
+                    required
+                    placeholder='Phone number'
+                    {...register(`phoneNumber`)}
+                  />
                 </InputGroup>
               </GridItem>
               {/* input 5 */}
@@ -92,7 +160,12 @@ const index = () => {
                   <InputLeftElement pointerEvents='none'>
                     <MdLocationOn color='orange' size={`1.5rem`} />
                   </InputLeftElement>
-                  <Input type='text' placeholder='Location' />
+                  <Input
+                    type='text'
+                    required
+                    placeholder='Location'
+                    {...register(`location`)}
+                  />
                 </InputGroup>
               </GridItem>
               {/* input 6 */}
@@ -101,7 +174,14 @@ const index = () => {
                   <InputLeftElement pointerEvents='none'>
                     <MdDateRange color='orange' size={`1.5rem`} />
                   </InputLeftElement>
-                  <Input type='date' placeholder='Inspection Date' />
+                  <Input
+                    className='custom-date-input'
+                    color={`white`}
+                    type='date'
+                    required
+                    placeholder='Inspection Date'
+                    {...register(`inspectionDate`)}
+                  />
                 </InputGroup>
               </GridItem>
               {/* input 7 */}
@@ -110,7 +190,13 @@ const index = () => {
                   <InputLeftElement pointerEvents='none'>
                     <MdOutlineAccessTimeFilled color='orange' size={`1.5rem`} />
                   </InputLeftElement>
-                  <Input type='time' placeholder='Inspection Time' />
+                  <Input
+                    className='custom-date-input'
+                    type='time'
+                    required
+                    placeholder='Inspection Time'
+                    {...register(`inspectionTime`)}
+                  />
                 </InputGroup>
               </GridItem>
               {/* input 8 */}
@@ -119,10 +205,26 @@ const index = () => {
                   {/* <InputLeftElement pointerEvents='none'>
                     <AiOutlineUser color='orange' size={`1.5rem`} />
                   </InputLeftElement> */}
-                  <Textarea h={`10rem`} placeholder='Additional Message...' />
+                  <Textarea
+                    h={`10rem`}
+                    required
+                    placeholder='Additional Message...'
+                    {...register(`message`)}
+                  />
                 </InputGroup>
               </GridItem>
             </SimpleGrid>
+            <Center mt={5}>
+              <Button
+                type='submit'
+                isLoading={isLoading}
+                loadingText='Sending message...'
+                w={`50%`}
+                colorScheme={`orange`}
+              >
+                Submit
+              </Button>
+            </Center>
           </FormControl>
         </Container>
       </Box>
@@ -130,4 +232,4 @@ const index = () => {
   )
 }
 
-export default index
+export default BookApointment

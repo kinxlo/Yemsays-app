@@ -1,65 +1,147 @@
 import {
   Box,
+  Button,
+  Center,
   Flex,
   GridItem,
   Heading,
+  Image,
   Link,
   SimpleGrid,
   Text,
 } from '@chakra-ui/react'
-import React from 'react'
+import React, { useCallback, useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import { Link as ReactLink } from 'react-router-dom'
 import AdminPropertyCard from '../../../components/admin/propertyCard/AdminPropertyCard'
-import CustomerCard from '../../../components/admin/recentCustomerCard/CustomerCard'
 import Reviews from '../../../components/admin/reviews-card/Reviews'
 import StatCard from '../../../components/admin/stat-card/StatCard'
 import BreadCrumbHeader from '../../../components/breadcrumbHeader/BreadCrumbHeader'
+import SpinnerComponent from '../../../components/feedback/SpinnerComponent'
 import TwoColumnLayout from '../../../layout/TwoColumnLayout'
+import { useGetDashboardDataMutation } from './api/propertiesApiSlice'
+import { selectDashboardData } from './api/propertiesSlice'
+import welcome from '../../../assets/Welcome.svg'
 
 const links = [
-  { name: `Home`, ref: `/` },
-  { name: `dashboard`, ref: `/dashboard` },
+  { name: `Home`, ref: `/admin/dashboard` },
+  { name: `dashboard`, ref: `/admin/dashboard` },
 ]
 
-const index = () => {
+const Dashboard = () => {
+  // const [isLoading, setLoading] = useState(false)
+  const [getDashboardData, { isLoading }] = useGetDashboardDataMutation()
+  const dashboardData = useSelector(selectDashboardData)
+
+  const showDashboardData = useCallback(async () => {
+    await getDashboardData().unwrap()
+  }, [getDashboardData])
+
+  useEffect(() => {
+    showDashboardData()
+  }, [showDashboardData])
+
+  const reviews = dashboardData?.reviews?.map((review, index) => {
+    return <Reviews key={index} review={review} />
+  })
+
   return (
     <>
       <Box>
         <BreadCrumbHeader title={`Dashboard`} links={links} />
       </Box>
       {/* card list */}
-      <Box my={10}>
-        <SimpleGrid columns={{ base: 1, sm: 2, lg: 3 }} gap={`25px`}>
-          <StatCard title={`All Properties`} total={50} />
-          <StatCard title={`Listed Properties`} total={30} />
-          <StatCard title={`Unlisted Properties`} total={20} />
-        </SimpleGrid>
-      </Box>
-      {/* recent properties */}
-      <Box>
-        <TwoColumnLayout>
-          <GridItem colSpan={{ base: 1, lg: 8 }}>
-            <Box p={5} borderRadius={10} bgColor={`dashboardBG`}>
-              <Flex
-                flexDir={{ base: `column`, lg: `row` }}
-                justifyContent={`space-between`}
-                alignItems={`center`}
-                mb={5}
-              >
-                <Heading fontSize={{ base: `lg`, lg: `3xl` }}>
-                  Recently Added Properties
-                </Heading>
-                <Link color={`primary`} as={ReactLink}>
-                  <Text>View All Properties</Text>
-                </Link>
-              </Flex>
-              <SimpleGrid columns={{ base: 1, lg: 2 }} gap={10}>
-                <AdminPropertyCard />
-                <AdminPropertyCard />
-              </SimpleGrid>
-            </Box>
+      {dashboardData ? (
+        <>
+          <Box my={10}>
+            <SimpleGrid
+              columns={{ base: 1, sm: 2, lg: 2, '2xl': 4 }}
+              gap={`25px`}
+            >
+              <StatCard
+                title={`All Properties`}
+                total={dashboardData?.allProperties}
+                isLoading={isLoading}
+              />
+              <StatCard
+                title={`Listed Properties`}
+                total={dashboardData?.listed}
+                isLoading={isLoading}
+              />
+              <StatCard
+                title={`Unlisted Properties`}
+                total={dashboardData?.unlisted}
+                isLoading={isLoading}
+              />
+              <StatCard
+                title={`Sold Properties`}
+                total={
+                  dashboardData?.allProperties -
+                  (dashboardData?.unlisted + dashboardData?.listed)
+                }
+                isLoading={isLoading}
+              />
+            </SimpleGrid>
+          </Box>
+          <Box>
+            {/* recent properties */}
+            <TwoColumnLayout>
+              <GridItem colSpan={{ base: 1, lg: 8 }}>
+                <Box p={5} borderRadius={10} bgColor={`dashboardBG`}>
+                  <Flex
+                    flexDir={{ base: `column`, lg: `row` }}
+                    justifyContent={`space-between`}
+                    alignItems={`center`}
+                    mb={5}
+                  >
+                    <Heading fontSize={{ base: `lg`, lg: `3xl` }}>
+                      Recently Added Properties
+                    </Heading>
+                    <Link
+                      to={`/admin/properties`}
+                      color={`primary`}
+                      as={ReactLink}
+                    >
+                      <Text>View All Properties</Text>
+                    </Link>
+                  </Flex>
+                  <SimpleGrid columns={{ base: 1, sm: 2 }} gap={10}>
+                    {isLoading ? (
+                      <SpinnerComponent size={`xl`} />
+                    ) : (
+                      <AdminPropertyCard
+                        listed={false}
+                        propertyDescription={dashboardData?.recentlyAdded[0]}
+                      />
+                    )}
+                    {isLoading ? (
+                      <SpinnerComponent size={`xl`} />
+                    ) : (
+                      <AdminPropertyCard
+                        listed={false}
+                        propertyDescription={dashboardData?.recentlyAdded[1]}
+                      />
+                    )}
+                    {isLoading ? (
+                      <SpinnerComponent size={`xl`} />
+                    ) : (
+                      <AdminPropertyCard
+                        listed={false}
+                        propertyDescription={dashboardData?.recentlyAdded[1]}
+                      />
+                    )}
+                    {isLoading ? (
+                      <SpinnerComponent size={`xl`} />
+                    ) : (
+                      <AdminPropertyCard
+                        listed={false}
+                        propertyDescription={dashboardData?.recentlyAdded[0]}
+                      />
+                    )}
+                  </SimpleGrid>
+                </Box>
 
-            <Box
+                {/* <Box
               display={{ base: `none`, lg: `block` }}
               my={10}
               p={5}
@@ -80,32 +162,45 @@ const index = () => {
                 </Link>
               </Flex>
               <Flex flexDir={`column`} gap={5}>
-                <CustomerCard />
-                <CustomerCard />
-                <CustomerCard />
-                <CustomerCard />
+                {!isLoading ? (
+                  <SpinnerComponent size={`xl`} />
+                ) : (
+                  <>
+                    <CustomerCard />
+                    <CustomerCard />
+                    <CustomerCard />
+                    <CustomerCard />
+                  </>
+                )}
               </Flex>
-            </Box>
-          </GridItem>
-          <GridItem colSpan={{ base: 1, lg: 4 }}>
-            <Box borderRadius={10} bgColor={`dashboardBG`} p={5}>
-              <Flex justifyContent={`space-between`} alignItems={`center`}>
-                <Heading fontSize={`3xl`}>Reviews</Heading>
-                <Text color={`primary`}>See All</Text>
-              </Flex>
-              <SimpleGrid mt={10} columns={1} gap={3}>
-                <Reviews />
-                <Reviews />
-                <Reviews />
-                <Reviews />
-                <Reviews />
-              </SimpleGrid>
-            </Box>
-          </GridItem>
-        </TwoColumnLayout>
-      </Box>
+            </Box> */}
+              </GridItem>
+              <GridItem colSpan={{ base: 1, lg: 4 }}>
+                <Box borderRadius={10} bgColor={`dashboardBG`} p={5}>
+                  <Flex justifyContent={`space-between`} alignItems={`center`}>
+                    <Heading fontSize={`3xl`}>Reviews</Heading>
+                    {/* <Text color={`primary`}>See All</Text> */}
+                  </Flex>
+                  <SimpleGrid mt={10} columns={1} gap={3}>
+                    {isLoading ? <SpinnerComponent size={`xl`} /> : reviews}
+                  </SimpleGrid>
+                </Box>
+              </GridItem>
+            </TwoColumnLayout>
+          </Box>
+        </>
+      ) : (
+        <Center flexDir={`column`} h={`30rem`} gap={5}>
+          <Image w={`20rem`} src={welcome} />
+          <Heading color={`primary`}>Welcome to Yemsays properties</Heading>
+          {/* <Text>To continue</Text> */}
+          <Link as={ReactLink} to={`/admin/property/new`}>
+            <Button colorScheme={`orange`}>Add your first Property</Button>
+          </Link>
+        </Center>
+      )}
     </>
   )
 }
 
-export default index
+export default Dashboard

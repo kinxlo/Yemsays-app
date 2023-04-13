@@ -1,9 +1,15 @@
 /* eslint-disable react/prop-types */
-import { Grid, GridItem, Image } from '@chakra-ui/react'
+import { Center, Grid, GridItem, Image } from '@chakra-ui/react'
 import React from 'react'
 import EditImgOverlay from '../../components/editImgOverlay/EditImgOverlay'
+import SpinnerComponent from '../../components/feedback/SpinnerComponent'
 
-const GridImageLayout = ({ newProperty }) => {
+const GridImageLayout = ({
+  newProperty,
+  isNotEditProperty,
+  imageSet,
+  isLoading,
+}) => {
   return (
     <Grid
       h='562px'
@@ -19,36 +25,56 @@ const GridImageLayout = ({ newProperty }) => {
         bg='dashboardBG'
         pos={`relative`}
       >
-        <EditImgOverlay />
-        <Image
-          display={newProperty ? `none` : `block`}
-          className='cc-img-fluid'
-          src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1678015983/project-yemsays/Rectangle_39_nai5r2.png`}
-        />
+        <EditImgOverlay isNotEditProperty={isNotEditProperty} />
+        {isLoading ? (
+          <SpinnerComponent size={`xl`} />
+        ) : (
+          <Image
+            height={`100%`}
+            display={newProperty ? `none` : `block`}
+            className='cc-img-fluid'
+            src={imageSet?.[0]}
+          />
+        )}
       </GridItem>
       <GridItem pos={`relative`} colSpan={1} bg='dashboardBG'>
-        <EditImgOverlay size={`2rem`} />
-        <Image
-          display={newProperty ? `none` : `block`}
-          className='cc-img-fluid'
-          src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1678015997/project-yemsays/Rectangle_42_nbonui.png`}
-        />
+        <EditImgOverlay size={`2rem`} isNotEditProperty={isNotEditProperty} />
+        {isLoading ? (
+          <SpinnerComponent size={`lg`} />
+        ) : (
+          <Image
+            height={`177px`}
+            display={newProperty ? `none` : `block`}
+            className='cc-img-fluid'
+            src={imageSet?.[1]}
+          />
+        )}
       </GridItem>
       <GridItem pos={`relative`} colSpan={1} bg='dashboardBG'>
-        <EditImgOverlay size={`2rem`} />
-        <Image
-          display={newProperty ? `none` : `block`}
-          className='cc-img-fluid'
-          src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1678015993/project-yemsays/Rectangle_41_ti79nf.png`}
-        />
+        <EditImgOverlay size={`2rem`} isNotEditProperty={isNotEditProperty} />
+        {isLoading ? (
+          <SpinnerComponent size={`lg`} />
+        ) : (
+          <Image
+            height={`177px`}
+            display={newProperty ? `none` : `block`}
+            className='cc-img-fluid'
+            src={imageSet?.[2]}
+          />
+        )}
       </GridItem>
       <GridItem pos={`relative`} colSpan={1} bg='dashboardBG'>
-        <EditImgOverlay size={`2rem`} />
-        <Image
-          display={newProperty ? `none` : `block`}
-          className='cc-img-fluid'
-          src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1678015987/project-yemsays/Rectangle_40_iernci.png`}
-        />
+        <EditImgOverlay size={`2rem`} isNotEditProperty={isNotEditProperty} />
+        {isLoading ? (
+          <SpinnerComponent size={`lg`} />
+        ) : (
+          <Image
+            height={`177px`}
+            display={newProperty ? `none` : `block`}
+            className='cc-img-fluid'
+            src={imageSet?.[3]}
+          />
+        )}
       </GridItem>
     </Grid>
   )

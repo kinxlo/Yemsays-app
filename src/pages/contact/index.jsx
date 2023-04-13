@@ -10,20 +10,72 @@ import {
   Textarea,
   Button,
   Image,
+  useToast,
 } from '@chakra-ui/react'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { AiFillPhone } from 'react-icons/ai'
 import { FaMapMarkerAlt } from 'react-icons/fa'
 import { MdEmail } from 'react-icons/md'
+import { useLocation } from 'react-router-dom'
+import AlertComponent from '../../components/feedback/Alert'
 import Container from '../../layout/Container'
 import DefaultLayout from '../../layout/DefaultLayout'
+import { useContactUsMutation } from '../admin/dashboard/api/propertiesApiSlice'
 import { CONTACT_CONTENT } from './content'
 
-const index = () => {
+const ContactUs = () => {
+  const [isOpen, setOpen] = useState(false)
   const { sectionOne, contacts } = CONTACT_CONTENT
+  const [isSafeToReset, setIsSafeToReset] = useState(false)
+  const [contactUs, { isLoading }] = useContactUsMutation()
+  const location = useLocation()
+
+  const defaultData = {
+    email: location?.state?.data?.email,
+  }
+
+  const { handleSubmit, register, reset } = useForm({
+    defaultValues: defaultData,
+  })
+
+  const handleSubmitContact = async (data) => {
+    const formData = {
+      name: data.name,
+      email: data.email,
+      phoneNumber: parseInt(data.phoneNumber),
+      message: data.message,
+    }
+
+    try {
+      const res = await contactUs(formData).unwrap()
+      console.log(res)
+      if (res.success) {
+        setOpen(true)
+        setIsSafeToReset(true)
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  useEffect(() => {
+    if (!isSafeToReset) return
+    reset()
+  }, [isSafeToReset, reset])
+
   return (
     <DefaultLayout>
-      <Box className='page_alignment' bgColor={`black`} color={`white`}>
+      <AlertComponent
+        action={`message`}
+        message={{
+          title: `message sent successfully!`,
+          desc: `Our team would respond to you soon..thank you.`,
+        }}
+        isOpen={isOpen}
+        onClose={() => setOpen(!isOpen)}
+      />
+      <Box className='page_alignment' bgColor={`bgBlack`} color={`white`}>
         <Container>
           <Flex gap={10} mt={10} flexDir={{ base: `column`, lg: `row` }}>
             <Box flex={1}>
@@ -114,21 +166,53 @@ const index = () => {
                 borderRadius={8}
                 zIndex={1}
               >
-                <FormControl color={`textDark`}>
+                <FormControl
+                  as={`form`}
+                  onSubmit={handleSubmit(handleSubmitContact)}
+                  color={`textDark`}
+                >
                   <Box mb={10}>
-                    <Input size={`lg`} placeholder='Your name' />
+                    <Input
+                      required
+                      size={`lg`}
+                      placeholder='Your name'
+                      {...register(`name`)}
+                    />
                   </Box>
                   <Box mb={10}>
-                    <Input size={`lg`} placeholder='Email' />
+                    <Input
+                      required
+                      size={`lg`}
+                      placeholder='Email'
+                      {...register(`email`)}
+                    />
                   </Box>
                   <Box mb={10}>
-                    <Input size={`lg`} placeholder='Phone number' />
+                    <Input
+                      required
+                      size={`lg`}
+                      placeholder='Phone number'
+                      {...register(`phoneNumber`)}
+                    />
                   </Box>
                   <Box mb={10}>
-                    <Textarea h={`10rem`} size={`lg`} placeholder='Message' />
+                    <Textarea
+                      required
+                      h={`10rem`}
+                      size={`lg`}
+                      placeholder='Message'
+                      {...register(`message`)}
+                    />
                   </Box>
                   <Box>
-                    <Button w={`100%`} colorScheme={`orange`} fontWeight={300}>
+                    <Button
+                      type='submit'
+                      isLoading={isLoading}
+                      loadingText='Sending message...'
+                      w={`100%`}
+                      colorScheme={`orange`}
+                      fontWeight={300}
+                    >
                       Submit Message
                     </Button>
                   </Box>
@@ -142,4 +226,4 @@ const index = () => {
   )
 }
 
-export default index
+export default ContactUs

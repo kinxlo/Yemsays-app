@@ -6,16 +6,21 @@ import './style/scss/style.scss'
 import theme from './style/theme'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
-import { store, persistor } from './app/store'
+import { persistor, store } from './app/store'
+import { BrowserRouter } from 'react-router-dom'
+import ScrollToTop from './components/scroll-to-top/ScrollToTop'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
+  // <React.StrictMode>
+  <BrowserRouter>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <ChakraProvider theme={theme}>
+          <ScrollToTop />
           <App />
         </ChakraProvider>
       </PersistGate>
     </Provider>
-  </React.StrictMode>
+  </BrowserRouter>
+  // </React.StrictMode>
 )
