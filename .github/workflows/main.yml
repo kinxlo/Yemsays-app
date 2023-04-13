@@ -1,0 +1,27 @@
+name: Node.js CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request_target:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: self-hosted
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x, 18.x]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    # - run: cp -rf /var/www/config/* /var/www/config/.* /var/www/techstudio-server/_work/Techtudio-site-server/Techtudio-site-server
+    - run: npm install
+    - run: |
+        export NODE_OPTIONS="--max_old_space_size=4096"
+        CI=false npm run build --if-present
+    # - run: pm2 reload 2
