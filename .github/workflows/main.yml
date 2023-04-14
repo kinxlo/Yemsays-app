@@ -22,7 +22,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: cp -rf /var/www/client/* /var/www/client/.* /var/www/yemsay/_work/yemsays-app/yemsays-app
+    # - run: cp -rf /var/www/client/* /var/www/client/.* /var/www/yemsay/_work/yemsays-app/yemsays-app
     - run: npm install
     - run: |
         export NODE_OPTIONS="--max_old_space_size=8096"
