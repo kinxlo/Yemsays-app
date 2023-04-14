@@ -2,6 +2,8 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import PropTypes from 'prop-types'
+import { Select } from '@chakra-ui/react'
+import { useDispatch } from 'react-redux'
 
 // COMPONENTS
 import Container from '../Container'
@@ -17,6 +19,7 @@ const NavBar = ({ transparentBg }) => {
   const [isScrolled, setIsScrolled] = useState(false)
   const [windowPosition, setWindowPosition] = useState(0)
   const location = useLocation()
+  const dispatch = useDispatch()
 
   // verifies if routeName is the one active (in browser input)
   const activeRoute = (routeName) => {
@@ -52,6 +55,13 @@ const NavBar = ({ transparentBg }) => {
       setIsScrolled(false)
     }
   }, [windowPosition])
+
+  const changeCurrency = (e) => {
+    dispatch({
+      type: `properties/changeCurrency`,
+      payload: { currency: e.currentTarget.value },
+    })
+  }
 
   return (
     <nav
@@ -127,6 +137,32 @@ const NavBar = ({ transparentBg }) => {
                   to={`/book-now`}
                 />
               </div>
+              <Select
+                onChange={changeCurrency}
+                border={`none`}
+                w={`fit-content`}
+                color={`white`}
+                size='xs'
+              >
+                <option
+                  style={{ color: `black`, fontWeight: `bold` }}
+                  value='NGN'
+                >
+                  NGN
+                </option>
+                <option
+                  style={{ color: `black`, fontWeight: `bold` }}
+                  value='GBP'
+                >
+                  GBP
+                </option>
+                <option
+                  style={{ color: `black`, fontWeight: `bold` }}
+                  value='USD'
+                >
+                  USD
+                </option>
+              </Select>
             </div>
           }
         </div>

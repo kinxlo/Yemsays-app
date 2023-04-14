@@ -30,6 +30,7 @@ import { selectPropertyDetails } from './api/propertiesSlice'
 import ReactPlayer from 'react-player'
 import SpinnerComponent from '../../../components/feedback/SpinnerComponent'
 import FeedbackModal from '../../../components/modals/Modal'
+import useFormatCurrency from '../../../hooks/useFormatCurrency'
 
 // eslint-disable-next-line react/prop-types
 const AdminPropertiesDetailsPage = () => {
@@ -40,6 +41,8 @@ const AdminPropertiesDetailsPage = () => {
   const location = useLocation()
   const propertyID = location.pathname.split(`/`)[3]
   const propertiesDetails = useSelector(selectPropertyDetails)
+  const { formattedCurrency } = useFormatCurrency(propertiesDetails)
+
   const links = [
     { name: `Home`, ref: `/admin/dashboard` },
     { name: `properties`, ref: `/admin/properties` },
@@ -188,7 +191,7 @@ const AdminPropertiesDetailsPage = () => {
               <Box>
                 <Text color={`textGrey`}>Sales Price</Text>
                 <Text fontSize={`4xl`} color={`#0FB7C1`} fontWeight={`bold`}>
-                  ${propertiesDetails?.price}
+                  {formattedCurrency}
                 </Text>
               </Box>
             </Flex>

@@ -17,7 +17,15 @@ import {
   useListPropertyMutation,
 } from '../../pages/admin/dashboard/api/propertiesApiSlice'
 
-const FeedbackModal = ({ isOpen, onClose, action, id, handleSubmit }) => {
+const FeedbackModal = ({
+  editLoading,
+  handleAction,
+  isOpen,
+  onClose,
+  action,
+  id,
+  handleSubmit,
+}) => {
   const [content, setContent] = useState(null)
   const [propertyID, setPropertyID] = useState(null)
   const [isSuccess, setSuccess] = useState(false)
@@ -61,11 +69,17 @@ const FeedbackModal = ({ isOpen, onClose, action, id, handleSubmit }) => {
     console.log(res)
   }
 
+  const handleEditProperty = () => {
+    handleAction()
+  }
+
   const handleClick = () => {
     action === `addProperty`
       ? handleSubmit()
       : action === `deleteProperty`
       ? handleDeleteProperty()
+      : action === `editProperty`
+      ? handleEditProperty()
       : setListedStatus(action)
   }
 
@@ -121,6 +135,13 @@ const FeedbackModal = ({ isOpen, onClose, action, id, handleSubmit }) => {
           description: `The new property has been deleted permanently. To see property, continue.`,
         })
         break
+      case `editProperty`:
+        setContent({
+          title1: `Are you sure you want to save changes?`,
+          title2: `Property details changed Successfully!`,
+          description: `The new property details has been edited successfully. To see property, continue.`,
+        })
+        break
 
       default:
         break
@@ -154,7 +175,7 @@ const FeedbackModal = ({ isOpen, onClose, action, id, handleSubmit }) => {
             <Stack mt={5} p={10} gap={5}>
               <Button
                 onClick={handleClick}
-                isLoading={isLoading || delArg.isLoading}
+                isLoading={isLoading || delArg.isLoading || editLoading}
                 loadingText={`hold on...`}
                 variant={`solid`}
                 colorScheme={`orange`}

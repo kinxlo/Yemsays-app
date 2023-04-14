@@ -13,12 +13,13 @@ import React from 'react'
 import { MdLocationOn } from 'react-icons/md'
 import Tag from '../tag/Tag'
 import LinkButton from '../buttons/link-button/LinkButton'
+import useFormatCurrency from '../../hooks/useFormatCurrency'
 
 const PropertyCard = ({ featuredProperty }) => {
+  const { formattedCurrency } = useFormatCurrency(featuredProperty)
   return (
     <Card w={`100%`} hidden={!featuredProperty} borderRadius={`30px`}>
       <CardBody
-        // width={{ base: `100%`, md: `530px` }}
         display={`flex`}
         flexDir={{ base: `column`, md: `row` }}
         gap={5}
@@ -71,7 +72,7 @@ const PropertyCard = ({ featuredProperty }) => {
             </Text>
           </Box>
           <Text fontSize={`3xl`} fontWeight={`bold`} color={`#0FB7C1`}>
-            $ {featuredProperty?.price}
+            {formattedCurrency}
           </Text>
           <Box>
             <SimpleGrid columns={2} gap={2}>

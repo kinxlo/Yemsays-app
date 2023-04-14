@@ -15,6 +15,7 @@ const STATE = {
     // isHouse: false,
   },
   recentProperties: null,
+  currency: `NGN`,
 }
 
 const PROPERTIES_SLICE = {
@@ -63,6 +64,10 @@ const PROPERTIES_SLICE = {
         // isHouse: action.payload.houseBtn,
       }
     },
+    changeCurrency: (state, action) => {
+      const { currency } = action.payload
+      state.currency = currency
+    },
     // ======= external API ===================
   },
 }
@@ -77,6 +82,7 @@ export const {
   setUserHouseProperties,
   setRecentProperties,
   changePropertyState,
+  changeCurrency,
 } = propertiesSlice.actions
 
 export default propertiesSlice.reducer
@@ -86,6 +92,7 @@ export const selectDashboardData = (state) => state.properties.dashboardData
 export const selectHouseProperties = (state) => state.properties.houseProperties
 export const selectLandProperty = (state) => state.properties.landProperties
 export const selectPropertyDetails = (state) => state.properties.propertyDetails
+export const selectCurrency = (state) => state.properties.currency
 
 // ============ external API ===================================================
 export const selectUserLandProperties = (state) =>

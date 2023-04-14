@@ -12,8 +12,10 @@ import {
 import React from 'react'
 import { MdLocationOn } from 'react-icons/md'
 import { Link } from 'react-router-dom'
+import useFormatCurrency from '../../hooks/useFormatCurrency'
 
 const SimilarPropertyCard = ({ property }) => {
+  const { formattedCurrency } = useFormatCurrency(property)
   return (
     <Card
       bgColor={`transparent`}
@@ -54,7 +56,7 @@ const SimilarPropertyCard = ({ property }) => {
             </Text>
           </Box>
           <Text fontSize={`3xl`} fontWeight={`bold`} color={`#0FB7C1`}>
-            ${property?.price}
+            {formattedCurrency}
           </Text>
           <Link to={`/properties/${property?.id}/details`}>
             <Button w={`100%`} variant='outline' colorScheme={`orange`}>

@@ -33,16 +33,20 @@ import { useForm } from 'react-hook-form'
 import { selectCurrentToken } from '../auth/api/authSlice'
 import axios from 'axios'
 import ReactPlayer from 'react-player'
-import FeedbackModal from '../../../components/modals/Modal'
+import AlertComponent from '../../../components/feedback/Alert'
+// import FeedbackModal from '../../../components/modals/Modal'
 
 // eslint-disable-next-line react/prop-types
 const AdminPropertiesDetailsPage = () => {
-  const [action, setAction] = useState(null)
-  const [isOpen, setIsOpen] = useState(false)
+  // const [action, setAction] = useState(null)
+  // const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setOpen] = useState(false)
   const [isLoading, setLoading] = useState(false)
+  // const [isSuccess, setSuccess] = useState(false)
   const location = useLocation()
   const propertyID = location.pathname.split(`/`)[3]
   const [getPropertyByID] = useGetPropertyByIDMutation()
+  // const [editProperty] = useEditPropertyMutation()
   const propertiesDetails = useSelector(selectPropertyDetails)
   const token = useSelector(selectCurrentToken)
   const links = [
@@ -64,14 +68,14 @@ const AdminPropertiesDetailsPage = () => {
   })
   const [previousImage, setPreviousImage] = useState([])
 
-  const handleOpen = (action) => {
-    setAction(action)
-    setIsOpen(true)
-  }
+  // const handleOpen = (action) => {
+  //   setAction(action)
+  //   setIsOpen(true)
+  // }
 
-  const handleClose = () => {
-    setIsOpen(false)
-  }
+  // const handleClose = () => {
+  //   setIsOpen(false)
+  // }
 
   const defaultFormData = {
     title: propertiesDetails?.title,
@@ -193,6 +197,10 @@ const AdminPropertiesDetailsPage = () => {
       console.log(pair[0] + ', ' + pair[1])
     }
     try {
+      // const res = await editProperty({
+      //   id: propertyID,
+      //   body: formData,
+      // }).unwrap()
       const res = await axios.put(
         `https://yemsay-v2.onrender.com/api/v1/property/admin/${propertyID}`,
         formData,
@@ -201,6 +209,7 @@ const AdminPropertiesDetailsPage = () => {
       console.log(res)
       if (res.status === 200) {
         setLoading(false)
+        setOpen(true)
       }
     } catch (err) {
       console.log(err)
@@ -208,8 +217,26 @@ const AdminPropertiesDetailsPage = () => {
     }
   }
 
+  // onClick={}
+
   return (
     <>
+      {/* <FeedbackModal
+        handleAction={handleSubmit(submitEditedProperty)}
+        editLoading={isLoading}
+        action={action}
+        onClose={handleClose}
+        isOpen={isOpen}
+      /> */}
+      <AlertComponent
+        message={{
+          action: `editProperty`,
+          title: `Property details changed succefully!`,
+          desc: `The property details has been edited successfully. To exit editing property, continue`,
+        }}
+        isOpen={isOpen}
+        onClose={() => setOpen(!isOpen)}
+      />
       <Box id='top' mb={12}>
         <BreadCrumbHeader title={`Edit Properties Details`} links={links} />
       </Box>
@@ -235,15 +262,9 @@ const AdminPropertiesDetailsPage = () => {
           </Text>
         </Box>
         <Flex gap={5}>
-          <FeedbackModal
-            handleSubmit={handleSubmit(submitEditedProperty)}
-            action={action}
-            onClose={handleClose}
-            isOpen={isOpen}
-          />
           <Button
-            // onClick={() => handleOpen(`addProperty`)}
             onClick={handleSubmit(submitEditedProperty)}
+            // onClick={() => handleOpen(`editProperty`)}
             isLoading={isLoading}
             loadingText='Saving...'
             borderRadius={10}

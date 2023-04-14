@@ -54,24 +54,22 @@ const AlertComponent = ({ isOpen, onClose, message, action }) => {
               justifyContent={`center`}
               gap={5}
             >
-              <Link to={`/admin/dashboard`}>
-                <Button
-                  variant={`outline`}
-                  colorScheme={`orange`}
-                  size={`xl`}
-                  px={5}
-                >
-                  Continue
-                </Button>
-              </Link>
               <Button
+                variant={`outline`}
                 onClick={onClose}
                 colorScheme={`orange`}
                 size={`xl`}
                 px={5}
               >
-                Add another Property
+                {message.action === `editProperty`
+                  ? `keep editing`
+                  : ` Add another Property`}
               </Button>
+              <Link to={`/admin/dashboard`}>
+                <Button colorScheme={`orange`} size={`xl`} px={5}>
+                  Continue
+                </Button>
+              </Link>
             </Flex>
             <Button
               mt={5}

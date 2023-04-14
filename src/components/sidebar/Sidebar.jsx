@@ -23,17 +23,22 @@ function Sidebar(props) {
   const { routes } = props
 
   let variantChange = '0.2s linear'
-  let shadow = useColorModeValue(
-    '14px 17px 40px 4px rgba(112, 144, 176, 0.08)',
-    'unset'
-  )
+  // let shadow = useColorModeValue(
+  //   '14px 17px 40px 4px rgba(112, 144, 176, 0.08)',
+  //   'unset'
+  // )
   // Chakra Color Mode
   let sidebarBg = useColorModeValue('dashboardBG', 'navy.800')
   let sidebarMargins = '0px'
 
   // SIDEBAR
   return (
-    <Box display={{ base: 'none', xl: 'block' }} position='fixed' minH='100%'>
+    <Box
+      display={{ base: 'none', xl: 'block' }}
+      position='fixed'
+      minH='100%'
+      zIndex={999}
+    >
       <Box
         bg={sidebarBg}
         transition={variantChange}
@@ -42,7 +47,7 @@ function Sidebar(props) {
         m={sidebarMargins}
         minH='100%'
         overflowX='hidden'
-        boxShadow={shadow}
+        // boxShadow={shadow}
       >
         <Content routes={routes} />
       </Box>

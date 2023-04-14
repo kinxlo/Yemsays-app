@@ -10,14 +10,30 @@ import {
   MenuList,
 } from '@chakra-ui/react'
 import { Icon } from '@iconify/react'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { SidebarResponsive } from '../../components/sidebar/Sidebar'
 import routes from '../../routes'
 
 const AdminNavbar = (props) => {
   const { ...rest } = props
+  const [isScrolled, setIsScrolled] = useState(false)
+  const [windowPosition, setWindowPosition] = useState(0)
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    window.onscroll = () => {
+      setWindowPosition(window.scrollY)
+      // console.log('SCROLLEDEVENT')
+    }
+
+    if (windowPosition >= 100) {
+      setIsScrolled(true)
+      // console.log('SCROLLED')
+    } else {
+      setIsScrolled(false)
+    }
+  }, [windowPosition])
 
   const handleLogout = () => {
     dispatch({ type: `auth/logout` })
@@ -26,10 +42,16 @@ const AdminNavbar = (props) => {
   return (
     <nav>
       <Flex
+        pos={isScrolled ? `fixed` : `static`}
+        top={0}
+        left={0}
+        w={`100%`}
         p={7}
         alignItems={`center`}
         justifyContent={{ base: `space-between`, xl: `flex-end` }}
         flexDir={{ base: `row-reverse`, xl: `row` }}
+        zIndex={1}
+        bgColor={`dashboardBG`}
       >
         <Flex alignItems={`center`} gap={{ base: 20, lg: 30 }}>
           <Box>

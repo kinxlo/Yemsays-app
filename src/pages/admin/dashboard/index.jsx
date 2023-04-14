@@ -51,7 +51,11 @@ const Dashboard = () => {
         <BreadCrumbHeader title={`Dashboard`} links={links} />
       </Box>
       {/* card list */}
-      {dashboardData ? (
+      {isLoading ? (
+        <Center h={`75vh`}>
+          <SpinnerComponent size={`xl`} />
+        </Center>
+      ) : dashboardData ? (
         <>
           <Box my={10}>
             <SimpleGrid
@@ -127,7 +131,7 @@ const Dashboard = () => {
                     ) : (
                       <AdminPropertyCard
                         listed={false}
-                        propertyDescription={dashboardData?.recentlyAdded[1]}
+                        propertyDescription={dashboardData?.recentlyAdded[2]}
                       />
                     )}
                     {isLoading ? (
@@ -135,7 +139,7 @@ const Dashboard = () => {
                     ) : (
                       <AdminPropertyCard
                         listed={false}
-                        propertyDescription={dashboardData?.recentlyAdded[0]}
+                        propertyDescription={dashboardData?.recentlyAdded[3]}
                       />
                     )}
                   </SimpleGrid>

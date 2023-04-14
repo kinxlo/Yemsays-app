@@ -13,6 +13,7 @@ import {
 import React, { useState } from 'react'
 import { FaNetworkWired } from 'react-icons/fa'
 import { MdLocationOn, MdOutlineFamilyRestroom } from 'react-icons/md'
+import useFormatCurrency from '../../../hooks/useFormatCurrency'
 import LinkButton from '../../buttons/link-button/LinkButton'
 import FeedbackModal from '../../modals/Modal'
 import Tag from '../../tag/Tag'
@@ -20,8 +21,7 @@ import Tag from '../../tag/Tag'
 const AdminPropertyCard = ({ listed, sold, propertyDescription }) => {
   const [action, setAction] = useState(null)
   const [isOpen, setIsOpen] = useState(false)
-  // const { features, location, id, media, price, status, tags, title, type } =
-  //   propertyDescription
+  const { formattedCurrency } = useFormatCurrency(propertyDescription)
   const handleOpen = (action) => {
     setAction(action)
     setIsOpen(true)
@@ -100,7 +100,7 @@ const AdminPropertyCard = ({ listed, sold, propertyDescription }) => {
             </Text>
           </Box>
           <Text fontSize={`3xl`} fontWeight={`bold`} color={`#0FB7C1`}>
-            ${propertyDescription?.price}
+            {formattedCurrency}
           </Text>
           <Box>
             <SimpleGrid columns={2} gap={2}>

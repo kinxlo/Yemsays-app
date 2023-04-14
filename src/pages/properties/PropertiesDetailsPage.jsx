@@ -35,6 +35,7 @@ import {
 import { useForm } from 'react-hook-form'
 import SpinnerComponent from '../../components/feedback/SpinnerComponent'
 import AlertComponent from '../../components/feedback/Alert'
+import useFormatCurrency from '../../hooks/useFormatCurrency'
 
 const PropertiesDetailsPage = () => {
   const [isOpen, setOpen] = useState(false)
@@ -50,6 +51,7 @@ const PropertiesDetailsPage = () => {
   const propertyID = location.pathname.split(`/`)[2]
   const [getPropertyByIDClient, args1] = useGetPropertyByIDClientMutation()
   const [addReview, arg2] = useAddReviewMutation()
+  const { formattedCurrency } = useFormatCurrency(propertyDetails)
 
   const showPropertiesDetails = useCallback(async () => {
     const res = await getPropertyByIDClient(propertyID).unwrap()
@@ -188,7 +190,7 @@ const PropertiesDetailsPage = () => {
                     {propertyDetails?.location}
                   </Text>
                   <Text fontSize={`4xl`} color={`#0FB7C1`} fontWeight={`bold`}>
-                    ${propertyDetails?.price}
+                    {formattedCurrency}
                   </Text>
                 </Box>
                 <Box>
