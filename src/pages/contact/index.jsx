@@ -210,7 +210,8 @@ const ContactUs = () => {
                       isLoading={isLoading}
                       loadingText='Sending message...'
                       w={`100%`}
-                      colorScheme={`orange`}
+                      bgColor={`primary`}
+                      color={`white`}
                       fontWeight={300}
                     >
                       Submit Message
