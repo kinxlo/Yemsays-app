@@ -47,7 +47,7 @@ const Properties = () => {
         return <PropertyCard key={property.id} featuredProperty={property} />
       })
     ) : (
-      <Text textAlign={`center`} width={{ xl: `1091px` }}>
+      <Text as={`span`} textAlign={`center`} width={{ xl: `1091px` }}>
         <EmptyState
           img={emptyState}
           size={`10rem`}
