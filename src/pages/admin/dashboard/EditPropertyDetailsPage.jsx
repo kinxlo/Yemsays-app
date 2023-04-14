@@ -147,7 +147,6 @@ const AdminPropertiesDetailsPage = () => {
 
   const submitEditedProperty = async (data) => {
     setLoading(true)
-    console.log(data)
 
     const images = [
       ...(typeof data.image_1 === 'string'
@@ -193,9 +192,6 @@ const AdminPropertiesDetailsPage = () => {
     formData.append(`salesSupportNum`, parseInt(data.salesSupportNum))
     typeof avatar[0] === `object` ? formData.append(`avatar`, avatar[0]) : null
 
-    for (var pair of formData.entries()) {
-      console.log(pair[0] + ', ' + pair[1])
-    }
     try {
       // const res = await editProperty({
       //   id: propertyID,
@@ -206,7 +202,6 @@ const AdminPropertiesDetailsPage = () => {
         formData,
         credentials
       )
-      console.log(res)
       if (res.status === 200) {
         setLoading(false)
         setOpen(true)
