@@ -279,7 +279,7 @@ const Footer = () => {
               fontWeight={`thin`}
               textAlign={`center`}
             >
-              Powered BinaryArt.inc
+              Powered By BinaryArt.inc
             </Text>
           </Box>
         </Box>
