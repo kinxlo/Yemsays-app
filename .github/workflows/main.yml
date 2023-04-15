@@ -45,4 +45,3 @@ jobs:
         if [ ${{ job.status }} != "success" ] || [ ${{ github.event_name }} == "pull_request" ]; then
           pm2 rollback
         fi
-      shell: /usr/bin/bash -e {0}
