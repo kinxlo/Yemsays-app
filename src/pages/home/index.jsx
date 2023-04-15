@@ -72,16 +72,15 @@ const Home = () => {
           }}
           zIndex={-1}
         >
-          <ReactPlayer
+          {/* <ReactPlayer
             style={reactPlayer}
             width={`100%`}
             height={`100%`}
             url={`https://player.vimeo.com/external/392612459.sd.mp4?s=39589128d7c98ba18e262569fc7a5a6d31d89e22&profile_id=164&oauth2_token_id=57447761`}
             playing={play}
-          />
+          /> */}
         </Box>
         <Image
-          filter={`blur(5px)`}
           fallbackSrc={img}
           pos={`absolute`}
           top={0}
@@ -90,7 +89,7 @@ const Home = () => {
           h={`100%`}
           objectFit={`cover`}
           zIndex={-2}
-          src={`https://images.pexels.com/photos/3288103/pexels-photo-3288103.png?auto=compress&cs=tinysrgb&w=1600`}
+          src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1677665416/project-yemsays/unsplash_JQUrgUn_pr4_maw4p0.png`}
         />
         <Container>
           <Box mt={32} width={`fit-content`}>
@@ -135,7 +134,7 @@ const Home = () => {
               text={`View Properties`}
               height={`40px`}
             />
-            <Box
+            {/* <Box
               onClick={() => setPlay((prevState) => !prevState)}
               bg={`white`}
               borderRadius={`100%`}
@@ -150,7 +149,7 @@ const Home = () => {
                     : `material-symbols:pause`
                 }
               />
-            </Box>
+            </Box> */}
           </Box>
         </Container>
         <Box
