@@ -31,7 +31,7 @@ const index = () => {
   const { hero, sectionTwo, sectionThree, sectionFour } = ABOUT_CONTENT
   const { Testimonials } = HOME_CONTENT
   return (
-    <DefaultLayout>
+    <>
       {/* about hero */}
       <Box
         className='page_alignment'
@@ -236,7 +236,7 @@ const index = () => {
           </Box>
         </Container>
       </Box>
-    </DefaultLayout>
+    </>
   )
 }
 

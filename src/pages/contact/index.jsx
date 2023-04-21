@@ -65,7 +65,7 @@ const ContactUs = () => {
   }, [isSafeToReset, reset])
 
   return (
-    <DefaultLayout>
+    <>
       <AlertComponent
         action={`message`}
         message={{
@@ -223,7 +223,7 @@ const ContactUs = () => {
           </Flex>
         </Container>
       </Box>
-    </DefaultLayout>
+    </>
   )
 }
 

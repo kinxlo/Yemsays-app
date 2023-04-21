@@ -4,6 +4,7 @@
 import Container from '../Container'
 // import Logo_dark from '../../assets/images/ticked_logo_light.png'
 import { FaFacebookF, FaTwitter, FaLinkedin, FaInstagram } from 'react-icons/fa'
+import { HashLink } from 'react-router-hash-link'
 import {
   Box,
   Divider,
@@ -72,17 +73,17 @@ const Footer = () => {
                   <Text fontWeight={`bold`}>About</Text>
                 </Box>
                 <List as={`div`}>
-                  <ListItem
-                    cursor={`pointer`}
-                    _hover={{ color: `primary` }}
-                    color={`textGrey`}
-                    textTransform={`capitalize`}
-                    mb={`9px`}
-                  >
-                    <Link display={`inline`} href={'#company'}>
+                  <HashLink display={`inline`} to={`/about-us#company`}>
+                    <ListItem
+                      cursor={`pointer`}
+                      _hover={{ color: `primary` }}
+                      color={`textGrey`}
+                      textTransform={`capitalize`}
+                      mb={`9px`}
+                    >
                       Company
-                    </Link>
-                  </ListItem>
+                    </ListItem>
+                  </HashLink>
                   <ListItem
                     cursor={`pointer`}
                     _hover={{ color: `primary` }}
@@ -90,9 +91,9 @@ const Footer = () => {
                     textTransform={`capitalize`}
                     mb={`9px`}
                   >
-                    <Link display={`inline`} href={'#team'}>
+                    <HashLink display={`inline`} to={'/about-us#team'}>
                       Team
-                    </Link>
+                    </HashLink>
                   </ListItem>
                   <ListItem
                     cursor={`pointer`}

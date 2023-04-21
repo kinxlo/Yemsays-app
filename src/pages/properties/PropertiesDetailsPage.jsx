@@ -132,7 +132,7 @@ const PropertiesDetailsPage = () => {
   }
 
   return (
-    <DefaultLayout>
+    <>
       <AlertComponent
         action={`message`}
         message={{
@@ -597,7 +597,7 @@ const PropertiesDetailsPage = () => {
           <QuestionBanner />
         </Container>
       </Box>
-    </DefaultLayout>
+    </>
   )
 }
 

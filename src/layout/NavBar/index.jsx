@@ -16,6 +16,7 @@ import { Text } from '@chakra-ui/react'
 
 const NavBar = ({ transparentBg }) => {
   const [isNavOpen, setIsNavOpen] = useState(false)
+  const [homeActive, setHomeActive] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [windowPosition, setWindowPosition] = useState(0)
   const location = useLocation()
@@ -35,12 +36,18 @@ const NavBar = ({ transparentBg }) => {
   }
 
   useEffect(() => {
+    if (location.pathname === '/') {
+      setHomeActive(true)
+    } else {
+      setHomeActive(false)
+    }
+
     if (isNavOpen) {
       window.document.body.style.overflowY = 'hidden'
     } else {
       window.document.body.style.overflowY = 'scroll'
     }
-  }, [isNavOpen, windowPosition])
+  }, [isNavOpen, location.pathname, windowPosition])
 
   useEffect(() => {
     window.onscroll = () => {
@@ -96,9 +103,8 @@ const NavBar = ({ transparentBg }) => {
                   className={styles.navLink}
                   to={'/'}
                   onClick={handleCloseNavBar}
-                  color={activeRoute(`/`) ? `primary` : `white`}
                 >
-                  <Text>Home</Text>
+                  <Text color={homeActive ? `primary` : `white`}>Home</Text>
                 </Link>
                 <Link
                   className={styles.navLink}

@@ -1,5 +1,5 @@
 import { Box, Heading, Image, SimpleGrid, Text } from '@chakra-ui/react'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import LinkButton from '../../components/buttons/link-button/LinkButton'
 import Container from '../../layout/Container'
 import { HOME_CONTENT } from './content'
@@ -13,22 +13,12 @@ import img from '../../assets/heroImg.png'
 import { useRecentPropertiesMutation } from '../admin/dashboard/api/propertiesApiSlice'
 import { useSelector } from 'react-redux'
 import { selectRecentProperties } from '../admin/dashboard/api/propertiesSlice'
-import ReactPlayer from 'react-player'
-import { Icon } from '@iconify/react'
 import SpinnerComponent from '../../components/feedback/SpinnerComponent'
 import EmptyState from '../../components/feedback/EmptyState'
 import emptyState from '../../assets/emptyState.svg'
 
-const reactPlayer = {
-  // width: `100%`,
-  // height: `100%`,
-  // transform: `scale(2)` /* 16:9 aspect ratio */,
-}
-
 const Home = () => {
   const { hero, sectionTwo, sectionThree, Testimonials } = HOME_CONTENT
-  const [isSearch, setSearch] = useState(true)
-  const [play, setPlay] = useState(false)
   const recentProps = useSelector(selectRecentProperties)
   const [recentProperties, { isLoading }] = useRecentPropertiesMutation()
 
@@ -47,7 +37,7 @@ const Home = () => {
   })
 
   return (
-    <DefaultLayout>
+    <>
       {/* hero section */}
       <Box
         className='page_alignment'
@@ -156,7 +146,7 @@ const Home = () => {
           display={{ base: `none`, lg: `block` }}
           transform={`translateY(3rem)`}
         >
-          <SearchForm setSearch={setSearch} />
+          <SearchForm />
         </Box>
       </Box>
       {/* section two */}
@@ -333,7 +323,7 @@ const Home = () => {
           </Box>
         </Container>
       </Box>
-    </DefaultLayout>
+    </>
   )
 }
 
