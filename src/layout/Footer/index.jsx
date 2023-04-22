@@ -3,8 +3,8 @@
 // COMPONENTS
 import Container from '../Container'
 // import Logo_dark from '../../assets/images/ticked_logo_light.png'
-import { FaFacebookF, FaTwitter, FaLinkedin, FaInstagram } from 'react-icons/fa'
-import { HashLink } from 'react-router-hash-link'
+import { FaFacebookF, FaInstagram } from 'react-icons/fa'
+// import { HashLink } from '@xzar90/react-router-hash-link'
 import {
   Box,
   Divider,
@@ -20,13 +20,14 @@ import {
 import { Link as ReactLink } from 'react-router-dom'
 import { useState } from 'react'
 import AlertComponent from '../../components/feedback/Alert'
+import { useScrollToSection } from '../../hooks/useHashLink'
 
 const Footer = () => {
   const [clickCount, setClickCount] = useState(1)
   const [isOpen, setOpen] = useState(false)
+  const { scrollToSection } = useScrollToSection()
 
   const handleClick = () => {
-    console.log(clickCount)
     if (clickCount === 5) {
       setOpen(true)
       setClickCount(0)
@@ -72,50 +73,46 @@ const Footer = () => {
                 <Box h={{ lg: `3rem` }}>
                   <Text fontWeight={`bold`}>About</Text>
                 </Box>
-                <List as={`div`}>
-                  <HashLink display={`inline`} to={`/about-us#company`}>
-                    <ListItem
-                      cursor={`pointer`}
-                      _hover={{ color: `primary` }}
-                      color={`textGrey`}
-                      textTransform={`capitalize`}
-                      mb={`9px`}
-                    >
-                      Company
-                    </ListItem>
-                  </HashLink>
+                <List>
                   <ListItem
                     cursor={`pointer`}
                     _hover={{ color: `primary` }}
                     color={`textGrey`}
                     textTransform={`capitalize`}
+                    onClick={() => scrollToSection(`about-us`, `company`)}
                     mb={`9px`}
                   >
-                    <HashLink display={`inline`} to={'/about-us#team'}>
-                      Team
-                    </HashLink>
+                    Company
+                  </ListItem>
+
+                  <ListItem
+                    cursor={`pointer`}
+                    _hover={{ color: `primary` }}
+                    color={`textGrey`}
+                    textTransform={`capitalize`}
+                    onClick={() => scrollToSection(`about-us`, `team`)}
+                    mb={`9px`}
+                  >
+                    Team
                   </ListItem>
                   <ListItem
                     cursor={`pointer`}
                     _hover={{ color: `primary` }}
                     color={`textGrey`}
                     textTransform={`capitalize`}
+                    onClick={() => scrollToSection(`about-us`, `testimonial`)}
                     mb={`9px`}
                   >
-                    <Link display={`inline`} href={'#testimonial'}>
-                      Testimonial
-                    </Link>
+                    Testimonial
                   </ListItem>
                   <ListItem
                     cursor={`pointer`}
                     _hover={{ color: `primary` }}
                     color={`textGrey`}
                     textTransform={`capitalize`}
-                    mb={`9px`}
+                    onClick={() => scrollToSection(`contact`, ``)}
                   >
-                    <Link as={ReactLink} display={`inline`} to={'/contact'}>
-                      Contact
-                    </Link>
+                    Contact
                   </ListItem>
                 </List>
               </Box>
@@ -132,10 +129,9 @@ const Footer = () => {
                     color={`textGrey`}
                     textTransform={`capitalize`}
                     mb={`9px`}
+                    onClick={() => scrollToSection(`properties`, ``)}
                   >
-                    <Link as={ReactLink} display={`inline`} to={'/properties'}>
-                      Listings
-                    </Link>
+                    Listings
                   </ListItem>
                   <ListItem
                     cursor={`pointer`}
@@ -143,10 +139,9 @@ const Footer = () => {
                     color={`textGrey`}
                     textTransform={`capitalize`}
                     mb={`9px`}
+                    onClick={() => scrollToSection(`properties`, ``)}
                   >
-                    <Link as={ReactLink} display={`inline`} to={'/properties'}>
-                      Lands
-                    </Link>
+                    Lands
                   </ListItem>
                   <ListItem
                     cursor={`pointer`}
@@ -154,10 +149,9 @@ const Footer = () => {
                     color={`textGrey`}
                     textTransform={`capitalize`}
                     mb={`9px`}
+                    onClick={() => scrollToSection(`properties`, ``)}
                   >
-                    <Link as={ReactLink} display={`inline`} to={'/properties'}>
-                      Houses
-                    </Link>
+                    Houses
                   </ListItem>
                   <ListItem
                     cursor={`pointer`}
@@ -165,10 +159,9 @@ const Footer = () => {
                     color={`textGrey`}
                     textTransform={`capitalize`}
                     mb={`9px`}
+                    onClick={() => scrollToSection(`book-now`, ``)}
                   >
-                    <Link as={ReactLink} display={`inline`} to={'/book-now'}>
-                      Book Now
-                    </Link>
+                    Book Now
                   </ListItem>
                 </List>
               </Box>

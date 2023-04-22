@@ -8,8 +8,8 @@ import {
   Text,
 } from '@chakra-ui/react'
 import React from 'react'
-import { AiOutlineInstagram, AiOutlineTwitter } from 'react-icons/ai'
-import { FaFacebookF, FaLinkedinIn } from 'react-icons/fa'
+import { AiOutlineInstagram } from 'react-icons/ai'
+import { FaFacebookF } from 'react-icons/fa'
 import Banner from '../../components/banner/Banner'
 import QuestionBanner from '../../components/banner/QuestionBanner'
 import LinkButton from '../../components/buttons/link-button/LinkButton'
@@ -17,7 +17,6 @@ import Map from '../../components/map/Map'
 import ProfileCard from '../../components/profile-card/ProfileCard'
 import TestimonialCard from '../../components/testimonial-card/TestimonialCard'
 import Container from '../../layout/Container'
-import DefaultLayout from '../../layout/DefaultLayout'
 import { HOME_CONTENT } from '../home/content'
 import { ABOUT_CONTENT } from './content'
 
@@ -27,9 +26,10 @@ const location = {
   lng: 3.36596,
 }
 
-const index = () => {
+const AboutPage = () => {
   const { hero, sectionTwo, sectionThree, sectionFour } = ABOUT_CONTENT
   const { Testimonials } = HOME_CONTENT
+
   return (
     <>
       {/* about hero */}
@@ -78,6 +78,7 @@ const index = () => {
       </Box>
       {/* section two */}
       <Box
+        id='company'
         className='page_alignment'
         bgColor={`textDark`}
         color={`white`}
@@ -137,7 +138,7 @@ const index = () => {
       </Box>
       {/* section three */}
       <Box
-        id={`team`}
+        id='team'
         bgColor={`black`}
         color={`textLight`}
         className='page_alignment'
@@ -164,7 +165,6 @@ const index = () => {
       </Box>
       {/* section four */}
       <Box
-        id={`company`}
         bgColor={`textDark`}
         color={`white`}
         py={24}
@@ -207,7 +207,7 @@ const index = () => {
       <Banner />
       {/* section five */}
       <Box
-        id={`testimonial`}
+        id='testimonial'
         bgColor={`bgBlack`}
         color={`white`}
         className='page_alignment'
@@ -240,4 +240,4 @@ const index = () => {
   )
 }
 
-export default index
+export default AboutPage

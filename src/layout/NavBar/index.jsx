@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import { Select } from '@chakra-ui/react'
+import { Image, Select } from '@chakra-ui/react'
 import { useDispatch } from 'react-redux'
 
 // COMPONENTS
@@ -80,9 +80,10 @@ const NavBar = ({ transparentBg }) => {
         <div className={styles.navContent}>
           <div className={styles.navBrand}>
             <Link to={'/'}>
-              <img
+              <Image
+                boxSize={`5rem`}
                 className={styles.navLogo}
-                src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1680856120/project-yemsays/Group_87_qudnxl.png`}
+                src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1682094985/project-yemsays/New_Logo_fyelao.png`}
                 alt='logo'
               />
             </Link>
