@@ -1,5 +1,5 @@
 import { Box, Heading, Image, SimpleGrid, Text } from '@chakra-ui/react'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import LinkButton from '../../components/buttons/link-button/LinkButton'
 import Container from '../../layout/Container'
 import { HOME_CONTENT } from './content'
@@ -8,29 +8,23 @@ import PropertyCard from '../../components/property-card/PropertyCard'
 import TestimonialCard from '../../components/testimonial-card/TestimonialCard'
 import QuestionBanner from '../../components/banner/QuestionBanner'
 import SearchForm from '../../components/search-form/SearchForm'
-import DefaultLayout from '../../layout/DefaultLayout'
 import img from '../../assets/heroImg.png'
 import { useRecentPropertiesMutation } from '../admin/dashboard/api/propertiesApiSlice'
 import { useSelector } from 'react-redux'
 import { selectRecentProperties } from '../admin/dashboard/api/propertiesSlice'
-import ReactPlayer from 'react-player'
-import { Icon } from '@iconify/react'
 import SpinnerComponent from '../../components/feedback/SpinnerComponent'
 import EmptyState from '../../components/feedback/EmptyState'
 import emptyState from '../../assets/emptyState.svg'
-
-const reactPlayer = {
-  // width: `100%`,
-  // height: `100%`,
-  // transform: `scale(2)` /* 16:9 aspect ratio */,
-}
+import { Waypoint } from 'react-waypoint'
 
 const Home = () => {
+  const [isSearch, setSearch] = useState(false)
+  const [inViewPort, setInViewPort] = useState(false)
   const { hero, sectionTwo, sectionThree, Testimonials } = HOME_CONTENT
-  const [isSearch, setSearch] = useState(true)
-  const [play, setPlay] = useState(false)
   const recentProps = useSelector(selectRecentProperties)
   const [recentProperties, { isLoading }] = useRecentPropertiesMutation()
+  const sectionTwoBImg = useRef(null)
+  // const sectionTwoBImg2 = useRef(null)
 
   const showRecentProperties = useCallback(async () => {
     await recentProperties().unwrap()
@@ -46,8 +40,16 @@ const Home = () => {
     )
   })
 
+  const handleWaypointEnter = () => {
+    setInViewPort(true)
+  }
+
+  const handleWaypointLeave = () => {
+    setInViewPort(false)
+  }
+
   return (
-    <DefaultLayout>
+    <>
       {/* hero section */}
       <Box
         className='page_alignment'
@@ -217,20 +219,37 @@ const Home = () => {
           <Box
             display={`flex`}
             flexDir={{ base: `column`, lg: `row` }}
-            marginTop={44}
+            marginBlock={{ base: 22, lg: 44 }}
             gap={20}
+            // paddingBottom={60}
           >
             {/* article Picture */}
-            <Box className='page_alignment' flex={1}>
-              <Box margin={`auto`} maxW={444}>
+            <Box pos={`relative`} className='page_alignment' flex={1}>
+              <Box
+                className={`box1 ${
+                  inViewPort ? `animate-box1` : `animate-box1-leave`
+                }`}
+                ref={sectionTwoBImg}
+                margin={`auto`}
+                maxW={444}
+              >
                 <Image
                   className='cc-img-fluid'
                   src='https://res.cloudinary.com/kingsleysolomon/image/upload/v1677762969/project-yemsays/unsplash_o_9YmCY0bag_ipyuwz.png'
                   alt='img1'
                 />
               </Box>
+              <Waypoint
+                bottomOffset={`60px`}
+                onEnter={handleWaypointEnter}
+                onLeave={handleWaypointLeave}
+              />
               <Box
-                transform={`translate(12rem, -12rem)`}
+                ref={sectionTwoBImg}
+                className={`box2 ${
+                  inViewPort ? `animate-box2` : `animate-box2-leave`
+                }`}
+                transform={`translate(0, 6rem)`}
                 maxW={341}
                 display={{ base: `none`, xl: `block` }}
               >
@@ -333,7 +352,7 @@ const Home = () => {
           </Box>
         </Container>
       </Box>
-    </DefaultLayout>
+    </>
   )
 }
 

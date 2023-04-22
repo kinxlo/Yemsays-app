@@ -72,7 +72,7 @@ const Properties = () => {
   )
 
   return (
-    <DefaultLayout>
+    <>
       {/* hero section */}
       <Box
         className='page_alignment'
@@ -156,7 +156,7 @@ const Properties = () => {
           <QuestionBanner />
         </Container>
       </Box>
-    </DefaultLayout>
+    </>
   )
 }
 

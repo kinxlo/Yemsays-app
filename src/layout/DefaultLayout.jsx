@@ -1,4 +1,6 @@
 import React from 'react'
+import { Outlet } from 'react-router-dom'
+import BannerComponent from '../components/BannerComponent'
 import Footer from './Footer'
 import NavBar from './NavBar'
 
@@ -7,7 +9,8 @@ const DefaultLayout = ({ children }) => {
   return (
     <>
       <NavBar />
-      {children}
+      <BannerComponent text={`Welcome to Yemsays Properties!`} />
+      <Outlet />
       <Footer />
     </>
   )

@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import { Select } from '@chakra-ui/react'
+import { Image, Select } from '@chakra-ui/react'
 import { useDispatch } from 'react-redux'
 
 // COMPONENTS
@@ -16,6 +16,7 @@ import { Text } from '@chakra-ui/react'
 
 const NavBar = ({ transparentBg }) => {
   const [isNavOpen, setIsNavOpen] = useState(false)
+  const [homeActive, setHomeActive] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [windowPosition, setWindowPosition] = useState(0)
   const location = useLocation()
@@ -35,12 +36,18 @@ const NavBar = ({ transparentBg }) => {
   }
 
   useEffect(() => {
+    if (location.pathname === '/') {
+      setHomeActive(true)
+    } else {
+      setHomeActive(false)
+    }
+
     if (isNavOpen) {
       window.document.body.style.overflowY = 'hidden'
     } else {
       window.document.body.style.overflowY = 'scroll'
     }
-  }, [isNavOpen, windowPosition])
+  }, [isNavOpen, location.pathname, windowPosition])
 
   useEffect(() => {
     window.onscroll = () => {
@@ -73,9 +80,10 @@ const NavBar = ({ transparentBg }) => {
         <div className={styles.navContent}>
           <div className={styles.navBrand}>
             <Link to={'/'}>
-              <img
+              <Image
+                boxSize={`5rem`}
                 className={styles.navLogo}
-                src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1680856120/project-yemsays/Group_87_qudnxl.png`}
+                src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1682094985/project-yemsays/New_Logo_fyelao.png`}
                 alt='logo'
               />
             </Link>
@@ -96,9 +104,8 @@ const NavBar = ({ transparentBg }) => {
                   className={styles.navLink}
                   to={'/'}
                   onClick={handleCloseNavBar}
-                  color={activeRoute(`/`) ? `primary` : `white`}
                 >
-                  <Text>Home</Text>
+                  <Text color={homeActive ? `primary` : `white`}>Home</Text>
                 </Link>
                 <Link
                   className={styles.navLink}
