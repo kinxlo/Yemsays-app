@@ -217,7 +217,7 @@ const AdminPropertiesDetailsPage = () => {
                 flexDir={`column`}
               >
                 <Input
-                  required
+                  // required
                   hidden
                   id={`img1`}
                   type={`file`}
@@ -256,7 +256,7 @@ const AdminPropertiesDetailsPage = () => {
                 flexDir={`column`}
               >
                 <Input
-                  required
+                  // required
                   hidden
                   id={`img2`}
                   type={`file`}
@@ -295,7 +295,7 @@ const AdminPropertiesDetailsPage = () => {
                 flexDir={`column`}
               >
                 <Input
-                  required
+                  // required
                   hidden
                   id={`img3`}
                   type={`file`}
@@ -333,7 +333,7 @@ const AdminPropertiesDetailsPage = () => {
                 flexDir={`column`}
               >
                 <Input
-                  required
+                  // required
                   hidden
                   id={`img4`}
                   type={`file`}
@@ -628,7 +628,7 @@ const AdminPropertiesDetailsPage = () => {
                         flexDir={`column`}
                       >
                         <Input
-                          required
+                          // required
                           hidden
                           id={`property_video`}
                           type={`file`}
@@ -687,7 +687,7 @@ const AdminPropertiesDetailsPage = () => {
                           flexDir={`column`}
                         >
                           <Input
-                            required
+                            // required
                             hidden
                             id={`avatar`}
                             type={`file`}

@@ -18,13 +18,18 @@ import useFormatCurrency from '../../hooks/useFormatCurrency'
 const PropertyCard = ({ featuredProperty }) => {
   const { formattedCurrency } = useFormatCurrency(featuredProperty)
   return (
-    <Card w={`100%`} hidden={!featuredProperty} borderRadius={`30px`}>
+    <Card
+      w={`100%`}
+      height={{ lg: `400px` }}
+      hidden={!featuredProperty}
+      borderRadius={`30px`}
+    >
       <CardBody
         display={`flex`}
         flexDir={{ base: `column`, md: `row` }}
         gap={5}
       >
-        <Box width={{ md: `50%` }} height={`340px`}>
+        <Box width={{ md: `50%` }} height={{ base: `340px`, md: `100%` }}>
           <Image
             w={`100%`}
             height={`100%`}
