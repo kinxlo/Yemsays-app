@@ -5,11 +5,13 @@ import Footer from './Footer'
 import NavBar from './NavBar'
 
 // eslint-disable-next-line react/prop-types
-const DefaultLayout = ({ children }) => {
+const DefaultLayout = () => {
   return (
     <>
       <NavBar />
-      <BannerComponent text={`Welcome to Yemsays Properties!`} />
+      <BannerComponent
+        text={`Welcome to Yemsays Properties!. Your one-stop shop for affordable lands and houses.`}
+      />
       <Outlet />
       <Footer />
     </>
