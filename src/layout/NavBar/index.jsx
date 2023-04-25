@@ -83,7 +83,7 @@ const NavBar = ({ transparentBg }) => {
               <Image
                 boxSize={`5rem`}
                 className={styles.navLogo}
-                src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1682094985/project-yemsays/New_Logo_fyelao.png`}
+                src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1682454934/project-yemsays/New_Logo_1_gmad4f.png`}
                 alt='logo'
               />
             </Link>

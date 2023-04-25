@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import {
   AboutPage,
   AddNewPropertyPage,
@@ -12,7 +12,7 @@ import {
   PropertiesPage,
   PropertyDashboard,
   SignIn,
-  SignUp,
+  // SignUp,
 } from './pages'
 import AdminLayout from './layout/AdminLayout'
 import RequireAuth from './hooks/RequireAuth'
@@ -35,10 +35,11 @@ function App() {
           path='/properties/:slug/details'
           element={<PropertiesDetailsPage />}
         />
+        <Route path='*' element={<PageNotFound />} />
       </Route>
 
       <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
-        <Route exact path='/admin/signup' element={<SignUp />} />
+        {/* <Route exact path='/admin/signup' element={<SignUp />} /> */}
         <Route path='/admin' element={<AdminLayout />}>
           <Route path='dashboard' element={<MainDashboard />} />
           <Route path='properties' element={<PropertyDashboard />} />
