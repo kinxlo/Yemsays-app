@@ -24,6 +24,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
           dispatch(
             setCredentials({
               accessToken: data.data.accessToken,
+              name: data.data.name,
             })
           )
         } catch (err) {

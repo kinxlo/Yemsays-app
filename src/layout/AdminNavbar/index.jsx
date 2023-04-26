@@ -11,14 +11,16 @@ import {
 } from '@chakra-ui/react'
 import { Icon } from '@iconify/react'
 import React, { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { SidebarResponsive } from '../../components/sidebar/Sidebar'
+import { selectAdmin } from '../../pages/admin/auth/api/authSlice'
 import routes from '../../routes'
 
 const AdminNavbar = (props) => {
   const { ...rest } = props
   const [isScrolled, setIsScrolled] = useState(false)
   const [windowPosition, setWindowPosition] = useState(0)
+  const admin = useSelector(selectAdmin)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -64,7 +66,7 @@ const AdminNavbar = (props) => {
                 flexWrap='wrap'
               >
                 <Box>
-                  <Heading size='sm'>Ezra Aduramiba</Heading>
+                  <Heading size='sm'>{admin}</Heading>
                   <Text textAlign={`right`} color={`textGrey`}>
                     Admin
                   </Text>
@@ -73,7 +75,7 @@ const AdminNavbar = (props) => {
                   <MenuButton as={Box}>
                     <Avatar
                       borderRadius={5}
-                      name='Ezra Aduramiba'
+                      name={admin}
                       // src='https://bit.ly/sage-adebayo'
                     />
                   </MenuButton>
