@@ -1,58 +1,41 @@
-/* eslint-disable react/prop-types */
-import { useState } from 'react'
-import { Box } from '@chakra-ui/react'
-import styled from '@emotion/styled'
+import { Text } from '@chakra-ui/react'
+import { easeIn } from 'framer-motion'
+import React, { useEffect, useState } from 'react'
+import Marquee from 'react-fast-marquee'
 
-const BannerComponent = ({ text }) => {
-  const [isVisible, setIsVisible] = useState(true)
+const Marque = () => {
+  const [vanish, setVanish] = useState(false)
 
-  const StyledBanner = styled(Box)`
-    position: absolute;
-    left: 0;
-    background-color: #f78214;
-    padding: 8px;
-    width: 100%;
-    height: 40px;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    overflow: hidden;
-    white-space: nowrap;
-    visibility: ${isVisible ? `visible` : `hidden`};
-  `
+  const ADS = 'WELCOME TO YEMSAYS PROPERTIES!,'
+  const ADS1 = 'YOUR ONE STOP-SHOP FOR AFFORDABLE LANDS AND HOUSES. '
 
-  const TextContainer = styled(Box)`
-    position: absolute;
-    left: 100%;
-    font-size: 18px;
-    font-weight: bolder;
-    letter-spacing: 2px;
-    color: white;
-    white-space: nowrap;
-    animation: bannerAnim 15s linear 1;
-    @keyframes bannerAnim {
-      from {
-        left: 100%;
-      }
-      to {
-        left: -100%;
-      }
-    }
-  `
-
-  const onAnimationEnd = () => {
-    setIsVisible(false)
-  }
-
+  useEffect(() => {
+    setTimeout(() => {
+      setVanish(true)
+    }, 20000)
+  }, [])
   return (
-    <>
-      {isVisible && (
-        <StyledBanner onAnimationEnd={onAnimationEnd}>
-          <TextContainer>{text}</TextContainer>
-        </StyledBanner>
-      )}
-    </>
+    <Marquee
+      speed={60}
+      gradient={false}
+      style={{
+        position: `absolute`,
+        opacity: `${vanish ? 0 : 1}`,
+        backgroundColor: '#f78214',
+        color: '#ffffff',
+        height: '3rem',
+        transition: `opacity 3s ease`,
+        zIndex: 1,
+      }}
+    >
+      <Text fontSize={`sm`} letterSpacing={`2px`}>
+        {ADS}
+      </Text>{' '}
+      <Text fontSize={`sm`} letterSpacing={`2px`}>
+        {ADS1}
+      </Text>
+    </Marquee>
   )
 }
 
-export default BannerComponent
+export default Marque

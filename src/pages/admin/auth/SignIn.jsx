@@ -130,7 +130,7 @@ const SignUp = () => {
             </Text>
           </Checkbox>
           <Text color={`red`} mb={-2}>
-            <Link>Forgot Password</Link>
+            <Link to={`/email/verify`}>Forgot Password</Link>
           </Text>
         </Flex>
         <Box>
