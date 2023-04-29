@@ -2,6 +2,7 @@
 /* eslint-disable react/prop-types */
 import { Center, Image, Text } from '@chakra-ui/react'
 import React from 'react'
+// import emptyImg from '../../assets/Empty-pana.png'
 
 const EmptyState = ({ img, size, message, children }) => {
   return (

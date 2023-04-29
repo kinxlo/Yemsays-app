@@ -3,7 +3,7 @@ import { Card, CardBody, Center, Text } from '@chakra-ui/react'
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-const AdminAuthPageLayout = ({ children }) => {
+const AdminAuthPageLayout = ({ children, heading }) => {
   return (
     <Center bgColor={`bgBlack`} h={`100vh`}>
       <Card
@@ -21,7 +21,7 @@ const AdminAuthPageLayout = ({ children }) => {
                 alt='logo'
               />
             </Link>
-            <Text fontSize={`xl`}>Create an admin account.</Text>
+            <Text fontSize={`xl`}>{heading}</Text>
           </Center>
           {children}
         </CardBody>

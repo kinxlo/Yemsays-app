@@ -33,6 +33,8 @@ import axios from 'axios'
 import ReactPlayer from 'react-player'
 import AlertComponent from '../../../components/feedback/Alert'
 
+const BASE_URL = import.meta.env.VITE_BASE_URL
+
 const links = [
   { name: `Home`, ref: `/admin/dashboard` },
   { name: `Add new Property`, ref: `/admin/property/new` },
@@ -124,7 +126,8 @@ const AdminPropertiesDetailsPage = () => {
     try {
       // const res = await addProperty(DATA).unwrap()
       const res = await axios.post(
-        `https://yemsay-v2.onrender.com/api/v1/property/admin`,
+        // `https://yemsay-v2.onrender.com/api/v1/property/admin`,
+        `${BASE_URL}/property/admin`,
         formData,
         credentials
       )
