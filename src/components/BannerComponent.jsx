@@ -12,7 +12,7 @@ const Marque = () => {
   useEffect(() => {
     setTimeout(() => {
       setVanish(true)
-    }, 10000)
+    }, 20000)
   }, [])
   return (
     <Marquee
@@ -22,7 +22,7 @@ const Marque = () => {
         position: `absolute`,
         opacity: `${vanish ? 0 : 1}`,
         backgroundColor: '#f78214',
-        color: 'black',
+        color: '#ffffff',
         height: '3rem',
         transition: `opacity 3s ease`,
         zIndex: 1,

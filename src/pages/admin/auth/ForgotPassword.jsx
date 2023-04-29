@@ -87,7 +87,7 @@ const ForgotPassword = () => {
     try {
       const res = await axios.patch(
         // `https://yemsay-v2.onrender.com/api/v1/auth/forgot-password`,
-        `${BASE_URL}auth/forgot-password`,
+        `${BASE_URL}/auth/forgot-password`,
         data,
         credentials
       )
@@ -103,7 +103,7 @@ const ForgotPassword = () => {
           duration: 5000,
           isClosable: false,
         })
-        // there should be a token here
+
         navigate(`/admin/signin`)
       }
     } catch (err) {
