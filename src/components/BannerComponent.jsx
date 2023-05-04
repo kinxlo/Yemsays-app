@@ -6,8 +6,7 @@ import Marquee from 'react-fast-marquee'
 const Marque = () => {
   const [vanish, setVanish] = useState(false)
 
-  const ADS = 'WELCOME TO YEMSAYS PROPERTIES!,'
-  const ADS1 = 'YOUR ONE STOP-SHOP FOR AFFORDABLE LANDS AND HOUSES. '
+  const ADS = 'WELCOME TO YEMSAYS PROPERTIES AND INVESTMENT.'
 
   useEffect(() => {
     setTimeout(() => {
@@ -30,9 +29,6 @@ const Marque = () => {
     >
       <Text fontSize={`sm`} letterSpacing={`2px`}>
         {ADS}
-      </Text>{' '}
-      <Text fontSize={`sm`} letterSpacing={`2px`}>
-        {ADS1}
       </Text>
     </Marquee>
   )

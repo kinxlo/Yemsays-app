@@ -94,16 +94,15 @@ const ForgotPassword = () => {
       console.log(res)
 
       setLoading(false)
-      if (res.success) {
+      if (res.data.success) {
         toast({
-          description: `${res.message}`,
+          description: `${res.data.message}`,
           status: 'success',
           variant: 'left-accent',
           position: 'top',
           duration: 5000,
           isClosable: false,
         })
-
         navigate(`/admin/signin`)
       }
     } catch (err) {
