@@ -54,7 +54,8 @@ const Footer = () => {
               >
                 <Link as={ReactLink} to={`/`}>
                   <Image
-                    src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1680856120/project-yemsays/Group_87_qudnxl.png`}
+                    width={`10rem`}
+                    src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1683369127/project-yemsays/Group_86_dr3rfv.png`}
                   />
                 </Link>
               </Box>
@@ -62,6 +63,7 @@ const Footer = () => {
                 color={`textGrey`}
                 maxW={`351px`}
                 margin={{ base: `auto`, md: `initial` }}
+                pt={3}
               >
                 Lörem ipsum birade fanas. Tridonar myvis, seng om äniskort.
                 Lörem ipsum birade fanas. Tridonarse fanas. Tridonar jmyvis,

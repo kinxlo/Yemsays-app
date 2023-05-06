@@ -81,9 +81,10 @@ const NavBar = ({ transparentBg }) => {
           <div className={styles.navBrand}>
             <Link to={'/'}>
               <Image
-                boxSize={`5rem`}
+                // boxSize={`5rem`}
+                width={`10rem`}
                 className={styles.navLogo}
-                src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1683214580/project-yemsays/New_Logo_2_x32gnt.png`}
+                src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1683369127/project-yemsays/Group_86_dr3rfv.png`}
                 alt='logo'
               />
             </Link>
