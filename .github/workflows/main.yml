@@ -33,7 +33,7 @@ jobs:
 
     - name: Build application
       run: |
-        export NODE_OPTIONS="--max_old_space_size=8096"
+        export NODE_OPTIONS="--max_old_space_size=2024"
         CI=false npm run build --if-present
 
     # - name: Reload server instances
