@@ -25,8 +25,8 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
 
-    - name: Copy env files from client config folder
-      run: cp -rf /var/www/client/.* /var/www/yemsay/_work/yemsays-app/yemsays-app
+    # - name: Copy env files from client config folder
+    #   run: cp -rf /var/www/client-config/.* /var/www/client/_work/yemsays-app/yemsays-app
 
     - name: Install dependencies
       run: npm install
@@ -36,5 +36,5 @@ jobs:
         export NODE_OPTIONS="--max_old_space_size=8096"
         CI=false npm run build --if-present
 
-    - name: Reload server instances
-      run: pm2 reload yemsay-client --update-env --wait-ready
+    # - name: Reload server instances
+    #   run: pm2 reload yemsay-client --update-env --wait-ready
