@@ -2,13 +2,12 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   build:
-
     runs-on: self-hosted
 
     strategy:
@@ -16,27 +15,25 @@ jobs:
         node-version: [16.x]
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
 
-    # - name: Copy env files from client config folder
-    #   run: cp -rf /var/www/client-config/.* /var/www/client/_work/yemsays-app/yemsays-app
+      - name: Copy env files from client config folder
+        run: cp -r /var/www/config/. /var/www/server/_work/yemsays-app/yemsays-app
 
-    - name: Install dependencies
-      run: npm install
+      - name: Install dependencies
+        run: npm install
 
-    - name: Build application
-      run: |
-        export NODE_OPTIONS="--max_old_space_size=2024"
-        CI=false npm run build --if-present
+      - name: Build application
+        run: |
+          export NODE_OPTIONS="--max_old_space_size=2024"
+          CI=false npm run build --if-present
 
-    # - name: Reload server instances
-    #   run: pm2 reload yemsay-client --update-env --wait-ready
-    # test me test
-    #
+      - name: Reload server instances
+        run: pm2 reload yemsay-client --update-env --wait-ready
