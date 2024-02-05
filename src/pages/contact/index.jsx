@@ -65,7 +65,7 @@ const ContactUs = () => {
   }, [isSafeToReset, reset])
 
   return (
-    <DefaultLayout>
+    <>
       <AlertComponent
         action={`message`}
         message={{
@@ -210,7 +210,8 @@ const ContactUs = () => {
                       isLoading={isLoading}
                       loadingText='Sending message...'
                       w={`100%`}
-                      colorScheme={`orange`}
+                      bgColor={`primary`}
+                      color={`white`}
                       fontWeight={300}
                     >
                       Submit Message
@@ -222,7 +223,7 @@ const ContactUs = () => {
           </Flex>
         </Container>
       </Box>
-    </DefaultLayout>
+    </>
   )
 }
 

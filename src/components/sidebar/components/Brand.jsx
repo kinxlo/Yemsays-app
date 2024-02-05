@@ -15,7 +15,8 @@ export function SidebarBrand() {
     <Center align='center' direction='column'>
       <Link as={ReactLink} to={`/`}>
         <Image
-          src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1680856120/project-yemsays/Group_87_qudnxl.png`}
+          width={`10rem`}
+          src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1683369127/project-yemsays/Group_86_dr3rfv.png`}
         />
       </Link>
     </Center>

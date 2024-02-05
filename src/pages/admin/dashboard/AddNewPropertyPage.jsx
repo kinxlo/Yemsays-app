@@ -33,6 +33,8 @@ import axios from 'axios'
 import ReactPlayer from 'react-player'
 import AlertComponent from '../../../components/feedback/Alert'
 
+const BASE_URL = import.meta.env.VITE_BASE_URL
+
 const links = [
   { name: `Home`, ref: `/admin/dashboard` },
   { name: `Add new Property`, ref: `/admin/property/new` },
@@ -124,7 +126,8 @@ const AdminPropertiesDetailsPage = () => {
     try {
       // const res = await addProperty(DATA).unwrap()
       const res = await axios.post(
-        `https://yemsay-v2.onrender.com/api/v1/property/admin`,
+        // `https://yemsay-v2.onrender.com/api/v1/property/admin`,
+        `${BASE_URL}/property/admin`,
         formData,
         credentials
       )
@@ -217,7 +220,7 @@ const AdminPropertiesDetailsPage = () => {
                 flexDir={`column`}
               >
                 <Input
-                  required
+                  // required
                   hidden
                   id={`img1`}
                   type={`file`}
@@ -256,7 +259,7 @@ const AdminPropertiesDetailsPage = () => {
                 flexDir={`column`}
               >
                 <Input
-                  required
+                  // required
                   hidden
                   id={`img2`}
                   type={`file`}
@@ -295,7 +298,7 @@ const AdminPropertiesDetailsPage = () => {
                 flexDir={`column`}
               >
                 <Input
-                  required
+                  // required
                   hidden
                   id={`img3`}
                   type={`file`}
@@ -333,7 +336,7 @@ const AdminPropertiesDetailsPage = () => {
                 flexDir={`column`}
               >
                 <Input
-                  required
+                  // required
                   hidden
                   id={`img4`}
                   type={`file`}
@@ -628,7 +631,7 @@ const AdminPropertiesDetailsPage = () => {
                         flexDir={`column`}
                       >
                         <Input
-                          required
+                          // required
                           hidden
                           id={`property_video`}
                           type={`file`}
@@ -687,7 +690,7 @@ const AdminPropertiesDetailsPage = () => {
                           flexDir={`column`}
                         >
                           <Input
-                            required
+                            // required
                             hidden
                             id={`avatar`}
                             type={`file`}

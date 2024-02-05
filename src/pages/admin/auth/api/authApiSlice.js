@@ -1,4 +1,4 @@
-import { logout, setCredentials } from './authSlice'
+import { setCredentials } from './authSlice'
 import { apiSlice } from '../../../../app/api/apiSlice'
 
 export const authApiSlice = apiSlice.injectEndpoints({
@@ -20,16 +20,33 @@ export const authApiSlice = apiSlice.injectEndpoints({
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled
-          console.log(data)
+
           dispatch(
             setCredentials({
               accessToken: data.data.accessToken,
+              name: data.data.name,
             })
           )
         } catch (err) {
           console.log(err)
         }
       },
+    }),
+
+    verifyEmail: builder.mutation({
+      query: (credentials) => ({
+        url: '/auth/email-verification',
+        method: 'POST',
+        body: { ...credentials },
+      }),
+    }),
+
+    changePassword: builder.mutation({
+      query: (credentials) => ({
+        url: '/auth/change-password',
+        method: 'PATCH',
+        body: { ...credentials },
+      }),
     }),
 
     // sendLogout: builder.mutation({
@@ -73,6 +90,8 @@ export const authApiSlice = apiSlice.injectEndpoints({
 export const {
   useLoginMutation,
   useSendLogoutMutation,
+  useVerifyEmailMutation,
   useSignupMutation,
+  useChangePasswordMutation,
   // useRefreshMutation,
 } = authApiSlice

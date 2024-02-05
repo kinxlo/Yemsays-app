@@ -72,7 +72,7 @@ const Properties = () => {
   )
 
   return (
-    <DefaultLayout>
+    <>
       {/* hero section */}
       <Box
         className='page_alignment'
@@ -139,9 +139,14 @@ const Properties = () => {
       <Box bgColor={`bgBlack`} className='page_alignment'>
         <Container>
           <Box>
-            <SimpleGrid columns={{ base: 1, lg: 2 }} gap={10}>
-              {properties}
-            </SimpleGrid>
+            {propertyState.isLandListingLoading ||
+            propertyState.isHouseListingLoading ? (
+              <SpinnerComponent size={`xl`} />
+            ) : (
+              <SimpleGrid columns={{ base: 1, lg: 2 }} gap={10}>
+                {properties}
+              </SimpleGrid>
+            )}
           </Box>
         </Container>
       </Box>
@@ -151,7 +156,7 @@ const Properties = () => {
           <QuestionBanner />
         </Container>
       </Box>
-    </DefaultLayout>
+    </>
   )
 }
 

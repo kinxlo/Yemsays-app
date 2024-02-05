@@ -36,6 +36,8 @@ import ReactPlayer from 'react-player'
 import AlertComponent from '../../../components/feedback/Alert'
 // import FeedbackModal from '../../../components/modals/Modal'
 
+const BASE_URL = import.meta.env.VITE_BASE_URL
+
 // eslint-disable-next-line react/prop-types
 const AdminPropertiesDetailsPage = () => {
   // const [action, setAction] = useState(null)
@@ -198,7 +200,7 @@ const AdminPropertiesDetailsPage = () => {
       //   body: formData,
       // }).unwrap()
       const res = await axios.put(
-        `https://yemsay-v2.onrender.com/api/v1/property/admin/${propertyID}`,
+        `${BASE_URL}/property/admin/${propertyID}`,
         formData,
         credentials
       )

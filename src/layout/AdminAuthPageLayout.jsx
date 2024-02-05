@@ -1,9 +1,9 @@
 /* eslint-disable react/prop-types */
-import { Card, CardBody, Center, Text } from '@chakra-ui/react'
+import { Box, Card, CardBody, Center, Text } from '@chakra-ui/react'
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-const AdminAuthPageLayout = ({ children }) => {
+const AdminAuthPageLayout = ({ children, heading }) => {
   return (
     <Center bgColor={`bgBlack`} h={`100vh`}>
       <Card
@@ -15,13 +15,15 @@ const AdminAuthPageLayout = ({ children }) => {
       >
         <CardBody px={{ base: 10, lg: 20 }} py={10}>
           <Center flexDir={`column`} gap={5}>
-            <Link to={'/'}>
-              <img
-                src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1677576945/project-yemsays/Group_86_btjv9i.png`}
-                alt='logo'
-              />
-            </Link>
-            <Text fontSize={`xl`}>Create an admin account.</Text>
+            <Box width={`10rem`}>
+              <Link to={'/'}>
+                <img
+                  src={`https://res.cloudinary.com/kingsleysolomon/image/upload/v1683369127/project-yemsays/Group_86_dr3rfv.png`}
+                  alt='logo'
+                />
+              </Link>
+            </Box>
+            <Text fontSize={`xl`}>{heading}</Text>
           </Center>
           {children}
         </CardBody>

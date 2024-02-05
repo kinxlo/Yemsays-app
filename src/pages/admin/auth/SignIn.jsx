@@ -130,7 +130,7 @@ const SignUp = () => {
             </Text>
           </Checkbox>
           <Text color={`red`} mb={-2}>
-            <Link>Forgot Password</Link>
+            <Link to={`/email/verify`}>Forgot Password</Link>
           </Text>
         </Flex>
         <Box>
@@ -147,7 +147,7 @@ const SignUp = () => {
             Sign In
           </Button>
         </Box>
-        <Text
+        {/* <Text
           display={`flex`}
           justifyContent={`center`}
           alignItems={`center`}
@@ -158,7 +158,7 @@ const SignUp = () => {
           <Text color={`primary`} as={`span`}>
             <Link to={`/admin/signup`}>Sign up</Link>
           </Text>
-        </Text>
+        </Text> */}
       </FormControl>
     </AdminAuthPageLayout>
   )

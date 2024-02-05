@@ -23,9 +23,7 @@ import {
   MdOutlineAccessTimeFilled,
 } from 'react-icons/md'
 import AlertComponent from '../../components/feedback/Alert'
-import DefaultLayout from '../../layout/DefaultLayout'
 import { useBookApointmentMutation } from '../admin/dashboard/api/propertiesApiSlice'
-// import Container from '../../layout/Container'
 
 const BookApointment = () => {
   const [isOpen, setOpen] = useState(false)
@@ -62,7 +60,7 @@ const BookApointment = () => {
   }, [isSafeToReset, reset])
 
   return (
-    <DefaultLayout>
+    <>
       <AlertComponent
         action={`message`}
         message={{
@@ -228,7 +226,7 @@ const BookApointment = () => {
           </FormControl>
         </Container>
       </Box>
-    </DefaultLayout>
+    </>
   )
 }
 
