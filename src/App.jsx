@@ -27,6 +27,7 @@ function App () {
     return (
         <Routes>
             <Route exact path="/admin/signin" element={ <SignIn/> }/>
+            <Route exact path="/admin/signup" element={ <SignUp/> }/>
             <Route
                 exact
                 path="/email/verify"
@@ -47,7 +48,6 @@ function App () {
                 <Route path="*" element={ <PageNotFound/> }/>
             </Route>
             <Route element={ <RequireAuth allowedRoles={ [ ROLES.Admin ] }/> }>
-                <Route exact path="/admin/signup" element={ <SignUp/> }/>
                 <Route
                     exact
                     path="/admin/change-password"
